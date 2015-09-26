@@ -1,0 +1,21 @@
+C:\CT427\427\SpaceInvaders_HW\implementation\system.ngc 1443296520
+C:/CT427/427/SpaceInvaders_HW/implementation/rs232_uart_1_wrapper.ngc 1443296476
+C:/CT427/427/SpaceInvaders_HW/implementation/proc_sys_reset_0_wrapper.ngc 1443296476
+C:/CT427/427/SpaceInvaders_HW/implementation/clock_generator_0_wrapper.ngc 1443296498
+C:/CT427/427/SpaceInvaders_HW/implementation/axi_hdmi_0_wrapper.ngc 1443296476
+C:/CT427/427/SpaceInvaders_HW/implementation/axi_ac97_0_wrapper.ngc 1443296494
+C:/CT427/427/SpaceInvaders_HW/implementation/microblaze_0_ilmb_wrapper.ngc 1443296476
+C:/CT427/427/SpaceInvaders_HW/implementation/microblaze_0_dlmb_wrapper.ngc 1443296476
+C:/CT427/427/SpaceInvaders_HW/implementation/mcb_ddr2_wrapper.ngc 1443296476
+C:/CT427/427/SpaceInvaders_HW/implementation/axi4lite_0_wrapper.ngc 1443296476
+C:/CT427/427/SpaceInvaders_HW/implementation/axi4_0_wrapper.ngc 1443296476
+C:/CT427/427/SpaceInvaders_HW/implementation/microblaze_0_wrapper.ngc 1443296476
+C:/CT427/427/SpaceInvaders_HW/implementation/axi_vdma_0_wrapper.ngc 1443296476
+C:/CT427/427/SpaceInvaders_HW/implementation/microblaze_0_i_bram_ctrl_wrapper.ngc 1443296476
+C:/CT427/427/SpaceInvaders_HW/implementation/microblaze_0_d_bram_ctrl_wrapper.ngc 1443296476
+C:/CT427/427/SpaceInvaders_HW/implementation/debug_module_wrapper.ngc 1443296476
+C:/CT427/427/SpaceInvaders_HW/implementation/digilent_quadspi_cntlr_wrapper.ngc 1443296476
+C:/CT427/427/SpaceInvaders_HW/implementation/axi_intc_0_wrapper.ngc 1443296476
+C:/CT427/427/SpaceInvaders_HW/implementation/axi_timer_0_wrapper.ngc 1443296476
+C:/CT427/427/SpaceInvaders_HW/implementation/microblaze_0_bram_block_wrapper.ngc 1443296476
+OK

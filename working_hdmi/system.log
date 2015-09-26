@@ -1,0 +1,42 @@
+Xilinx Platform Studio (XPS)
+Xilinx EDK 13.4 Build EDK_O.87xd
+Copyright (c) 1995-2011 Xilinx, Inc.  All rights reserved.
+
+Writing filter settings....
+Done writing filter settings to:
+	C:\Users\joshuas2\Desktop\427\etc\system.filters
+Done writing Tab View settings to:
+	C:\Users\joshuas2\Desktop\427\etc\system.gui
+Xilinx Platform Studio (XPS)
+Xilinx EDK 13.4 Build EDK_O.87xd
+Copyright (c) 1995-2011 Xilinx, Inc.  All rights reserved.
+
+
+********************************************************************************
+At Local date and time: Thu Sep 06 12:08:30 2012
+ make -f system.make netlist started...
+make: Nothing to be done for `netlist'.
+Done!
+xps_archiver -o C:\Users\joshuas2\Desktop\working_hdmi.zip  -c  -a C:\Users\joshuas2\Desktop\427\system.xmp
+
+********************************************************************************
+At Local date and time: Thu Sep 06 13:50:11 2012
+ xps_archiver -o C:\Users\joshuas2\Desktop\working_hdmi.zip  -c  -a C:\Users\joshuas2\Desktop\427\system.xmp started...
+
+Release Xilinx EDK 13.4 - xps_archiver EDK_O.87xd
+Copyright (c) 1995-2011 Xilinx, Inc.  All rights reserved.
+
+=====================
+Opened log file
+=====================
+=====================
+Opened log file
+=====================
+=====================
+Opened log file
+=====================
+Xilinx Platform Studio (XPS)
+Xilinx EDK 13.4 Build EDK_O.87xd
+
+Xilinx EDK 13.4 Build EDK_O.87xd
+
