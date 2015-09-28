@@ -1862,12 +1862,25 @@ Xilinx Software Development Kit
 Xilinx EDK 13.4 Build EDK_O.87xd
 Copyright (c) 1995-2010 Xilinx, Inc.  All rights reserved.
 Done!
+<<<<<<< HEAD
+Writing filter settings....
+Done writing filter settings to:
+	C:\CT427\427\SpaceInvaders_HW\etc\system.filters
+Done writing Tab View settings to:
+	C:\CT427\427\SpaceInvaders_HW\etc\system.gui
+=======
+>>>>>>> 288d7c3e6a685a0bcfc35cf6785c94fe0abb59d7
 Xilinx Platform Studio (XPS)
 Xilinx EDK 13.4 Build EDK_O.87xd
 Copyright (c) 1995-2011 Xilinx, Inc.  All rights reserved.
 
 
 ********************************************************************************
+<<<<<<< HEAD
+At Local date and time: Mon Sep 28 14:31:54 2015
+ make -f system.make exporttosdk started...
+make: Nothing to be done for `exporttosdk'.
+=======
 At Local date and time: Mon Sep 28 14:24:41 2015
  make -f system.make bits started...
 "****************************************************"
@@ -3682,4 +3695,5 @@ At Local date and time: Mon Sep 28 14:30:22 2015
 Xilinx Software Development Kit
 Xilinx EDK 13.4 Build EDK_O.87xd
 Copyright (c) 1995-2010 Xilinx, Inc.  All rights reserved.
+>>>>>>> 288d7c3e6a685a0bcfc35cf6785c94fe0abb59d7
 Done!

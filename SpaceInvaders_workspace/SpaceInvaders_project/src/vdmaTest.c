@@ -35,10 +35,20 @@ void print(char *str);
 #define MAX_SILLY_TIMER 10000000;
 
 #define ALIEN_HEIGHT 16
+
 #define NUM_ALIENS 11 * 32
 
 #define SCREEN_WIDTH 640
 #define SCREEN_HEIGHT 640
+
+//int aliens[NUM_ALIEN_ROWS] =
+//{
+//		topOutAlienSymbol,
+//		topOutAlienSymbol,
+//		topOutAlienSymbol,
+//		topOutAlienSymbol,
+//		topOutAlienSymbol
+//};
 
 #define WORD_WIDTH 32
 
@@ -116,12 +126,13 @@ int main()
      unsigned int * framePointer = (unsigned int *) FRAME_BUFFER_ADDR;
 
      int row, column;
+
      //int horiz, vert;row<ALIEN_HEIGHT
 //     for (horiz = 0; horiz*WORD_WIDTH < 640; horiz++){
 		for (row=0; row<SCREEN_HEIGHT; row++) {
 			for (column = 0; column<SCREEN_WIDTH; column++) {
 				if(column < 12 && row < 8){
-					if ((alien_top_in_12x8[row] & (1<<(12-1-column)))) {
+					if ((alien_top_in_24x16[row] & (1<<(12-1-column)))) {
 						framePointer[row*640 + column] = 0x0000FF00;
 //						framePointer[row*640 + column+1] = 0x0000FF00;
 //						framePointer[(row+1)*640 + column] = 0x0000FF00;
