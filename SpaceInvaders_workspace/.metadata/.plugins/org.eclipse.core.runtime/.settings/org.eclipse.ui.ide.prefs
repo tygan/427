@@ -1,5 +1,11 @@
+<<<<<<< HEAD
 #Mon Sep 28 17:09:33 MDT 2015
 eclipse.preferences.version=1
+=======
+#Mon Sep 28 16:25:38 MDT 2015
+eclipse.preferences.version=1
+TASKS_FILTERS_MIGRATE=true
+>>>>>>> 7271c8e68f3710b5f5c71697ef720ef1e4735552
 tipsAndTricks=true
 platformState=1345658210983
 quickStart=false
