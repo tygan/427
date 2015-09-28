@@ -1,7 +1,7 @@
 Release 13.4 par O.87xd (nt64)
 Copyright (c) 1995-2011 Xilinx, Inc.  All rights reserved.
 
-CB400-08::  Sat Sep 26 13:44:51 2015
+CB400-09::  Mon Sep 28 14:28:12 2015
 
 par -w -ol high system_map.ncd system.ncd system.pcf 
 
@@ -478,7 +478,7 @@ All signals are completely routed.
 
 WARNING:Par:283 - There are 23 loadless signals in this design. This design will cause Bitgen to issue DRC warnings.
 
-Total REAL time to PAR completion: 59 secs 
+Total REAL time to PAR completion: 1 mins 
 Total CPU time to PAR completion: 51 secs 
 
 Peak Memory Usage:  643 MB

@@ -19,11 +19,16 @@ Command-line arguments:  -os win32 -ws win32 -arch x86_64
 
 !ENTRY org.eclipse.core.resources 2 10035 2015-09-26 14:28:13.594
 !MESSAGE The workspace exited with unsaved changes in the previous session; refreshing workspace to recover changes.
+<<<<<<< HEAD
 !SESSION 2015-09-28 11:00:22.960 -----------------------------------------------
+=======
+!SESSION 2015-09-28 14:30:23.564 -----------------------------------------------
+>>>>>>> 288d7c3e6a685a0bcfc35cf6785c94fe0abb59d7
 eclipse.buildId=Release 13.4 Build SDK_O.87xd
 java.version=1.6.0_21
 java.vendor=Sun Microsystems Inc.
 BootLoader constants: OS=win32, ARCH=x86_64, WS=win32, NL=en_US
+<<<<<<< HEAD
 Command-line arguments:  -data C:\CT427\427\SpaceInvaders_workspace -os win32 -ws win32 -arch x86_64
 
 !ENTRY org.eclipse.cdt.launch 4 150 2015-09-28 11:01:58.562
@@ -56,3 +61,18 @@ java.io.IOException: Cannot run program "C:\CT427\427\SpaceInvaders_workspace\Sp
 	at org.eclipse.debug.internal.ui.DebugUIPlugin.buildAndLaunch(DebugUIPlugin.java:924)
 	at org.eclipse.debug.internal.ui.DebugUIPlugin$8.run(DebugUIPlugin.java:1128)
 	at org.eclipse.core.internal.jobs.Worker.run(Worker.java:54)
+=======
+Command-line arguments:  -os win32 -ws win32 -arch x86_64
+
+!ENTRY org.eclipse.core.resources 2 10035 2015-09-28 14:31:39.711
+!MESSAGE The workspace exited with unsaved changes in the previous session; refreshing workspace to recover changes.
+!SESSION 2015-09-28 14:35:41.209 -----------------------------------------------
+eclipse.buildId=Release 13.4 Build SDK_O.87xd
+java.version=1.6.0_21
+java.vendor=Sun Microsystems Inc.
+BootLoader constants: OS=win32, ARCH=x86_64, WS=win32, NL=en_US
+Command-line arguments:  -os win32 -ws win32 -arch x86_64
+
+!ENTRY org.eclipse.core.resources 2 10035 2015-09-28 14:35:58.823
+!MESSAGE The workspace exited with unsaved changes in the previous session; refreshing workspace to recover changes.
+>>>>>>> 288d7c3e6a685a0bcfc35cf6785c94fe0abb59d7

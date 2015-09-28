@@ -11,7 +11,7 @@ src/vdmaTest.d src/vdmaTest.o: ../src/vdmaTest.c ../src/platform.h \
   ../../hello_world_bsp_0/microblaze_0/include/xdebug.h \
   ../../hello_world_bsp_0/microblaze_0/include/xstatus.h \
   ../../hello_world_bsp_0/microblaze_0/include/xil_assert.h \
-  ../../hello_world_bsp_0/microblaze_0/include/xio.h
+  ../../hello_world_bsp_0/microblaze_0/include/xio.h ../src/shapes.h
 
 ../src/platform.h:
 
@@ -40,3 +40,5 @@ src/vdmaTest.d src/vdmaTest.o: ../src/vdmaTest.c ../src/platform.h \
 ../../hello_world_bsp_0/microblaze_0/include/xil_assert.h:
 
 ../../hello_world_bsp_0/microblaze_0/include/xio.h:
+
+../src/shapes.h:

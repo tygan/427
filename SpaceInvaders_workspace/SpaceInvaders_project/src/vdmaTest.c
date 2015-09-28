@@ -27,6 +27,7 @@
 #include "xio.h"
 #include "time.h"
 #include "unistd.h"
+#include "shapes.h"
 #define DEBUG
 void print(char *str);
 
@@ -34,53 +35,11 @@ void print(char *str);
 #define MAX_SILLY_TIMER 10000000;
 
 #define ALIEN_HEIGHT 16
-#define NUM_ALIEN_ROWS 5
-// Packs each horizontal line of the figures into a single 32 bit word.
-#define packWord32(b31,b30,b29,b28,b27,b26,b25,b24,b23,b22,b21,b20,b19,b18,b17,b16,b15,b14,b13,b12,b11,b10,b9,b8,b7,b6,b5,b4,b3,b2,b1,b0) \
-((b31 << 31) | (b30 << 30) | (b29 << 29) | (b28 << 28) | (b27 << 27) | (b26 << 26) | (b25 << 25) | (b24 << 24) |						  \
- (b23 << 23) | (b22 << 22) | (b21 << 21) | (b20 << 20) | (b19 << 19) | (b18 << 18) | (b17 << 17) | (b16 << 16) |						  \
- (b15 << 15) | (b14 << 14) | (b13 << 13) | (b12 << 12) | (b11 << 11) | (b10 << 10) | (b9  << 9 ) | (b8  << 8 ) |						  \
- (b7  << 7 ) | (b6  << 6 ) | (b5  << 5 ) | (b4  << 4 ) | (b3  << 3 ) | (b2  << 2 ) | (b1  << 1 ) | (b0  << 0 ) )
 
-int topOutAlienSymbolLeft[ALIEN_HEIGHT] =
-{
-	packWord32(0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,0,0,0,0),
-	packWord32(0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,0,0,0,0),
-	packWord32(0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1),
-	packWord32(0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1),
-	packWord32(0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1),
-	packWord32(0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1),
-	packWord32(0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,0,0,0,0,1,1,1,1,1,1,1,1,0,0,0,0),
-	packWord32(0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,0,0,0,0,1,1,1,1,1,1,1,1,0,0,0,0),
-	packWord32(0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1),
-	packWord32(0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1),
-	packWord32(0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,0,0,0,0,0,0,0,0,1,1,1,1),
-	packWord32(0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,0,0,0,0,0,0,0,0,1,1,1,1),
-	packWord32(0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,0,0,0,0,1,1,1,1,1,1,1,1,0,0,0,0),
-	packWord32(0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,0,0,0,0,1,1,1,1,1,1,1,1,0,0,0,0),
-	packWord32(0,0,0,0,0,0,0,0,1,1,1,1,0,0,0,0,1,1,1,1,0,0,0,0,0,0,0,0,1,1,1,1),
-	packWord32(0,0,0,0,0,0,0,0,1,1,1,1,0,0,0,0,1,1,1,1,0,0,0,0,0,0,0,0,1,1,1,1),
-};
+#define NUM_ALIENS 11 * 32
 
-int topOutAlienSymbolRight[ALIEN_HEIGHT] =
-{
-	packWord32(0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0),
-	packWord32(0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0),
-	packWord32(0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0),
-	packWord32(0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0),
-	packWord32(1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0),
-	packWord32(1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0),
-	packWord32(1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0),
-	packWord32(1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0),
-	packWord32(1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0),
-	packWord32(1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0),
-	packWord32(0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0),
-	packWord32(0,0,0,0,0,0,0,0,1,1,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0),
-	packWord32(1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0),
-	packWord32(1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0),
-	packWord32(0,0,0,0,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0),
-	packWord32(0,0,0,0,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0),
-};
+#define SCREEN_WIDTH 640
+#define SCREEN_HEIGHT 640
 
 //int aliens[NUM_ALIEN_ROWS] =
 //{
@@ -167,26 +126,31 @@ int main()
      unsigned int * framePointer = (unsigned int *) FRAME_BUFFER_ADDR;
 
      int row, column;
-		for (row=0; row<480; row++) {
-			if(row<ALIEN_HEIGHT){
-				for (column = 0; column<640; column++) {
-					if ((topOutAlienSymbolLeft[row] & (1<<((WORD_WIDTH-1-column))))) {
-						printf("#");
-						framePointer[row*640 + column] = 0x0000FF00;	//0000FF00
-					} else {
-						printf(" ");
+
+     //int horiz, vert;row<ALIEN_HEIGHT
+//     for (horiz = 0; horiz*WORD_WIDTH < 640; horiz++){
+		for (row=0; row<SCREEN_HEIGHT; row++) {
+			for (column = 0; column<SCREEN_WIDTH; column++) {
+				if(column < 12 && row < 8){
+					if ((alien_top_in_24x16[row] & (1<<(12-1-column)))) {
+						framePointer[row*640 + column] = 0x0000FF00;
+//						framePointer[row*640 + column+1] = 0x0000FF00;
+//						framePointer[(row+1)*640 + column] = 0x0000FF00;
+//						framePointer[(row+1)*640 + column+1] = 0x0000FF00;
+////						row++;
+//						column++;
+					}else{
 						framePointer[row*640 + column] = 0x00000000;
 					}
-				}
-			}
-			else{
-				for (column = 0; column<640; column++) {
+				//} else if(column > NUM_ALIENS && column < (15*32)) {
+//					if ((alien_top_out_12x8[row] & (1<<(WORD_WIDTH-1-column)))) {
+//						framePointer[row*640 + column] = 0x0000FF00;
+//					}
+				} else {
 					framePointer[row*640 + column] = 0x00000000;
 				}
 			}
-		  printf("\n");
-	}
-
+		}
 
 //     // Just paint some large red, green, blue, and white squares in different
 //     // positions of the image for each frame in the buffer (framePointer0 and framePointer1).
