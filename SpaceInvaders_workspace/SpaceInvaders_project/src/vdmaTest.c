@@ -37,6 +37,8 @@ void print(char *str);
 #define ALIEN_HEIGHT 16
 #define NUM_ALIENS 11 * 32
 
+#define SCREEN_WIDTH 640
+#define SCREEN_HEIGHT 640
 
 #define WORD_WIDTH 32
 
@@ -116,25 +118,28 @@ int main()
      int row, column;
      //int horiz, vert;row<ALIEN_HEIGHT
 //     for (horiz = 0; horiz*WORD_WIDTH < 640; horiz++){
-		for (row=0; row<ALIEN_HEIGHT; row++) {
-			for (column = 0; column<640; column++) {
-				if(column < NUM_ALIENS){
-					if ((alien_top_out_12x8[row] & (1<<(WORD_WIDTH-1-column)))) {
+		for (row=0; row<SCREEN_HEIGHT; row++) {
+			for (column = 0; column<SCREEN_WIDTH; column++) {
+				if(column < 12 && row < 8){
+					if ((alien_top_in_12x8[row] & (1<<(12-1-column)))) {
 						framePointer[row*640 + column] = 0x0000FF00;
+//						framePointer[row*640 + column+1] = 0x0000FF00;
+//						framePointer[(row+1)*640 + column] = 0x0000FF00;
+//						framePointer[(row+1)*640 + column+1] = 0x0000FF00;
+////						row++;
+//						column++;
+					}else{
+						framePointer[row*640 + column] = 0x00000000;
 					}
+				//} else if(column > NUM_ALIENS && column < (15*32)) {
+//					if ((alien_top_out_12x8[row] & (1<<(WORD_WIDTH-1-column)))) {
+//						framePointer[row*640 + column] = 0x0000FF00;
+//					}
 				} else {
 					framePointer[row*640 + column] = 0x00000000;
 				}
 			}
 		}
-//		int screenHeight;
-//		for(screenHeight = 16; screenHeight < 240; screenHeight ++){
-//			for (column = 0; column<640; column++) {
-//				framePointer[row*640 + column] = 0x00000000;
-//			}
-//		}
-//	}
-
 
 //     // Just paint some large red, green, blue, and white squares in different
 //     // positions of the image for each frame in the buffer (framePointer0 and framePointer1).
