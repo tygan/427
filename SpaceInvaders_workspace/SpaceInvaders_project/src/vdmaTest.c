@@ -35,14 +35,66 @@ void print(char *str);
 #define MAX_SILLY_TIMER 10000000;
 
 #define ALIEN_HEIGHT 16
+#define ALIEN_WIDTH 24
 
 #define NUM_ALIENS 11 * 32
 
 #define SCREEN_WIDTH 640
 #define SCREEN_HEIGHT 640
-
+#define ALIENS_TALL 5
+#define ALIENS_WIDE 11
 
 #define WORD_WIDTH 32
+
+
+
+void print_aliens(int corner_top, int corner_left){
+	unsigned int * framePointer = (unsigned int *) FRAME_BUFFER_ADDR;
+	//invert global bool aliens_in;
+	int i;
+	int alien_buffer = 4;
+	for(i=0; i<ALIENS_TALL; i++){
+		int j;
+		for(j=0; j<ALIENS_WIDE; j++){
+			//if alien bool array of i and j
+			//separate into rows 1, 2-3, 4-5
+			//if aliens_in
+			int inner_row, inner_column;
+			for (inner_row=0; inner_row<ALIEN_HEIGHT+alien_buffer; inner_row++) {
+				for (inner_column = 0; inner_column<ALIEN_WIDTH+alien_buffer; inner_column++) {
+					if(inner_row<ALIEN_HEIGHT && inner_column<ALIEN_WIDTH){
+						if(i==0){
+							if ((alien_top_in_24x16[inner_row] & (1<<(ALIEN_WIDTH-1-inner_column)))) {
+								framePointer[(inner_row + i*(ALIEN_HEIGHT+alien_buffer) + corner_top)*640 + (inner_column + j*(ALIEN_WIDTH+alien_buffer) + corner_left)] = 0x0000FF00;
+							}else{
+								framePointer[(inner_row + i*(ALIEN_HEIGHT+alien_buffer) + corner_top)*640 + (inner_column + j*(ALIEN_WIDTH+alien_buffer) + corner_left)] = 0x00000000;
+							}
+						}
+						else if(i==1 || i==2){
+							if ((alien_middle_in_24x16[inner_row] & (1<<(ALIEN_WIDTH-1-inner_column)))) {
+								framePointer[(inner_row + i*(ALIEN_HEIGHT+alien_buffer) + corner_top)*640 + (inner_column + j*(ALIEN_WIDTH+alien_buffer) + corner_left)] = 0x0000FF00;
+							}else{
+								framePointer[(inner_row + i*(ALIEN_HEIGHT+alien_buffer) + corner_top)*640 + (inner_column + j*(ALIEN_WIDTH+alien_buffer) + corner_left)] = 0x00000000;
+							}
+						}
+						else if(i==3 || i==4){
+							if ((alien_bottom_in_24x16[inner_row] & (1<<(ALIEN_WIDTH-1-inner_column)))) {
+								framePointer[(inner_row + i*(ALIEN_HEIGHT+alien_buffer) + corner_top)*640 + (inner_column + j*(ALIEN_WIDTH+alien_buffer) + corner_left)] = 0x0000FF00;
+							}else{
+								framePointer[(inner_row + i*(ALIEN_HEIGHT+alien_buffer) + corner_top)*640 + (inner_column + j*(ALIEN_WIDTH+alien_buffer) + corner_left)] = 0x00000000;
+							}
+						}
+					}
+					else{
+						framePointer[(inner_row + i*(ALIEN_HEIGHT+alien_buffer) + corner_top)*640 + (inner_column + j*(ALIEN_WIDTH+alien_buffer) + corner_left)] = 0x00000000;
+					}
+				}
+			}
+		}
+	}
+
+
+}
 
 int main()
 {
@@ -117,14 +169,27 @@ int main()
 
      unsigned int * framePointer = (unsigned int *) FRAME_BUFFER_ADDR;
 
+     int corner_left = 20;
+     int corner_top = 20;
      int row, column;
-
-
      for (row=0; row<SCREEN_HEIGHT; row++) {
-     			for (column = 0; column<SCREEN_WIDTH; column++) {
-     				framePointer[row*640 + column] = 0x0000FF00;
-     			}
-     		}
+		for (column = 0; column<SCREEN_WIDTH; column++) {
+			framePointer[row*640 + column] = 0x00000000;
+		}
+	}
+     print_aliens(corner_top, corner_left);
+
+//     int row, column;
+//
+//     for (row=top_corner; row<top_corner+ALIEN_HEIGHT; row++) {
+//     		for (column = left_corner; column<left_corner+ALIEN_WIDTH; column++) {
+//				if ((alien_top_in_24x16[row-top_corner] & (1<<(ALIEN_WIDTH-1-(column-left_corner))))) {
+//					framePointer[(row)*640 + (column)] = 0x0000FF00;
+//				}else{
+//					framePointer[(row)*640 + (column)] = 0x00000000;
+//				}
+//          	}
+//          }
 
 
 //     // This tells the HDMI controller the resolution of your display (there must be a better way to do this).
