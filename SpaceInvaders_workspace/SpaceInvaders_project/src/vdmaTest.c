@@ -391,6 +391,14 @@ int main()
     		 }
     		 print_aliens(aliens_y, aliens_x, direction);
     	 }
+    	 else if((uint)c==50){
+    		 c = getchar();
+    		 char c2 = getchar();
+    		 int index = (((u_int)c)-48)*10+((uint)c2-48);
+    		 xil_printf("%d",index);
+    		 aliens_alive[index/ALIENS_WIDE][index%ALIENS_WIDE] = 0;
+    		 print_aliens(aliens_y, aliens_x, direction);
+    	 }
      }
      cleanup_platform();
 
