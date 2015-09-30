@@ -1,0 +1,33 @@
+///////////////----upper right quarter of 1 alien----/////////////////  
+  //int horiz, vert;row<ALIEN_HEIGHT
+//     for (horiz = 0; horiz*WORD_WIDTH < 640; horiz++){
+		for (row=0; row<SCREEN_HEIGHT; row++) {
+			for (column = 0; column<SCREEN_WIDTH; column++) {
+				if(column < 12 && row < 8){
+					if ((alien_top_in_24x16[row] & (1<<(12-1-column)))) {
+						framePointer[row*640 + column] = 0x0000FF00;
+//						framePointer[row*640 + column+1] = 0x0000FF00;
+//						framePointer[(row+1)*640 + column] = 0x0000FF00;
+//						framePointer[(row+1)*640 + column+1] = 0x0000FF00;
+////						row++;
+//						column++;
+					}else{
+						framePointer[row*640 + column] = 0x00000000;
+					}
+				//} else if(column > NUM_ALIENS && column < (15*32)) {
+//					if ((alien_top_out_12x8[row] & (1<<(WORD_WIDTH-1-column)))) {
+//						framePointer[row*640 + column] = 0x0000FF00;
+//					}
+				} else {
+					framePointer[row*640 + column] = 0x00000000;
+				}
+			}
+		}
+		
+		
+//////////////-----makes screen green-----/////////////////
+		for (row=0; row<SCREEN_HEIGHT; row++) {
+			for (column = 0; column<SCREEN_WIDTH; column++) {
+				framePointer[row*640 + column] = 0x0000FF00;
+			}
+		}		
