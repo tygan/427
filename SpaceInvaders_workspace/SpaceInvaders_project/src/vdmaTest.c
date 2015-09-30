@@ -31,7 +31,7 @@
 #define DEBUG
 void print(char *str);
 
-#define FRAME_BUFFER_ADDR 0xC0000000  // Starting location in DDR where we will store the images that we display.
+#define FRAME_BUFFER_ADDR 0xC1000000  // Starting location in DDR where we will store the images that we display.
 #define MAX_SILLY_TIMER 10000000;
 
 #define ALIEN_HEIGHT 16
@@ -41,14 +41,6 @@ void print(char *str);
 #define SCREEN_WIDTH 640
 #define SCREEN_HEIGHT 640
 
-//int aliens[NUM_ALIEN_ROWS] =
-//{
-//		topOutAlienSymbol,
-//		topOutAlienSymbol,
-//		topOutAlienSymbol,
-//		topOutAlienSymbol,
-//		topOutAlienSymbol
-//};
 
 #define WORD_WIDTH 32
 
@@ -110,7 +102,7 @@ int main()
     	 xil_printf("DMA Set Address Failed Failed\r\n");
      }
      // Print a sanity message if you get this far.
-     xil_printf("Woohoo! I made it through initialization.\n\r");
+     xil_printf("Woohooz! I made it through initialization.\n\r");
      // Now, let's get ready to start displaying some stuff on the screen.
      // The variables framePointer and framePointer1 are just pointers to the base address
      // of frame 0 and frame 1.
@@ -127,59 +119,14 @@ int main()
 
      int row, column;
 
-     //int horiz, vert;row<ALIEN_HEIGHT
-//     for (horiz = 0; horiz*WORD_WIDTH < 640; horiz++){
-		for (row=0; row<SCREEN_HEIGHT; row++) {
-			for (column = 0; column<SCREEN_WIDTH; column++) {
-				if(column < 12 && row < 8){
-					if ((alien_top_in_24x16[row] & (1<<(12-1-column)))) {
-						framePointer[row*640 + column] = 0x0000FF00;
-//						framePointer[row*640 + column+1] = 0x0000FF00;
-//						framePointer[(row+1)*640 + column] = 0x0000FF00;
-//						framePointer[(row+1)*640 + column+1] = 0x0000FF00;
-////						row++;
-//						column++;
-					}else{
-						framePointer[row*640 + column] = 0x00000000;
-					}
-				//} else if(column > NUM_ALIENS && column < (15*32)) {
-//					if ((alien_top_out_12x8[row] & (1<<(WORD_WIDTH-1-column)))) {
-//						framePointer[row*640 + column] = 0x0000FF00;
-//					}
-				} else {
-					framePointer[row*640 + column] = 0x00000000;
-				}
-			}
-		}
 
-//     // Just paint some large red, green, blue, and white squares in different
-//     // positions of the image for each frame in the buffer (framePointer0 and framePointer1).
-//     int row=0, col=0;
-//     for( row=0; row<480; row++) {
-//    	 for(col=0; col<640; col++) {
-//    	 if(row < 240) {
-//    		 if(col<320) {
-//    			 // upper left corner.
-//    			 framePointer0[row*640 + col] = 0x00FF0000;  // frame 0 is red here.
-//    			 framePointer1[row*640 + col] = 0x0000FF00;  // frame 1 is green here.
-//    		 } else {
-//    			 // upper right corner.
-//    			 framePointer0[row*640 + col] = 0x000000FF;  // frame 0 is blue here.
-//    			 framePointer1[row*640 + col] = 0x00FF0000;  // frame 1 is red here.
-//    		 }
-//    	 } else {
-//    		 if(col<320) {
-//    			 // lower left corner.
-//    			 framePointer0[row*640 + col] = 0x0000FF00;  // frame 0 is green here.
-//    			 framePointer1[row*640 + col] = 0x00FFFFFF;  // frame 1 is white here.
-//    		 } else {
-//    			 // lower right corner.
-//    			 framePointer0[row*640 + col] = 0x00FFFFFF;  // frame 0 is white here.
-//    			 framePointer1[row*640 + col] = 0x000000FF;  // frame 1 is blue here.
-//    		 }
-//    	 }
-//       }
-//     }
+     for (row=0; row<SCREEN_HEIGHT; row++) {
+     			for (column = 0; column<SCREEN_WIDTH; column++) {
+     				framePointer[row*640 + column] = 0x0000FF00;
+     			}
+     		}
+
+
 //     // This tells the HDMI controller the resolution of your display (there must be a better way to do this).
      XIo_Out32(XPAR_AXI_HDMI_0_BASEADDR, 640*480);
 //
@@ -197,6 +144,10 @@ int main()
 //     int sillyTimer = MAX_SILLY_TIMER;  // Just a cheap delay between frames.
 
      while (1) {
+
+    	 char c = getchar();
+    	 xil_printf("%d",(u_int)c);
+    	 xil_printf("hi");
 //    	 while (sillyTimer) sillyTimer--;    // Decrement the timer.
 //    	 sillyTimer = MAX_SILLY_TIMER;       // Reset the timer.
 //         frameIndex = (frameIndex + 1) % 2;  // Alternate between frame 0 and frame 1.
