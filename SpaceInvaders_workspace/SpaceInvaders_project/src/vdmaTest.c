@@ -36,8 +36,12 @@ void print(char *str);
 
 #define ALIEN_HEIGHT 16
 #define ALIEN_WIDTH 24
+
 #define TANK_WIDTH 30
 #define TANK_HEIGHT 16
+
+#define BUNKER_WIDTH 48
+#define BUNKER_HEIGHT 36
 
 #define NUM_ALIENS 11 * 32
 
@@ -60,6 +64,26 @@ void drawTank(left_corner, top_corner, draw){
 	for (row=top_corner; row<top_corner+TANK_HEIGHT; row++) {
 	    for (column = left_corner; column<left_corner+TANK_WIDTH; column++) {
 			if ((tank_30x16[row-top_corner] & (1<<(TANK_WIDTH-1-(column-left_corner))))) {
+				framePointer[(row)*640 + (column)] = color;
+			}else{
+				framePointer[(row)*640 + (column)] = 0x00000000;
+			}
+		}
+	 }
+}
+
+void drawBunker(left_corner, top_corner, draw){
+	int color;
+	if(draw == 1){
+		color = 0x0000FF00;
+	}else{
+		color = 0x00000000;
+	}
+	unsigned int * framePointer = (unsigned int *) FRAME_BUFFER_ADDR;
+	int row, column;
+	for (row=top_corner; row<top_corner+BUNKER_HEIGHT; row++) {
+	    for (column = left_corner; column<left_corner+BUNKER_WIDTH; column++) {
+			if ((bunker_24x18[row-top_corner] & (1<<(BUNKER_WIDTH-1-(column-left_corner))))) {
 				framePointer[(row)*640 + (column)] = color;
 			}else{
 				framePointer[(row)*640 + (column)] = 0x00000000;
@@ -146,7 +170,7 @@ int main()
      ///////////////////////////////////
 	 //CLEAR THE SCREEN//
      xil_printf("initialized!");
-	int y, x;
+	int y, x = 0;
 	unsigned int * frameP = (unsigned int *) FRAME_BUFFER_ADDR;
 	for (y=0; y<SCREEN_HEIGHT; y++) {
 		for (x = 0; x<SCREEN_WIDTH; x++) {
@@ -154,33 +178,47 @@ int main()
 		}
 	 }
      ///////////////////////////////////
+
      /////////////////////////////
      //initialize tank on screen//
      int draw = 1;
-     x = 0;
-	 y = 414;
-	 drawTank(x, y, draw);
+     int tankPosX = 0;
+     int tankPosY = 414;
+	 drawTank(tankPosX, tankPosY, draw);
+	 /////////////////////////////
+
+	 /////////////////////////////
+	 //initialize bunkers on screen//
+	 draw = 1;
+	 int bunkerPosX = 72;
+	 int bunkerPosY = 300;
+	 drawBunker(bunkerPosX, bunkerPosY, draw);
+	 bunkerPosX = 216;
+	 drawBunker(bunkerPosX, bunkerPosY, draw);
+	 bunkerPosX = 360;
+	 drawBunker(bunkerPosX, bunkerPosY, draw);
+	 bunkerPosX = 504;
+	 drawBunker(bunkerPosX, bunkerPosY, draw);
 	 /////////////////////////////
      while (1) {
-
     	 char c = getchar();
     	 xil_printf("%d",(u_int)c);
     	 if((u_int)c == 54){//key 6 so move right
-    		 if(x < SCREEN_WIDTH - TANK_WIDTH){
+    		 if(tankPosX < SCREEN_WIDTH - TANK_WIDTH){
     			 draw = 0;
-    			 drawTank(x, y, draw);
+    			 drawTank(tankPosX, tankPosY, draw);
     			 draw = 1;
-				 x += 2;
-				 drawTank(x, y, draw);
+    			 tankPosX += 2;
+				 drawTank(tankPosX, tankPosY, draw);
     		 }
     	 }
     	 if((u_int)c == 52){//key 4 so move left
-    		 if(x > 0){
+    		 if(tankPosX > 0){
     			 draw = 0;
-    			 drawTank(x, y, draw);
+    			 drawTank(tankPosX, tankPosY, draw);
     			 draw = 1;
-				 x -= 2;
-				 drawTank(x, y, draw);
+    			 tankPosX -= 2;
+				 drawTank(tankPosX, tankPosY, draw);
     		 }
 		 }
      }
