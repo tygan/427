@@ -271,3 +271,34 @@ java.io.IOException: Cannot run program "C:\CT427\427\SpaceInvaders_workspace\Sp
 	at org.eclipse.debug.internal.ui.DebugUIPlugin.buildAndLaunch(DebugUIPlugin.java:924)
 	at org.eclipse.debug.internal.ui.DebugUIPlugin$8.run(DebugUIPlugin.java:1128)
 	at org.eclipse.core.internal.jobs.Worker.run(Worker.java:54)
+
+!ENTRY org.eclipse.cdt.launch 4 150 2015-09-29 19:24:25.180
+!MESSAGE Error starting process.
+!STACK 0
+java.io.IOException: Cannot run program "C:\CT427\427\SpaceInvaders_workspace\SpaceInvaders_project\Debug\SpaceInvaders_project.elf": Launching failed
+	at org.eclipse.cdt.utils.spawner.Spawner.exec(Unknown Source)
+	at org.eclipse.cdt.utils.spawner.Spawner.<init>(Unknown Source)
+	at org.eclipse.cdt.utils.spawner.ProcessFactory.exec(Unknown Source)
+	at org.eclipse.cdt.launch.internal.LocalCDILaunchDelegate.exec(Unknown Source)
+	at org.eclipse.cdt.launch.internal.LocalCDILaunchDelegate.runLocalApplication(Unknown Source)
+	at org.eclipse.cdt.launch.internal.LocalCDILaunchDelegate.launch(Unknown Source)
+	at org.eclipse.debug.internal.core.LaunchConfiguration.launch(LaunchConfiguration.java:853)
+	at org.eclipse.debug.internal.core.LaunchConfiguration.launch(LaunchConfiguration.java:702)
+	at org.eclipse.debug.internal.ui.DebugUIPlugin.buildAndLaunch(DebugUIPlugin.java:924)
+	at org.eclipse.debug.internal.ui.DebugUIPlugin$8.run(DebugUIPlugin.java:1128)
+	at org.eclipse.core.internal.jobs.Worker.run(Worker.java:54)
+!SUBENTRY 1 org.eclipse.cdt.launch 4 150 2015-09-29 19:24:25.180
+!MESSAGE Cannot run program "C:\CT427\427\SpaceInvaders_workspace\SpaceInvaders_project\Debug\SpaceInvaders_project.elf": Launching failed
+!STACK 0
+java.io.IOException: Cannot run program "C:\CT427\427\SpaceInvaders_workspace\SpaceInvaders_project\Debug\SpaceInvaders_project.elf": Launching failed
+	at org.eclipse.cdt.utils.spawner.Spawner.exec(Unknown Source)
+	at org.eclipse.cdt.utils.spawner.Spawner.<init>(Unknown Source)
+	at org.eclipse.cdt.utils.spawner.ProcessFactory.exec(Unknown Source)
+	at org.eclipse.cdt.launch.internal.LocalCDILaunchDelegate.exec(Unknown Source)
+	at org.eclipse.cdt.launch.internal.LocalCDILaunchDelegate.runLocalApplication(Unknown Source)
+	at org.eclipse.cdt.launch.internal.LocalCDILaunchDelegate.launch(Unknown Source)
+	at org.eclipse.debug.internal.core.LaunchConfiguration.launch(LaunchConfiguration.java:853)
+	at org.eclipse.debug.internal.core.LaunchConfiguration.launch(LaunchConfiguration.java:702)
+	at org.eclipse.debug.internal.ui.DebugUIPlugin.buildAndLaunch(DebugUIPlugin.java:924)
+	at org.eclipse.debug.internal.ui.DebugUIPlugin$8.run(DebugUIPlugin.java:1128)
+	at org.eclipse.core.internal.jobs.Worker.run(Worker.java:54)
