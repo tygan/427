@@ -52,42 +52,71 @@ void print(char *str);
 
 #define WORD_WIDTH 32
 
-
+int aliens_in = 1;
+int aliens_alive[ALIENS_TALL][ALIENS_WIDE];
 
 void print_aliens(int corner_top, int corner_left){
 	unsigned int * framePointer = (unsigned int *) FRAME_BUFFER_ADDR;
 	//invert global bool aliens_in;
 	int i;
+	xil_printf("\naliens_in=%d", aliens_in);
+	aliens_in = !aliens_in;
+	xil_printf("\naliens_in=%d", aliens_in);
 	int alien_buffer = 4;
 	for(i=0; i<ALIENS_TALL; i++){
 		int j;
 		for(j=0; j<ALIENS_WIDE; j++){
 			//if alien bool array of i and j
-			//separate into rows 1, 2-3, 4-5
-			//if aliens_in
 			int inner_row, inner_column;
 			for (inner_row=0; inner_row<ALIEN_HEIGHT+alien_buffer; inner_row++) {
 				for (inner_column = 0; inner_column<ALIEN_WIDTH+alien_buffer; inner_column++) {
 					if(inner_row<ALIEN_HEIGHT && inner_column<ALIEN_WIDTH){
 						if(i==0){
-							if ((alien_top_in_24x16[inner_row] & (1<<(ALIEN_WIDTH-1-inner_column)))) {
-								framePointer[(inner_row + i*(ALIEN_HEIGHT+alien_buffer) + corner_top)*640 + (inner_column + j*(ALIEN_WIDTH+alien_buffer) + corner_left)] = 0x0000FF00;
-							}else{
-								framePointer[(inner_row + i*(ALIEN_HEIGHT+alien_buffer) + corner_top)*640 + (inner_column + j*(ALIEN_WIDTH+alien_buffer) + corner_left)] = 0x00000000;
+							if(aliens_in){
+								if ((alien_top_in_24x16[inner_row] & (1<<(ALIEN_WIDTH-1-inner_column)))) {
+									framePointer[(inner_row + i*(ALIEN_HEIGHT+alien_buffer) + corner_top)*640 + (inner_column + j*(ALIEN_WIDTH+alien_buffer) + corner_left)] = 0x0000FF00;
+								}else{
+									framePointer[(inner_row + i*(ALIEN_HEIGHT+alien_buffer) + corner_top)*640 + (inner_column + j*(ALIEN_WIDTH+alien_buffer) + corner_left)] = 0x00000000;
+								}
+							}
+							else{
+								if ((alien_top_out_24x16[inner_row] & (1<<(ALIEN_WIDTH-1-inner_column)))) {
+									framePointer[(inner_row + i*(ALIEN_HEIGHT+alien_buffer) + corner_top)*640 + (inner_column + j*(ALIEN_WIDTH+alien_buffer) + corner_left)] = 0x0000FF00;
+								}else{
+									framePointer[(inner_row + i*(ALIEN_HEIGHT+alien_buffer) + corner_top)*640 + (inner_column + j*(ALIEN_WIDTH+alien_buffer) + corner_left)] = 0x00000000;
+								}
 							}
 						}
 						else if(i==1 || i==2){
-							if ((alien_middle_in_24x16[inner_row] & (1<<(ALIEN_WIDTH-1-inner_column)))) {
-								framePointer[(inner_row + i*(ALIEN_HEIGHT+alien_buffer) + corner_top)*640 + (inner_column + j*(ALIEN_WIDTH+alien_buffer) + corner_left)] = 0x0000FF00;
-							}else{
-								framePointer[(inner_row + i*(ALIEN_HEIGHT+alien_buffer) + corner_top)*640 + (inner_column + j*(ALIEN_WIDTH+alien_buffer) + corner_left)] = 0x00000000;
+							if(aliens_in){
+								if ((alien_middle_in_24x16[inner_row] & (1<<(ALIEN_WIDTH-1-inner_column)))) {
+									framePointer[(inner_row + i*(ALIEN_HEIGHT+alien_buffer) + corner_top)*640 + (inner_column + j*(ALIEN_WIDTH+alien_buffer) + corner_left)] = 0x0000FF00;
+								}else{
+									framePointer[(inner_row + i*(ALIEN_HEIGHT+alien_buffer) + corner_top)*640 + (inner_column + j*(ALIEN_WIDTH+alien_buffer) + corner_left)] = 0x00000000;
+								}
+							}
+							else{
+								if ((alien_middle_out_24x16[inner_row] & (1<<(ALIEN_WIDTH-1-inner_column)))) {
+									framePointer[(inner_row + i*(ALIEN_HEIGHT+alien_buffer) + corner_top)*640 + (inner_column + j*(ALIEN_WIDTH+alien_buffer) + corner_left)] = 0x0000FF00;
+								}else{
+									framePointer[(inner_row + i*(ALIEN_HEIGHT+alien_buffer) + corner_top)*640 + (inner_column + j*(ALIEN_WIDTH+alien_buffer) + corner_left)] = 0x00000000;
+								}
 							}
 						}
 						else if(i==3 || i==4){
-							if ((alien_bottom_in_24x16[inner_row] & (1<<(ALIEN_WIDTH-1-inner_column)))) {
-								framePointer[(inner_row + i*(ALIEN_HEIGHT+alien_buffer) + corner_top)*640 + (inner_column + j*(ALIEN_WIDTH+alien_buffer) + corner_left)] = 0x0000FF00;
-							}else{
-								framePointer[(inner_row + i*(ALIEN_HEIGHT+alien_buffer) + corner_top)*640 + (inner_column + j*(ALIEN_WIDTH+alien_buffer) + corner_left)] = 0x00000000;
+							if(aliens_in){
+								if ((alien_bottom_in_24x16[inner_row] & (1<<(ALIEN_WIDTH-1-inner_column)))) {
+									framePointer[(inner_row + i*(ALIEN_HEIGHT+alien_buffer) + corner_top)*640 + (inner_column + j*(ALIEN_WIDTH+alien_buffer) + corner_left)] = 0x0000FF00;
+								}else{
+									framePointer[(inner_row + i*(ALIEN_HEIGHT+alien_buffer) + corner_top)*640 + (inner_column + j*(ALIEN_WIDTH+alien_buffer) + corner_left)] = 0x00000000;
+								}
+							}
+							else{
+								if ((alien_bottom_out_24x16[inner_row] & (1<<(ALIEN_WIDTH-1-inner_column)))) {
+									framePointer[(inner_row + i*(ALIEN_HEIGHT+alien_buffer) + corner_top)*640 + (inner_column + j*(ALIEN_WIDTH+alien_buffer) + corner_left)] = 0x0000FF00;
+								}else{
+									framePointer[(inner_row + i*(ALIEN_HEIGHT+alien_buffer) + corner_top)*640 + (inner_column + j*(ALIEN_WIDTH+alien_buffer) + corner_left)] = 0x00000000;
+								}
 							}
 						}
 					}
@@ -216,15 +245,7 @@ int main()
 
      unsigned int * framePointer = (unsigned int *) FRAME_BUFFER_ADDR;
 
-     int corner_left = 20;
-     int corner_top = 20;
-     int row, column;
-     for (row=0; row<SCREEN_HEIGHT; row++) {
-		for (column = 0; column<SCREEN_WIDTH; column++) {
-			framePointer[row*640 + column] = 0x00000000;
-		}
-	}
-     print_aliens(corner_top, corner_left);
+
 
 //     int row, column;
 //
@@ -288,8 +309,22 @@ int main()
 	 bunkerPosX = 504;
 	 drawBunker(bunkerPosX, bunkerPosY, draw);
 	 /////////////////////////////
+	 //initialize aliens alive array//
+	 int i,j;
+	 for(i=0; i<ALIENS_TALL; i++){
+		 for(j=0; j<ALIENS_WIDE; j++){
+			 aliens_alive[i][j] = 1;
+		 }
+	 }
+	 /////////////////////////////
+	 //initialize aliens on screen//
+	 int corner_left = 120;
+	 int corner_top = 40;
+	 print_aliens(corner_top, corner_left);
      while (1) {
+    	 xil_printf("reaches while loop");
     	 char c = getchar();
+    	 xil_printf("passes getchar");
     	 xil_printf("%d",(u_int)c);
     	 if((u_int)c == 54){//key 6 so move right
     		 if(tankPosX < SCREEN_WIDTH - TANK_WIDTH){
