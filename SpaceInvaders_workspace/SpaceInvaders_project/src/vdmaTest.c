@@ -35,6 +35,9 @@ void print(char *str);
 #define MAX_SILLY_TIMER 10000000;
 
 #define ALIEN_HEIGHT 16
+#define ALIEN_WIDTH 24
+#define TANK_WIDTH 30
+#define TANK_HEIGHT 16
 
 #define NUM_ALIENS 11 * 32
 
@@ -43,6 +46,27 @@ void print(char *str);
 
 
 #define WORD_WIDTH 32
+
+
+void drawTank(left_corner, top_corner, draw){
+	int color;
+	if(draw == 1){
+		color = 0x0000FF00;
+	}else{
+		color = 0x00000000;
+	}
+	unsigned int * framePointer = (unsigned int *) FRAME_BUFFER_ADDR;
+	int row, column;
+	for (row=top_corner; row<top_corner+TANK_HEIGHT; row++) {
+	    for (column = left_corner; column<left_corner+TANK_WIDTH; column++) {
+			if ((tank_30x16[row-top_corner] & (1<<(TANK_WIDTH-1-(column-left_corner))))) {
+				framePointer[(row)*640 + (column)] = color;
+			}else{
+				framePointer[(row)*640 + (column)] = 0x00000000;
+			}
+		}
+	 }
+}
 
 int main()
 {
@@ -103,29 +127,6 @@ int main()
      }
      // Print a sanity message if you get this far.
      xil_printf("Woohooz! I made it through initialization.\n\r");
-     // Now, let's get ready to start displaying some stuff on the screen.
-     // The variables framePointer and framePointer1 are just pointers to the base address
-     // of frame 0 and frame 1.
-//     unsigned int * framePointer0 = (unsigned int *) FRAME_BUFFER_0_ADDR;
-//     unsigned int * framePointer1 = ((unsigned int *) FRAME_BUFFER_0_ADDR) + 640*480;
-
-
-    // Let's print out the alien as ASCII characters on the screen.
-	// Each line of the alien is a 32-bit integer. We just need to strip the bits out and send
-	// them to stdout.
-	// MSB is the left-most pixel for the alien, so start from the MSB as we print from left to right.
-
-     unsigned int * framePointer = (unsigned int *) FRAME_BUFFER_ADDR;
-
-     int row, column;
-
-
-     for (row=0; row<SCREEN_HEIGHT; row++) {
-     			for (column = 0; column<SCREEN_WIDTH; column++) {
-     				framePointer[row*640 + column] = 0x0000FF00;
-     			}
-     		}
-
 
 //     // This tells the HDMI controller the resolution of your display (there must be a better way to do this).
      XIo_Out32(XPAR_AXI_HDMI_0_BASEADDR, 640*480);
@@ -140,20 +141,48 @@ int main()
      if (XST_FAILURE == XAxiVdma_StartParking(&videoDMAController, frameIndex,  XAXIVDMA_READ)) {
     	 xil_printf("vdma parking failed\n\r");
      }
-//     // Oscillate between frame 0 and frame 1.
-//     int sillyTimer = MAX_SILLY_TIMER;  // Just a cheap delay between frames.
 
+
+     ///////////////////////////////////
+	 //CLEAR THE SCREEN//
+     xil_printf("initialized!");
+	int y, x;
+	unsigned int * frameP = (unsigned int *) FRAME_BUFFER_ADDR;
+	for (y=0; y<SCREEN_HEIGHT; y++) {
+		for (x = 0; x<SCREEN_WIDTH; x++) {
+			frameP[(y)*640 + (x)] = 0x00000000;
+		}
+	 }
+     ///////////////////////////////////
+     /////////////////////////////
+     //initialize tank on screen//
+     int draw = 1;
+     x = 0;
+	 y = 414;
+	 drawTank(x, y, draw);
+	 /////////////////////////////
      while (1) {
 
     	 char c = getchar();
     	 xil_printf("%d",(u_int)c);
-    	 xil_printf("hi");
-//    	 while (sillyTimer) sillyTimer--;    // Decrement the timer.
-//    	 sillyTimer = MAX_SILLY_TIMER;       // Reset the timer.
-//         frameIndex = (frameIndex + 1) % 2;  // Alternate between frame 0 and frame 1.
-//         if (XST_FAILURE == XAxiVdma_StartParking(&videoDMAController, frameIndex,  XAXIVDMA_READ)) {
-//        	 xil_printf("vdma parking failed\n\r");
-//         }
+    	 if((u_int)c == 54){//key 6 so move right
+    		 if(x < SCREEN_WIDTH - TANK_WIDTH){
+    			 draw = 0;
+    			 drawTank(x, y, draw);
+    			 draw = 1;
+				 x += 2;
+				 drawTank(x, y, draw);
+    		 }
+    	 }
+    	 if((u_int)c == 52){//key 4 so move left
+    		 if(x > 0){
+    			 draw = 0;
+    			 drawTank(x, y, draw);
+    			 draw = 1;
+				 x -= 2;
+				 drawTank(x, y, draw);
+    		 }
+		 }
      }
      cleanup_platform();
 
