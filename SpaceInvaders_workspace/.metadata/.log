@@ -556,13 +556,18 @@ Command-line arguments:  -os win32 -ws win32 -arch x86_64
 
 !ENTRY org.eclipse.cdt.core 1 0 2015-09-30 09:09:47.851
 !MESSAGE Indexed 'hello_world_bsp_0' (55 sources, 47 headers) in 0.70 sec: 1,797 declarations; 8,368 references; 18 unresolved inclusions; 0 syntax errors; 77 unresolved names (0.75%)
+<<<<<<< HEAD
 !SESSION 2015-09-30 13:31:16.741 -----------------------------------------------
+=======
+!SESSION 2015-09-30 18:52:48.154 -----------------------------------------------
+>>>>>>> cd382926c4dc703baf0352995c269695141a8b71
 eclipse.buildId=Release 13.4 Build SDK_O.87xd
 java.version=1.6.0_21
 java.vendor=Sun Microsystems Inc.
 BootLoader constants: OS=win32, ARCH=x86_64, WS=win32, NL=en_US
 Command-line arguments:  -os win32 -ws win32 -arch x86_64
 
+<<<<<<< HEAD
 !ENTRY org.eclipse.core.resources 2 10035 2015-09-30 13:31:28.942
 !MESSAGE The workspace exited with unsaved changes in the previous session; refreshing workspace to recover changes.
 
@@ -571,3 +576,22 @@ Command-line arguments:  -os win32 -ws win32 -arch x86_64
 
 !ENTRY org.eclipse.cdt.core 1 0 2015-09-30 13:31:32.581
 !MESSAGE Indexed 'hello_world_bsp_0' (55 sources, 47 headers) in 0.76 sec: 1,797 declarations; 8,368 references; 18 unresolved inclusions; 0 syntax errors; 77 unresolved names (0.75%)
+=======
+!ENTRY org.eclipse.core.resources 2 10035 2015-09-30 18:52:58.666
+!MESSAGE The workspace exited with unsaved changes in the previous session; refreshing workspace to recover changes.
+
+!ENTRY org.eclipse.cdt.core 1 0 2015-09-30 18:53:02.334
+!MESSAGE Indexed 'SpaceInvaders_project' (2 sources, 46 headers) in 0.77 sec: 1,663 declarations; 2,128 references; 3 unresolved inclusions; 0 syntax errors; 1 unresolved names (0.03%)
+
+!ENTRY org.eclipse.cdt.core 1 0 2015-09-30 18:53:03.011
+!MESSAGE Indexed 'hello_world_bsp_0' (55 sources, 47 headers) in 0.65 sec: 1,797 declarations; 8,368 references; 18 unresolved inclusions; 0 syntax errors; 77 unresolved names (0.75%)
+>>>>>>> cd382926c4dc703baf0352995c269695141a8b71
+!SESSION 2015-09-30 19:41:26.916 -----------------------------------------------
+eclipse.buildId=Release 13.4 Build SDK_O.87xd
+java.version=1.6.0_21
+java.vendor=Sun Microsystems Inc.
+BootLoader constants: OS=win32, ARCH=x86_64, WS=win32, NL=en_US
+Command-line arguments:  -os win32 -ws win32 -arch x86_64
+
+!ENTRY org.eclipse.core.resources 2 10035 2015-09-30 19:41:29.790
+!MESSAGE The workspace exited with unsaved changes in the previous session; refreshing workspace to recover changes.
