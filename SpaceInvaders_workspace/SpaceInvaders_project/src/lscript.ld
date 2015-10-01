@@ -10,8 +10,8 @@
 /*                                                                 */
 /*******************************************************************/
 
-_STACK_SIZE = DEFINED(_STACK_SIZE) ? _STACK_SIZE : 0x800;
-_HEAP_SIZE = DEFINED(_HEAP_SIZE) ? _HEAP_SIZE : 0x800;
+_STACK_SIZE = DEFINED(_STACK_SIZE) ? _STACK_SIZE : 0x400;
+_HEAP_SIZE = DEFINED(_HEAP_SIZE) ? _HEAP_SIZE : 0x400;
 
 /* Define Memories in the system */
 
@@ -198,7 +198,7 @@ _SDA2_BASE_ = __sdata2_start + ((__sbss2_end - __sdata2_start) / 2 );
    _heap_start = .;
    . += _HEAP_SIZE;
    _heap_end = .;
-} > MCB_DDR2_S0_AXI_BASEADDR
+} > microblaze_0_i_bram_ctrl_microblaze_0_d_bram_ctrl
 
 .stack : {
    _stack_end = .;
@@ -206,7 +206,7 @@ _SDA2_BASE_ = __sdata2_start + ((__sbss2_end - __sdata2_start) / 2 );
    . = ALIGN(8);
    _stack = .;
    __stack = _stack;
-} > MCB_DDR2_S0_AXI_BASEADDR
+} > microblaze_0_i_bram_ctrl_microblaze_0_d_bram_ctrl
 
 _end = .;
 }

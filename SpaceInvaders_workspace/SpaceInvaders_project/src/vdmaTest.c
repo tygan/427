@@ -43,7 +43,23 @@ void print(char *str);
 #define BUNKER_WIDTH 48
 #define BUNKER_HEIGHT 36
 
+#define BUNKER_DAMAGE_HEIGHT 12
+#define BUNKER_DAMAGE_WIDTH 12
+
+#define X_DAMAGE 16
+#define Y_DAMAGE 3
 #define NUM_ALIENS 11 * 32
+//0 = 48, 1 = 49, 2 = 50, 3 = 51
+#define BUNKER_0 48
+#define BUNKER_1 49
+#define BUNKER_2 50
+#define BUNKER_3 51
+
+#define BUNKER_NUM_0_X 72
+#define BUNKER_NUM_1_X 216
+#define BUNKER_NUM_2_X 360
+#define BUNKER_NUM_3_X 504
+#define BUNKER_Y 300
 
 #define SCREEN_WIDTH 640
 #define SCREEN_HEIGHT 640
@@ -54,14 +70,17 @@ void print(char *str);
 
 int aliens_in = 1;
 int aliens_alive[ALIENS_TALL][ALIENS_WIDE];
+int bunkerHealth[Y_DAMAGE][X_DAMAGE] = {{3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3},
+										{3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3},
+										{3,0,0,3,3,0,0,3,3,0,0,3,3,0,0,3}};
 
 void print_aliens(int corner_top, int corner_left){
 	unsigned int * framePointer = (unsigned int *) FRAME_BUFFER_ADDR;
 	//invert global bool aliens_in;
 	int i;
-	xil_printf("\naliens_in=%d", aliens_in);
+//	xil_printf("\naliens_in=%d", aliens_in);
 	aliens_in = !aliens_in;
-	xil_printf("\naliens_in=%d", aliens_in);
+//	xil_printf("\naliens_in=%d", aliens_in);
 	int alien_buffer = 4;
 	for(i=0; i<ALIENS_TALL; i++){
 		int j;
@@ -149,6 +168,95 @@ void drawTank(left_corner, top_corner, draw){
 		}
 	 }
 }
+void drawBunkerDamage(x_pos, y_pos, damageType){
+	unsigned int * framePointer = (unsigned int *) FRAME_BUFFER_ADDR;
+	int row, column;
+	for (row=y_pos; row<y_pos+BUNKER_DAMAGE_HEIGHT; row++) {
+	    for (column = x_pos; column<x_pos+BUNKER_DAMAGE_WIDTH; column++) {
+	    	if(damageType == 3){
+	    		if ((bunkerDamage2_12x12[row-y_pos] & (1<<(BUNKER_DAMAGE_WIDTH-1-(column-x_pos))))) {
+					framePointer[(row)*640 + (column)] = 0x0000FF00;
+				}else{
+					framePointer[(row)*640 + (column)] = 0x00000000;
+				}
+	    	}else if(damageType == 2){
+	    		if ((bunkerDamage1_12x12[row-y_pos] & (1<<(BUNKER_DAMAGE_WIDTH-1-(column-x_pos))))) {
+					framePointer[(row)*640 + (column)] = 0x0000FF00;
+				}else{
+					framePointer[(row)*640 + (column)] = 0x00000000;
+				}
+	    	}else if(damageType == 1){
+	    		if ((bunkerDamage0_12x12[row-y_pos] & (1<<(BUNKER_DAMAGE_WIDTH-1-(column-x_pos))))) {
+					framePointer[(row)*640 + (column)] = 0x0000FF00;
+				}else{
+					framePointer[(row)*640 + (column)] = 0x00000000;
+				}
+	    	}else if(damageType == 0){
+				framePointer[(row)*640 + (column)] = 0x00000000;
+	    	}
+
+		}
+	 }
+}
+void erodeBunker(bunkerNumber){//drawBunkerDamage(bunkerx+(16*xBunkerDamage), bunkery, damageType);
+	//#define BUNKER_NUM_0_X 72
+	//#define BUNKER_NUM_1_X 216
+	//#define BUNKER_NUM_2_X 360
+	//#define BUNKER_NUM_3_X 504
+	//#define BUNKER_Y 300
+	//This will get the current damage of the place you are going to erode.
+	int bunkPosY;
+	int bunkDamage;
+	int bunkYOffset = 0;
+
+	int randNum = rand() % 4;
+	xil_printf("%d",randNum);
+	int bunkPosX = (bunkerNumber * 4) + randNum;
+
+	if(bunkerHealth[0][bunkPosX] == -1){
+		if(bunkerHealth[1][bunkPosX] == -1){
+			if(bunkerHealth[2][bunkPosX] == -1) {
+				//do nothing
+			}else{
+				bunkDamage = bunkerHealth[2][bunkPosX];
+				bunkerHealth[2][bunkPosX]--;
+				bunkYOffset = 2;
+			}
+		}else{
+			bunkDamage = bunkerHealth[1][bunkPosX];
+			bunkerHealth[1][bunkPosX]--;
+			bunkYOffset = 1;
+		}
+	}else{
+		bunkDamage = bunkerHealth[0][bunkPosX];
+		bunkerHealth[0][bunkPosX]--;
+		bunkYOffset = 0;
+	}
+	//This will get the x position of the bunker to erode.
+	if(bunkerNumber == 0){
+		bunkPosX = BUNKER_NUM_0_X + randNum*BUNKER_DAMAGE_WIDTH;
+	}else if(bunkerNumber == 1){
+		bunkPosX = BUNKER_NUM_1_X + randNum*BUNKER_DAMAGE_WIDTH;
+	}else if(bunkerNumber == 2){
+		bunkPosX = BUNKER_NUM_2_X + randNum*BUNKER_DAMAGE_WIDTH;
+	}else if(bunkerNumber == 3){
+		bunkPosX = BUNKER_NUM_3_X + randNum*BUNKER_DAMAGE_WIDTH;
+	}
+	//This will get the y position of the bunker to erode.
+	if(bunkYOffset == 0){
+		bunkPosY = BUNKER_Y;
+	}else if(bunkYOffset == 1){
+		bunkPosY = BUNKER_Y + BUNKER_DAMAGE_HEIGHT;
+	}else if(bunkYOffset == 2){
+		bunkPosY = BUNKER_Y + (BUNKER_DAMAGE_HEIGHT * 2);
+	}
+	xil_printf("going to draw bunker damage\n\r");
+	xil_printf("%d\n\r",bunkPosX);
+	xil_printf("%d\n\r",bunkPosY);
+	xil_printf("%d\n\r",bunkDamage);
+	drawBunkerDamage(bunkPosX, bunkPosY, bunkDamage);
+}
+
 
 void drawBunker(left_corner, top_corner, draw){
 	int color;
@@ -159,14 +267,32 @@ void drawBunker(left_corner, top_corner, draw){
 	}
 	unsigned int * framePointer = (unsigned int *) FRAME_BUFFER_ADDR;
 	int row, column;
+	int bunkerX = 0;
+	int bunkerY = 0;
+	int dupBitX = 0;
+	int dupBitY = 0;
 	for (row=top_corner; row<top_corner+BUNKER_HEIGHT; row++) {
 	    for (column = left_corner; column<left_corner+BUNKER_WIDTH; column++) {
-			if ((bunker_24x18[row-top_corner] & (1<<(BUNKER_WIDTH-1-(column-left_corner))))) {
+			if ((bunker_24x18[bunkerY] & (1<<bunkerX))) {
 				framePointer[(row)*640 + (column)] = color;
 			}else{
 				framePointer[(row)*640 + (column)] = 0x00000000;
 			}
+			if(dupBitX == 1)
+			{
+				bunkerX++;
+				dupBitX = 0;
+			}else{
+				dupBitX = 1;
+			}
 		}
+	    bunkerX = 0;
+	    if(dupBitY == 1){
+	    	bunkerY++;
+	    	dupBitY = 0;
+	    }else{
+	    	dupBitY = 1;
+	    }
 	 }
 
 }
@@ -243,7 +369,7 @@ int main()
 	// them to stdout.
 	// MSB is the left-most pixel for the alien, so start from the MSB as we print from left to right.
 
-     unsigned int * framePointer = (unsigned int *) FRAME_BUFFER_ADDR;
+//     unsigned int * framePointer = (unsigned int *) FRAME_BUFFER_ADDR;
 
 
 
@@ -308,6 +434,7 @@ int main()
 	 drawBunker(bunkerPosX, bunkerPosY, draw);
 	 bunkerPosX = 504;
 	 drawBunker(bunkerPosX, bunkerPosY, draw);
+
 	 /////////////////////////////
 	 //initialize aliens alive array//
 	 int i,j;
@@ -321,28 +448,44 @@ int main()
 	 int corner_left = 120;
 	 int corner_top = 40;
 	 print_aliens(corner_top, corner_left);
+	 /////////////////////////////
+
+	 setvbuf(stdin,NULL,_IONBF,0);
+	 srand((unsigned)time(NULL));
      while (1) {
-    	 xil_printf("reaches while loop");
     	 char c = getchar();
-    	 xil_printf("passes getchar");
     	 xil_printf("%d",(u_int)c);
     	 if((u_int)c == 54){//key 6 so move right
     		 if(tankPosX < SCREEN_WIDTH - TANK_WIDTH){
     			 draw = 0;
     			 drawTank(tankPosX, tankPosY, draw);
     			 draw = 1;
-    			 tankPosX += 2;
+    			 tankPosX += 3;
 				 drawTank(tankPosX, tankPosY, draw);
     		 }
-    	 }
-    	 if((u_int)c == 52){//key 4 so move left
+    	 }else if((u_int)c == 52){//key 4 so move left
     		 if(tankPosX > 0){
     			 draw = 0;
     			 drawTank(tankPosX, tankPosY, draw);
     			 draw = 1;
-    			 tankPosX -= 2;
+    			 tankPosX -= 3;
 				 drawTank(tankPosX, tankPosY, draw);
     		 }
+		 }else if((u_int)c == 55){//key 7 so erode bunker
+			 char bunkerNum = getchar(); //0 = 48, 1 = 49, 2 = 50, 3 = 51
+			 if(bunkerNum == BUNKER_0){
+				 int bunker0 = 0;
+				 erodeBunker(bunker0);
+			 }else if(bunkerNum == BUNKER_1){
+				 int bunker1 = 1;
+				 erodeBunker(bunker1);
+			 }else if(bunkerNum == BUNKER_2){
+				 int bunker2 = 2;
+				 erodeBunker(bunker2);
+			 }else if(bunkerNum == BUNKER_3){
+				 int bunker3 = 3;
+				 erodeBunker(bunker3);
+			 }
 		 }
      }
      cleanup_platform();
