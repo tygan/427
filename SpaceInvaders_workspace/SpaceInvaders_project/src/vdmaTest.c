@@ -37,7 +37,7 @@ void print(char *str);
 #define ALIEN_HEIGHT 16
 #define ALIEN_WIDTH 24
 
-#define TANK_WIDTH 30
+#define TANK_WIDTH 32
 #define TANK_HEIGHT 16
 
 #define BUNKER_WIDTH 48
@@ -198,7 +198,7 @@ void drawTank(left_corner, top_corner, draw){
 	int row, column;
 	for (row=top_corner; row<top_corner+TANK_HEIGHT; row++) {
 	    for (column = left_corner; column<left_corner+TANK_WIDTH; column++) {
-			if ((tank_30x16[row-top_corner] & (1<<(TANK_WIDTH-1-(column-left_corner))))) {
+			if ((tank_32x16[row-top_corner] & (1<<(TANK_WIDTH-1-(column-left_corner))))) {
 				framePointer[(row)*640 + (column)] = color;
 			}else{
 				framePointer[(row)*640 + (column)] = 0x00000000;
@@ -514,16 +514,16 @@ int main()
     	 xil_printf("%d",(u_int)c);
     	 if((u_int)c == 54){//key 6 so move right
     		 if(tankPosX < SCREEN_WIDTH - TANK_WIDTH){
-    			 draw = 0;
-    			 drawTank(tankPosX, tankPosY, draw);
+//    			 draw = 0;
+//    			 drawTank(tankPosX, tankPosY, draw);
     			 draw = 1;
     			 tankPosX += 3;
 				 drawTank(tankPosX, tankPosY, draw);
     		 }
     	 }else if((u_int)c == 52){//key 4 so move left
     		 if(tankPosX > 0){
-    			 draw = 0;
-    			 drawTank(tankPosX, tankPosY, draw);
+//    			 draw = 0;
+//    			 drawTank(tankPosX, tankPosY, draw);
     			 draw = 1;
     			 tankPosX -= 3;
 				 drawTank(tankPosX, tankPosY, draw);
