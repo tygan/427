@@ -348,7 +348,7 @@ packword4(0,1,0),
 packword4(0,1,0)
 };
 
-static const int alienBulletBackSlash_3x10[] = {
+static const int alienMissileBackSlash_3x10[] = {
 packword4(0,0,1),
 packword4(0,0,1),
 packword4(0,1,1),
@@ -361,7 +361,7 @@ packword4(1,0,0),
 packword4(1,0,0)
 };
 
-static const int alienBulletForwardSlash_3x10[] = {
+static const int alienMissileForwardSlash_3x10[] = {
 packword4(1,0,0),
 packword4(1,0,0),
 packword4(1,1,0),
@@ -374,7 +374,7 @@ packword4(0,0,1),
 packword4(0,0,1)
 };
 
-static const int alienBulletSwordUp_3x10[] = {
+static const int alienMissileSwordUp_3x10[] = {
 packword4(0,1,0),
 packword4(0,1,0),
 packword4(0,1,0),
@@ -387,7 +387,7 @@ packword4(0,1,0),
 packword4(0,1,0)
 };
 
-static const int alienBulletSwordDown_3x10[] = {
+static const int alienMissileSwordDown_3x10[] = {
 packword4(0,1,0),
 packword4(0,1,0),
 packword4(0,1,0),
