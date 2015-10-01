@@ -37,7 +37,7 @@ void print(char *str);
 #define ALIEN_HEIGHT 16
 #define ALIEN_WIDTH 24
 
-#define TANK_WIDTH 30
+#define TANK_WIDTH 32
 #define TANK_HEIGHT 16
 
 #define BUNKER_WIDTH 48
@@ -49,11 +49,14 @@ void print(char *str);
 #define X_DAMAGE 16
 #define Y_DAMAGE 3
 #define NUM_ALIENS 11 * 32
-//0 = 48, 1 = 49, 2 = 50, 3 = 51
+
 #define BUNKER_0 48
 #define BUNKER_1 49
 #define BUNKER_2 50
 #define BUNKER_3 51
+
+#define TANK_BULLET_HEIGHT 10
+#define TANK_BULLET_WIDTH 3
 
 #define BUNKER_NUM_0_X 72
 #define BUNKER_NUM_1_X 216
@@ -87,6 +90,7 @@ int aliens_alive[ALIENS_TALL][ALIENS_WIDE];
 int bunkerHealth[Y_DAMAGE][X_DAMAGE] = {{3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3},
 										{3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3},
 										{3,0,0,3,3,0,0,3,3,0,0,3,3,0,0,3}};
+int tankBulletCoordinates[2];
 
 void print_aliens(int corner_top, int corner_left, int direction){
 	unsigned int * framePointer = (unsigned int *) FRAME_BUFFER_ADDR;
@@ -201,7 +205,7 @@ void drawTank(left_corner, top_corner, draw){
 	int row, column;
 	for (row=top_corner; row<top_corner+TANK_HEIGHT; row++) {
 	    for (column = left_corner; column<left_corner+TANK_WIDTH; column++) {
-			if ((tank_30x16[row-top_corner] & (1<<(TANK_WIDTH-1-(column-left_corner))))) {
+			if ((tank_32x16[row-top_corner] & (1<<(TANK_WIDTH-1-(column-left_corner))))) {
 				framePointer[(row)*640 + (column)] = color;
 			}else{
 				framePointer[(row)*640 + (column)] = 0x00000000;
@@ -372,6 +376,39 @@ void reevaluate_aliens(){
 		aliens_y += ALIEN_BUFFER + ALIEN_HEIGHT;
 	}
 }
+void drawTankBullet(x,y,draw){
+	int color;
+	if(draw == 1){
+		color = 0x0000FF00;
+	}else{
+		color = 0x00000000;
+	}
+	unsigned int * framePointer = (unsigned int *) FRAME_BUFFER_ADDR;
+	int row, column;
+	for (row=y; row<y+TANK_BULLET_HEIGHT; row++) {
+		for (column = x; column<x+TANK_BULLET_WIDTH; column++) {
+			if ((tankBullet_3x10[row-y] & (1<<(TANK_BULLET_WIDTH-1-(column-x))))) {
+				framePointer[(row)*640 + (column)] = color;
+			}else{
+				framePointer[(row)*640 + (column)] = 0x00000000;
+			}
+		}
+	}
+}
+
+void moveBullets(){
+	int draw = 0;
+	int tankBulletX = tankBulletCoordinates[0];
+	int tankBullety = tankBulletCoordinates[1];
+	drawTankBullet(tankBulletX, tankBullety, draw);//erase previous tank bullet
+	if(tankBullety > 0){
+		tankBullety -= 2;
+		draw = 1;
+		drawTankBullet(tankBulletX, tankBullety, draw);//draw new tank bullet
+		tankBulletCoordinates[0] = tankBulletX;
+		tankBulletCoordinates[1] = tankBullety;
+	}
+}
 
 int main()
 {
@@ -517,16 +554,16 @@ int main()
     	 xil_printf("%d",(u_int)c);
     	 if((u_int)c == 54){//key 6 so move right
     		 if(tankPosX < SCREEN_WIDTH - TANK_WIDTH){
-    			 draw = 0;
-    			 drawTank(tankPosX, tankPosY, draw);
+//    			 draw = 0;
+//    			 drawTank(tankPosX, tankPosY, draw);
     			 draw = 1;
     			 tankPosX += 3;
 				 drawTank(tankPosX, tankPosY, draw);
     		 }
     	 }else if((u_int)c == 52){//key 4 so move left
     		 if(tankPosX > 0){
-    			 draw = 0;
-    			 drawTank(tankPosX, tankPosY, draw);
+//    			 draw = 0;
+//    			 drawTank(tankPosX, tankPosY, draw);
     			 draw = 1;
     			 tankPosX -= 3;
 				 drawTank(tankPosX, tankPosY, draw);
@@ -569,6 +606,17 @@ int main()
     			 aliens_x = aliens_x + ALIEN_HORIZ_MOVE;
     		 }
     		 print_aliens(aliens_y, aliens_x, direction);
+    	 }
+    	 else if((uint)c==53){//key 5 so fire tank bullet
+    		 if(tankBulletCoordinates[1] <= 0){
+				 draw = 1;
+				 drawTankBullet(tankPosX + TANK_WIDTH/2 - 1, tankPosY - TANK_BULLET_HEIGHT, draw);
+				 tankBulletCoordinates[0] = tankPosX + TANK_WIDTH/2 - 1;
+				 tankBulletCoordinates[1] = tankPosY - TANK_BULLET_HEIGHT;
+    		 }
+    	 }
+    	 else if((uint)c == 57){//key 9 so move all bullets
+    		 moveBullets();
     	 }
     	 else if((uint)c==50){
     		 c = getchar();
