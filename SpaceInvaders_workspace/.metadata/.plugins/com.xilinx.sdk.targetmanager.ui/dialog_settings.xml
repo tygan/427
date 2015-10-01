@@ -2,5 +2,5 @@
 <section name="Workbench">
 	<item value="C:\CT427\427\SpaceInvaders_workspace\SpaceInvaders_HW_hw_platform\system_bd.bmm" key="SpaceInvaders_HW_hw_platform-bmmFile"/>
 	<item value="C:\CT427\427\SpaceInvaders_workspace\SpaceInvaders_HW_hw_platform\system.bit" key="SpaceInvaders_HW_hw_platform-bitFile"/>
-	<item value="C:\CT427\427\SpaceInvaders_workspace\SpaceInvaders_project\Debug\SpaceInvaders_project.elf" key="SpaceInvaders_HW_hw_platform-microblaze_0-initElf"/>
+	<item value="bootloop" key="SpaceInvaders_HW_hw_platform-microblaze_0-initElf"/>
 </section>
