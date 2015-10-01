@@ -3697,3 +3697,12 @@ Xilinx EDK 13.4 Build EDK_O.87xd
 Copyright (c) 1995-2010 Xilinx, Inc.  All rights reserved.
 >>>>>>> 288d7c3e6a685a0bcfc35cf6785c94fe0abb59d7
 Done!
+Xilinx Platform Studio (XPS)
+Xilinx EDK 13.4 Build EDK_O.87xd
+Copyright (c) 1995-2011 Xilinx, Inc.  All rights reserved.
+
+Writing filter settings....
+Done writing filter settings to:
+	C:\CT427\427\SpaceInvaders_HW\etc\system.filters
+Done writing Tab View settings to:
+	C:\CT427\427\SpaceInvaders_HW\etc\system.gui
