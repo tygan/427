@@ -346,7 +346,7 @@ void drawTankBullet(x,y,draw){
 	int row, column;
 	for (row=y; row<y+TANK_BULLET_HEIGHT; row++) {
 		for (column = x; column<x+TANK_BULLET_WIDTH; column++) {
-			if ((tankBullet_3x10[row-y] & (1<<(TANK_BULLET_WIDTH-1-(column-x))))) {
+			if ((alienBulletForwardSlash_3x10[row-y] & (1<<(TANK_BULLET_WIDTH-1-(column-x))))) {
 				framePointer[(row)*640 + (column)] = color;
 			}else{
 				framePointer[(row)*640 + (column)] = 0x00000000;
@@ -509,6 +509,8 @@ int main()
 	 int aliens_y = ALIENS_START_Y;
 	 print_aliens(aliens_y, aliens_x, direction);
 	 setvbuf(stdin,NULL,_IONBF,0);
+
+
      while (1) {
     	 char c = getchar();
     	 xil_printf("%d",(u_int)c);
