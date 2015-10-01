@@ -49,11 +49,11 @@ void print(char *str);
 #define SCREEN_HEIGHT 640
 #define ALIENS_TALL 5
 #define ALIENS_WIDE 11
-#define ALIEN_BUFFER 4
+#define ALIEN_BUFFER 8
 #define ALIENS_START_X 160
 #define ALIENS_START_Y 40
-#define ALIEN_HORIZ_MOVE 4
-#define ALIEN_VERTICAL_MOVE 16
+#define ALIEN_HORIZ_MOVE 2
+#define ALIEN_VERTICAL_MOVE 8
 #define DOWN 0
 #define LEFT 1
 #define RIGHT 2
@@ -75,14 +75,7 @@ void print_aliens(int corner_top, int corner_left, int direction){
 			}
 		}
 	}
-	if(direction == RIGHT){
-		int i,j;
-		for(i=corner_top; i<corner_top+ALIENS_TALL*(ALIEN_HEIGHT+ALIEN_BUFFER); i++){
-			for(j=corner_left-ALIEN_BUFFER; j<corner_left; j++){
-				framePointer[i*640 + j] = 0x00000000;
-			}
-		}
-	}
+
 	for(i=0; i<ALIENS_TALL; i++){
 		int j;
 		for(j=0; j<ALIENS_WIDE; j++){
@@ -151,6 +144,14 @@ void print_aliens(int corner_top, int corner_left, int direction){
 			}
 		}
 	}
+	if(direction == RIGHT){
+			int i,j;
+			for(i=corner_top; i<corner_top+ALIENS_TALL*(ALIEN_HEIGHT+ALIEN_BUFFER); i++){
+				for(j=corner_left-ALIEN_BUFFER; j<corner_left; j++){
+					framePointer[i*640 + j] = 0x00000000;
+				}
+			}
+		}
 }
 
 void erase_alien(int corner_top, int corner_left){
