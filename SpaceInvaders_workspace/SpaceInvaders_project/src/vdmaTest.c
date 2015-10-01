@@ -49,11 +49,14 @@ void print(char *str);
 #define X_DAMAGE 16
 #define Y_DAMAGE 3
 #define NUM_ALIENS 11 * 32
-//0 = 48, 1 = 49, 2 = 50, 3 = 51
+
 #define BUNKER_0 48
 #define BUNKER_1 49
 #define BUNKER_2 50
 #define BUNKER_3 51
+
+#define TANK_BULLET_HEIGHT 10
+#define TANK_BULLET_WIDTH 3
 
 #define BUNKER_NUM_0_X 72
 #define BUNKER_NUM_1_X 216
@@ -331,6 +334,25 @@ void drawBunker(left_corner, top_corner, draw){
 
 }
 
+void drawTankBullet(x,y,draw){
+	int color;
+	if(draw == 1){
+		color = 0x0000FF00;
+	}else{
+		color = 0x00000000;
+	}
+	unsigned int * framePointer = (unsigned int *) FRAME_BUFFER_ADDR;
+	int row, column;
+	for (row=y; row<y+TANK_BULLET_HEIGHT; row++) {
+		for (column = x; column<x+TANK_BULLET_WIDTH; column++) {
+			if ((tankBullet_3x10[row-y] & (1<<(TANK_BULLET_WIDTH-1-(column-x))))) {
+				framePointer[(row)*640 + (column)] = color;
+			}else{
+				framePointer[(row)*640 + (column)] = 0x00000000;
+			}
+		}
+	 }
+}
 int main()
 {
 	init_platform();                   // Necessary for all programs.
@@ -528,6 +550,10 @@ int main()
     			 aliens_x = aliens_x + ALIEN_HORIZ_MOVE;
     		 }
     		 print_aliens(aliens_y, aliens_x, direction);
+    	 }
+    	 else if((uint)c==53){//key 5 so fire tank bullet
+    		 draw = 1;
+    		 drawTankBullet(tankPosX + TANK_WIDTH/2 - 1, tankPosY - TANK_BULLET_HEIGHT, draw);
     	 }
     	 else if((uint)c==50){
     		 c = getchar();

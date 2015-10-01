@@ -6,9 +6,9 @@ Building file: ../src/vdmaTest.c
 Invoking: MicroBlaze gcc compiler
 mb-gcc -Wall -O0 -g3 -c -fmessage-length=0 -I../../hello_world_bsp_0/microblaze_0/include -mlittle-endian -mxl-barrel-shift -mxl-pattern-compare -mcpu=v8.20.b -mno-xl-soft-mul -MMD -MP -MF"src/vdmaTest.d" -MT"src/vdmaTest.d" -o"src/vdmaTest.o" "../src/vdmaTest.c"
 ../src/vdmaTest.c: In function 'erodeBunker':
-../src/vdmaTest.c:246: warning: implicit declaration of function 'rand'
+../src/vdmaTest.c:249: warning: implicit declaration of function 'rand'
 ../src/vdmaTest.c: In function 'main':
-../src/vdmaTest.c:468: warning: implicit declaration of function 'srand'
+../src/vdmaTest.c:490: warning: implicit declaration of function 'srand'
 Finished building: ../src/vdmaTest.c
 ' '
 Building target: SpaceInvaders_project.elf
@@ -19,7 +19,7 @@ Finished building target: SpaceInvaders_project.elf
 Invoking: MicroBlaze Print Size
 mb-size SpaceInvaders_project.elf  |tee "SpaceInvaders_project.elf.size"
    text	   data	    bss	    dec	    hex	filename
-  29348	   1616	   2376	  33340	   823c	SpaceInvaders_project.elf
+  29768	   1616	   2376	  33760	   83e0	SpaceInvaders_project.elf
 Finished building: SpaceInvaders_project.elf.size
 ' '
 Invoking: Xilinx ELF Check
