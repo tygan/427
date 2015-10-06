@@ -5,29 +5,26 @@ make all
 Building file: ../src/Clock.c
 Invoking: MicroBlaze gcc compiler
 mb-gcc -Wall -O0 -g3 -c -fmessage-length=0 -I../../realTimeClock/microblaze_0/include -mlittle-endian -mxl-barrel-shift -mxl-pattern-compare -mcpu=v8.20.b -mno-xl-soft-mul -MMD -MP -MF"src/Clock.d" -MT"src/Clock.d" -o"src/Clock.o" "../src/Clock.c"
-Finished building: ../src/Clock.c
-' '
-Building target: hello_world_0.elf
-Invoking: MicroBlaze gcc linker
-mb-gcc -Wl,-T -Wl,../src/lscript.ld -L../../realTimeClock/microblaze_0/lib -mlittle-endian -mxl-barrel-shift -mxl-pattern-compare -mcpu=v8.20.b -mno-xl-soft-mul -o"hello_world_0.elf"  ./src/Clock.o ./src/platform.o   -Wl,--start-group,-lxil,-lgcc,-lc,--end-group
-Finished building target: hello_world_0.elf
-' '
-Invoking: MicroBlaze Print Size
-mb-size hello_world_0.elf  |tee "hello_world_0.elf.size"
-   text	   data	    bss	    dec	    hex	filename
-   8982	    392	   2178	  11552	   2d20	hello_world_0.elf
-Finished building: hello_world_0.elf.size
-' '
-Invoking: Xilinx ELF Check
-elfcheck hello_world_0.elf -hw ../../Lab2_hw_platform/system.xml -pe microblaze_0  |tee "hello_world_0.elf.elfcheck"
-elfcheck
-Xilinx EDK 13.4 Build EDK_O.87xd
-Copyright (c) 1995-2011 Xilinx, Inc.  All rights reserved.
-
-Command Line: elfcheck -hw ../../Lab2_hw_platform/system.xml -pe microblaze_0
-hello_world_0.elf 
-
-ELF file	: hello_world_0.elf
-elfcheck passed.
-Finished building: hello_world_0.elf.elfcheck
-' '
+../src/Clock.c:1:66: error: xgpio.h: No such file or directory
+../src/Clock.c:18: error: expected '=', ',', ';', 'asm' or '__attribute__' before 'gpLED'
+../src/Clock.c:19: error: expected '=', ',', ';', 'asm' or '__attribute__' before 'gpPB'
+../src/Clock.c: In function 'pb_interrupt_handler':
+../src/Clock.c:173: warning: implicit declaration of function 'XGpio_InterruptGlobalDisable'
+../src/Clock.c:173: error: 'gpPB' undeclared (first use in this function)
+../src/Clock.c:173: error: (Each undeclared identifier is reported only once
+../src/Clock.c:173: error: for each function it appears in.)
+../src/Clock.c:174: warning: implicit declaration of function 'XGpio_DiscreteRead'
+../src/Clock.c:176: warning: implicit declaration of function 'XGpio_InterruptClear'
+../src/Clock.c:177: warning: implicit declaration of function 'XGpio_InterruptGlobalEnable'
+../src/Clock.c: In function 'interrupt_handler_dispatcher':
+../src/Clock.c:187: error: 'XPAR_FIT_TIMER_0_INTERRUPT_MASK' undeclared (first use in this function)
+../src/Clock.c:192: error: 'XPAR_PUSH_BUTTONS_5BITS_IP2INTC_IRPT_MASK' undeclared (first use in this function)
+../src/Clock.c: In function 'main':
+../src/Clock.c:203: warning: implicit declaration of function 'XGpio_Initialize'
+../src/Clock.c:203: error: 'gpPB' undeclared (first use in this function)
+../src/Clock.c:203: error: 'XPAR_PUSH_BUTTONS_5BITS_DEVICE_ID' undeclared (first use in this function)
+../src/Clock.c:205: warning: implicit declaration of function 'XGpio_SetDataDirection'
+../src/Clock.c:209: warning: implicit declaration of function 'XGpio_InterruptEnable'
+../src/Clock.c:212: error: 'XPAR_FIT_TIMER_0_INTERRUPT_MASK' undeclared (first use in this function)
+../src/Clock.c:212: error: 'XPAR_PUSH_BUTTONS_5BITS_IP2INTC_IRPT_MASK' undeclared (first use in this function)
+make: *** [src/Clock.o] Error 1

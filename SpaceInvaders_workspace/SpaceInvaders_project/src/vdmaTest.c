@@ -222,21 +222,15 @@ void drawBunkerDamage(x_pos, y_pos, damageType){
 	for (row=y_pos; row<y_pos+BUNKER_DAMAGE_HEIGHT; row++) {
 	    for (column = x_pos; column<x_pos+BUNKER_DAMAGE_WIDTH; column++) {
 	    	if(damageType == 3){
-	    		if ((bunkerDamage2_12x12[row-y_pos] & (1<<(BUNKER_DAMAGE_WIDTH-1-(column-x_pos))))) {
-					framePointer[(row)*SCREEN_WIDTH + (column)] = GREEN;
-				}else{
+	    		if ((bunkerDamage0_12x12[row-y_pos] & (1<<(BUNKER_DAMAGE_WIDTH-1-(column-x_pos))))) {
 					framePointer[(row)*SCREEN_WIDTH + (column)] = BLACK;
 				}
 	    	}else if(damageType == 2){
 	    		if ((bunkerDamage1_12x12[row-y_pos] & (1<<(BUNKER_DAMAGE_WIDTH-1-(column-x_pos))))) {
-					framePointer[(row)*SCREEN_WIDTH + (column)] = GREEN;
-				}else{
 					framePointer[(row)*SCREEN_WIDTH + (column)] = BLACK;
 				}
 	    	}else if(damageType == 1){
-	    		if ((bunkerDamage0_12x12[row-y_pos] & (1<<(BUNKER_DAMAGE_WIDTH-1-(column-x_pos))))) {
-					framePointer[(row)*SCREEN_WIDTH + (column)] = GREEN;
-				}else{
+	    		if ((bunkerDamage2_12x12[row-y_pos] & (1<<(BUNKER_DAMAGE_WIDTH-1-(column-x_pos))))) {
 					framePointer[(row)*SCREEN_WIDTH + (column)] = BLACK;
 				}
 	    	}else if(damageType == 0){
@@ -251,14 +245,13 @@ void erodeBunker(bunkerNumber){
 	int bunkPosY;
 	int bunkDamage;
 	int bunkYOffset = 0;
-
+	int skipDraw = 0;
 	int randNum = rand() % 4;
 	int bunkPosX = (bunkerNumber * 4) + randNum;
-
-	if(bunkerHealth[0][bunkPosX] == -1){
-		if(bunkerHealth[1][bunkPosX] == -1){
-			if(bunkerHealth[2][bunkPosX] == -1) {
-				//do nothing
+	if(bunkerHealth[0][bunkPosX] <= -1){//the first row
+		if(bunkerHealth[1][bunkPosX] <= -1){//second row
+			if(bunkerHealth[2][bunkPosX] <= -1) {//third row
+				skipDraw = 1;//do nothing
 			}else{
 				bunkDamage = bunkerHealth[2][bunkPosX];
 				bunkerHealth[2][bunkPosX]--;
@@ -292,7 +285,9 @@ void erodeBunker(bunkerNumber){
 	}else if(bunkYOffset == 2){
 		bunkPosY = BUNKER_Y + (BUNKER_DAMAGE_HEIGHT * 2);
 	}
-	drawBunkerDamage(bunkPosX, bunkPosY, bunkDamage);
+	if(skipDraw == 0){
+		drawBunkerDamage(bunkPosX, bunkPosY, bunkDamage);
+	}
 }
 
 
@@ -568,16 +563,13 @@ int main()
     	 char c = getchar();
     	 if(c == '6'){//key 6 so move right
     		 if(tankPosX < SCREEN_WIDTH - TANK_WIDTH){
-//    			 draw = 0;
-//    			 drawTank(tankPosX, tankPosY, draw);
     			 draw = 1;
     			 tankPosX += 3;
 				 drawTank(tankPosX, tankPosY, draw);
     		 }
     	 }else if(c == '4'){//key 4 so move left
+    		 xil_printf("moving left\n\r");
     		 if(tankPosX > 0){
-//    			 draw = 0;
-//    			 drawTank(tankPosX, tankPosY, draw);
     			 draw = 1;
     			 tankPosX -= 3;
 				 drawTank(tankPosX, tankPosY, draw);
@@ -621,7 +613,7 @@ int main()
     		 }
     		 print_aliens(aliens_y, aliens_x, direction);
     	 }
-    	 else if(c=='5'){//key 5 so fire tank bullet
+    	 else if(c=='5'){//key 5 so fire alien bullet
     		 if(tankBulletCoordinates[1] <= 0){
 				 draw = 1;
 				 drawTankBullet(tankPosX + TANK_WIDTH/2 - 1, tankPosY - TANK_BULLET_HEIGHT, draw);

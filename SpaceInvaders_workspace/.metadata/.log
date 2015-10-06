@@ -622,3 +622,147 @@ Command-line arguments:  -os win32 -ws win32 -arch x86_64
 
 !ENTRY org.eclipse.cdt.core 1 0 2015-10-01 13:49:57.664
 !MESSAGE Indexed 'hello_world_bsp_0' (55 sources, 47 headers) in 0.67 sec: 1,797 declarations; 8,368 references; 18 unresolved inclusions; 0 syntax errors; 77 unresolved names (0.75%)
+!SESSION 2015-10-05 17:51:28.496 -----------------------------------------------
+eclipse.buildId=Release 13.4 Build SDK_O.87xd
+java.version=1.6.0_21
+java.vendor=Sun Microsystems Inc.
+BootLoader constants: OS=win32, ARCH=x86_64, WS=win32, NL=en_US
+Command-line arguments:  -data C:\CT427ChasesBitBucket\427\SpaceInvaders_workspace -os win32 -ws win32 -arch x86_64
+
+!ENTRY org.eclipse.osgi 2 0 2015-10-05 17:51:36.000
+!MESSAGE While loading class "org.eclipse.cdt.internal.ui.editor.CEditor", thread "Thread[main,6,main]" timed out waiting (5000ms) for thread "Thread[org.eclipse.jface.text.reconciler.MonoReconciler,1,main]" to finish starting bundle "org.eclipse.cdt.ui_5.2.2.201103141639 [80]". To avoid deadlock, thread "Thread[main,6,main]" is proceeding but "org.eclipse.cdt.internal.ui.editor.CEditor" may not be fully initialized.
+!STACK 0
+org.osgi.framework.BundleException: State change in progress for bundle "reference:file:plugins/org.eclipse.cdt.ui_5.2.2.201103141639.jar" by thread "org.eclipse.jface.text.reconciler.MonoReconciler".
+	at org.eclipse.osgi.framework.internal.core.AbstractBundle.beginStateChange(AbstractBundle.java:1077)
+	at org.eclipse.osgi.framework.internal.core.AbstractBundle.start(AbstractBundle.java:282)
+	at org.eclipse.osgi.framework.util.SecureAction.start(SecureAction.java:417)
+	at org.eclipse.osgi.internal.loader.BundleLoader.setLazyTrigger(BundleLoader.java:265)
+	at org.eclipse.core.runtime.internal.adaptor.EclipseLazyStarter.postFindLocalClass(EclipseLazyStarter.java:106)
+	at org.eclipse.osgi.baseadaptor.loader.ClasspathManager.findLocalClass(ClasspathManager.java:453)
+	at org.eclipse.osgi.internal.baseadaptor.DefaultClassLoader.findLocalClass(DefaultClassLoader.java:216)
+	at org.eclipse.osgi.internal.loader.BundleLoader.findLocalClass(BundleLoader.java:393)
+	at org.eclipse.osgi.internal.loader.BundleLoader.findClassInternal(BundleLoader.java:469)
+	at org.eclipse.osgi.internal.loader.BundleLoader.findClass(BundleLoader.java:422)
+	at org.eclipse.osgi.internal.loader.BundleLoader.findClass(BundleLoader.java:410)
+	at org.eclipse.osgi.internal.baseadaptor.DefaultClassLoader.loadClass(DefaultClassLoader.java:107)
+	at java.lang.ClassLoader.loadClass(Unknown Source)
+	at org.eclipse.cdt.internal.ui.editor.ASTProvider$ActivationListener.isCEditor(Unknown Source)
+	at org.eclipse.cdt.internal.ui.editor.ASTProvider$ActivationListener.partOpened(Unknown Source)
+	at org.eclipse.ui.internal.PartListenerList2$5.run(PartListenerList2.java:130)
+	at org.eclipse.core.runtime.SafeRunner.run(SafeRunner.java:42)
+	at org.eclipse.core.runtime.Platform.run(Platform.java:888)
+	at org.eclipse.ui.internal.PartListenerList2.fireEvent(PartListenerList2.java:55)
+	at org.eclipse.ui.internal.PartListenerList2.firePartOpened(PartListenerList2.java:128)
+	at org.eclipse.ui.internal.PartService.firePartOpened(PartService.java:280)
+	at org.eclipse.ui.internal.WWinPartService.pageActivated(WWinPartService.java:176)
+	at org.eclipse.ui.internal.WWinPartService.pageOpened(WWinPartService.java:217)
+	at org.eclipse.ui.internal.WorkbenchWindow.firePageOpened(WorkbenchWindow.java:1417)
+	at org.eclipse.ui.internal.WorkbenchWindow.access$4(WorkbenchWindow.java:1407)
+	at org.eclipse.ui.internal.WorkbenchWindow$18.runWithException(WorkbenchWindow.java:2230)
+	at org.eclipse.ui.internal.StartupThreading$StartupRunnable.run(StartupThreading.java:31)
+	at org.eclipse.swt.widgets.RunnableLock.run(RunnableLock.java:35)
+	at org.eclipse.swt.widgets.Synchronizer.runAsyncMessages(Synchronizer.java:134)
+	at org.eclipse.swt.widgets.Display.runAsyncMessages(Display.java:4041)
+	at org.eclipse.swt.widgets.Display.readAndDispatch(Display.java:3660)
+	at org.eclipse.ui.application.WorkbenchAdvisor.openWindows(WorkbenchAdvisor.java:803)
+	at org.eclipse.ui.internal.Workbench$31.runWithException(Workbench.java:1567)
+	at org.eclipse.ui.internal.StartupThreading$StartupRunnable.run(StartupThreading.java:31)
+	at org.eclipse.swt.widgets.RunnableLock.run(RunnableLock.java:35)
+	at org.eclipse.swt.widgets.Synchronizer.runAsyncMessages(Synchronizer.java:134)
+	at org.eclipse.swt.widgets.Display.runAsyncMessages(Display.java:4041)
+	at org.eclipse.swt.widgets.Display.readAndDispatch(Display.java:3660)
+	at org.eclipse.ui.internal.Workbench.runUI(Workbench.java:2548)
+	at org.eclipse.ui.internal.Workbench.access$4(Workbench.java:2438)
+	at org.eclipse.ui.internal.Workbench$7.run(Workbench.java:671)
+	at org.eclipse.core.databinding.observable.Realm.runWithDefault(Realm.java:332)
+	at org.eclipse.ui.internal.Workbench.createAndRunWorkbench(Workbench.java:664)
+	at org.eclipse.ui.PlatformUI.createAndRunWorkbench(PlatformUI.java:149)
+	at org.eclipse.ui.internal.ide.application.IDEApplication.start(IDEApplication.java:115)
+	at org.eclipse.equinox.internal.app.EclipseAppHandle.run(EclipseAppHandle.java:196)
+	at org.eclipse.core.runtime.internal.adaptor.EclipseAppLauncher.runApplication(EclipseAppLauncher.java:110)
+	at org.eclipse.core.runtime.internal.adaptor.EclipseAppLauncher.start(EclipseAppLauncher.java:79)
+	at org.eclipse.core.runtime.adaptor.EclipseStarter.run(EclipseStarter.java:369)
+	at org.eclipse.core.runtime.adaptor.EclipseStarter.run(EclipseStarter.java:179)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(Unknown Source)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(Unknown Source)
+	at java.lang.reflect.Method.invoke(Unknown Source)
+	at org.eclipse.equinox.launcher.Main.invokeFramework(Main.java:620)
+	at org.eclipse.equinox.launcher.Main.basicRun(Main.java:575)
+	at org.eclipse.equinox.launcher.Main.run(Main.java:1408)
+	at org.eclipse.equinox.launcher.Main.main(Main.java:1384)
+Caused by: org.eclipse.osgi.framework.internal.core.AbstractBundle$BundleStatusException
+	... 58 more
+Root exception:
+org.eclipse.osgi.framework.internal.core.AbstractBundle$BundleStatusException
+	at org.eclipse.osgi.framework.internal.core.AbstractBundle.beginStateChange(AbstractBundle.java:1077)
+	at org.eclipse.osgi.framework.internal.core.AbstractBundle.start(AbstractBundle.java:282)
+	at org.eclipse.osgi.framework.util.SecureAction.start(SecureAction.java:417)
+	at org.eclipse.osgi.internal.loader.BundleLoader.setLazyTrigger(BundleLoader.java:265)
+	at org.eclipse.core.runtime.internal.adaptor.EclipseLazyStarter.postFindLocalClass(EclipseLazyStarter.java:106)
+	at org.eclipse.osgi.baseadaptor.loader.ClasspathManager.findLocalClass(ClasspathManager.java:453)
+	at org.eclipse.osgi.internal.baseadaptor.DefaultClassLoader.findLocalClass(DefaultClassLoader.java:216)
+	at org.eclipse.osgi.internal.loader.BundleLoader.findLocalClass(BundleLoader.java:393)
+	at org.eclipse.osgi.internal.loader.BundleLoader.findClassInternal(BundleLoader.java:469)
+	at org.eclipse.osgi.internal.loader.BundleLoader.findClass(BundleLoader.java:422)
+	at org.eclipse.osgi.internal.loader.BundleLoader.findClass(BundleLoader.java:410)
+	at org.eclipse.osgi.internal.baseadaptor.DefaultClassLoader.loadClass(DefaultClassLoader.java:107)
+	at java.lang.ClassLoader.loadClass(Unknown Source)
+	at org.eclipse.cdt.internal.ui.editor.ASTProvider$ActivationListener.isCEditor(Unknown Source)
+	at org.eclipse.cdt.internal.ui.editor.ASTProvider$ActivationListener.partOpened(Unknown Source)
+	at org.eclipse.ui.internal.PartListenerList2$5.run(PartListenerList2.java:130)
+	at org.eclipse.core.runtime.SafeRunner.run(SafeRunner.java:42)
+	at org.eclipse.core.runtime.Platform.run(Platform.java:888)
+	at org.eclipse.ui.internal.PartListenerList2.fireEvent(PartListenerList2.java:55)
+	at org.eclipse.ui.internal.PartListenerList2.firePartOpened(PartListenerList2.java:128)
+	at org.eclipse.ui.internal.PartService.firePartOpened(PartService.java:280)
+	at org.eclipse.ui.internal.WWinPartService.pageActivated(WWinPartService.java:176)
+	at org.eclipse.ui.internal.WWinPartService.pageOpened(WWinPartService.java:217)
+	at org.eclipse.ui.internal.WorkbenchWindow.firePageOpened(WorkbenchWindow.java:1417)
+	at org.eclipse.ui.internal.WorkbenchWindow.access$4(WorkbenchWindow.java:1407)
+	at org.eclipse.ui.internal.WorkbenchWindow$18.runWithException(WorkbenchWindow.java:2230)
+	at org.eclipse.ui.internal.StartupThreading$StartupRunnable.run(StartupThreading.java:31)
+	at org.eclipse.swt.widgets.RunnableLock.run(RunnableLock.java:35)
+	at org.eclipse.swt.widgets.Synchronizer.runAsyncMessages(Synchronizer.java:134)
+	at org.eclipse.swt.widgets.Display.runAsyncMessages(Display.java:4041)
+	at org.eclipse.swt.widgets.Display.readAndDispatch(Display.java:3660)
+	at org.eclipse.ui.application.WorkbenchAdvisor.openWindows(WorkbenchAdvisor.java:803)
+	at org.eclipse.ui.internal.Workbench$31.runWithException(Workbench.java:1567)
+	at org.eclipse.ui.internal.StartupThreading$StartupRunnable.run(StartupThreading.java:31)
+	at org.eclipse.swt.widgets.RunnableLock.run(RunnableLock.java:35)
+	at org.eclipse.swt.widgets.Synchronizer.runAsyncMessages(Synchronizer.java:134)
+	at org.eclipse.swt.widgets.Display.runAsyncMessages(Display.java:4041)
+	at org.eclipse.swt.widgets.Display.readAndDispatch(Display.java:3660)
+	at org.eclipse.ui.internal.Workbench.runUI(Workbench.java:2548)
+	at org.eclipse.ui.internal.Workbench.access$4(Workbench.java:2438)
+	at org.eclipse.ui.internal.Workbench$7.run(Workbench.java:671)
+	at org.eclipse.core.databinding.observable.Realm.runWithDefault(Realm.java:332)
+	at org.eclipse.ui.internal.Workbench.createAndRunWorkbench(Workbench.java:664)
+	at org.eclipse.ui.PlatformUI.createAndRunWorkbench(PlatformUI.java:149)
+	at org.eclipse.ui.internal.ide.application.IDEApplication.start(IDEApplication.java:115)
+	at org.eclipse.equinox.internal.app.EclipseAppHandle.run(EclipseAppHandle.java:196)
+	at org.eclipse.core.runtime.internal.adaptor.EclipseAppLauncher.runApplication(EclipseAppLauncher.java:110)
+	at org.eclipse.core.runtime.internal.adaptor.EclipseAppLauncher.start(EclipseAppLauncher.java:79)
+	at org.eclipse.core.runtime.adaptor.EclipseStarter.run(EclipseStarter.java:369)
+	at org.eclipse.core.runtime.adaptor.EclipseStarter.run(EclipseStarter.java:179)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(Unknown Source)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(Unknown Source)
+	at java.lang.reflect.Method.invoke(Unknown Source)
+	at org.eclipse.equinox.launcher.Main.invokeFramework(Main.java:620)
+	at org.eclipse.equinox.launcher.Main.basicRun(Main.java:575)
+	at org.eclipse.equinox.launcher.Main.run(Main.java:1408)
+	at org.eclipse.equinox.launcher.Main.main(Main.java:1384)
+
+!ENTRY org.eclipse.core.resources 4 77 2015-10-05 17:52:17.897
+!MESSAGE Invalid project description.
+!SUBENTRY 1 unknown 0 0 2015-10-05 17:52:17.897
+!MESSAGE OK
+!SUBENTRY 1 org.eclipse.core.resources 4 77 2015-10-05 17:52:17.897
+!MESSAGE C:\CT427ChasesBitBucket\427\SpaceInvaders_workspace overlaps the workspace location: C:\CT427ChasesBitBucket\427\SpaceInvaders_workspace
+
+!ENTRY org.eclipse.cdt.core 1 0 2015-10-05 17:53:07.218
+!MESSAGE Indexed 'SpaceInvaders_project' (4 sources, 46 headers) in 0.71 sec: 1,734 declarations; 2,609 references; 3 unresolved inclusions; 0 syntax errors; 1 unresolved names (0.02%)
+
+!ENTRY org.eclipse.cdt.core 1 0 2015-10-05 17:53:07.892
+!MESSAGE Indexed 'hello_world_bsp_0' (55 sources, 47 headers) in 0.67 sec: 1,797 declarations; 8,368 references; 18 unresolved inclusions; 0 syntax errors; 77 unresolved names (0.75%)

@@ -6,17 +6,18 @@ PMSPEC -- Overriding Xilinx file
 <C:/Xilinx/13.4/ISE_DS/EDK/spartan6/data/spartan6.acd> with local file
 <C:/Xilinx/13.4/ISE_DS/ISE/spartan6/data/spartan6.acd>
 
-Using Flow File: C:/CT427/427/SpaceInvaders_HW/implementation/fpga.flw 
+Using Flow File:
+C:/CT427ChasesBitBucket/427/SpaceInvaders_HW/implementation/fpga.flw 
 Using Option File(s): 
- C:/CT427/427/SpaceInvaders_HW/implementation/xflow.opt 
+ C:/CT427ChasesBitBucket/427/SpaceInvaders_HW/implementation/xflow.opt 
 
 Creating Script File ... 
 
 #----------------------------------------------#
 # Starting program ngdbuild
 # ngdbuild -p xc6slx45csg324-3 -nt timestamp -bm system.bmm
-"C:/CT427/427/SpaceInvaders_HW/implementation/system.ngc" -uc system.ucf
-system.ngd 
+"C:/CT427ChasesBitBucket/427/SpaceInvaders_HW/implementation/system.ngc" -uc
+system.ucf system.ngd 
 #----------------------------------------------#
 Release 13.4 - ngdbuild O.87xd (nt64)
 Copyright (c) 1995-2011 Xilinx, Inc.  All rights reserved.
@@ -26,79 +27,95 @@ PMSPEC -- Overriding Xilinx file
 
 Command Line: C:\Xilinx\13.4\ISE_DS\ISE\bin\nt64\unwrapped\ngdbuild.exe -p
 xc6slx45csg324-3 -nt timestamp -bm system.bmm
-C:/CT427/427/SpaceInvaders_HW/implementation/system.ngc -uc system.ucf
-system.ngd
+C:/CT427ChasesBitBucket/427/SpaceInvaders_HW/implementation/system.ngc -uc
+system.ucf system.ngd
 
-Reading NGO file "C:/CT427/427/SpaceInvaders_HW/implementation/system.ngc" ...
+Reading NGO file
+"C:/CT427ChasesBitBucket/427/SpaceInvaders_HW/implementation/system.ngc" ...
 Loading design module
-"C:/CT427/427/SpaceInvaders_HW/implementation/rs232_uart_1_wrapper.ngc"...
+"C:/CT427ChasesBitBucket/427/SpaceInvaders_HW/implementation/rs232_uart_1_wrappe
+r.ngc"...
 Loading design module
-"C:/CT427/427/SpaceInvaders_HW/implementation/proc_sys_reset_0_wrapper.ngc"...
+"C:/CT427ChasesBitBucket/427/SpaceInvaders_HW/implementation/proc_sys_reset_0_wr
+apper.ngc"...
 Loading design module
-"C:/CT427/427/SpaceInvaders_HW/implementation/clock_generator_0_wrapper.ngc"...
+"C:/CT427ChasesBitBucket/427/SpaceInvaders_HW/implementation/clock_generator_0_w
+rapper.ngc"...
 Loading design module
-"C:/CT427/427/SpaceInvaders_HW/implementation/axi_hdmi_0_wrapper.ngc"...
+"C:/CT427ChasesBitBucket/427/SpaceInvaders_HW/implementation/axi_hdmi_0_wrapper.
+ngc"...
 Loading design module
-"C:/CT427/427/SpaceInvaders_HW/implementation/axi_ac97_0_wrapper.ngc"...
+"C:/CT427ChasesBitBucket/427/SpaceInvaders_HW/implementation/axi_ac97_0_wrapper.
+ngc"...
 Loading design module
-"C:/CT427/427/SpaceInvaders_HW/implementation/microblaze_0_ilmb_wrapper.ngc"...
+"C:/CT427ChasesBitBucket/427/SpaceInvaders_HW/implementation/microblaze_0_ilmb_w
+rapper.ngc"...
 Loading design module
-"C:/CT427/427/SpaceInvaders_HW/implementation/microblaze_0_dlmb_wrapper.ngc"...
+"C:/CT427ChasesBitBucket/427/SpaceInvaders_HW/implementation/microblaze_0_dlmb_w
+rapper.ngc"...
 Loading design module
-"C:/CT427/427/SpaceInvaders_HW/implementation/mcb_ddr2_wrapper.ngc"...
-Loading design module
-"C:/CT427/427/SpaceInvaders_HW/implementation/axi4lite_0_wrapper.ngc"...
-Loading design module
-"C:/CT427/427/SpaceInvaders_HW/implementation/axi4_0_wrapper.ngc"...
-Loading design module
-"C:/CT427/427/SpaceInvaders_HW/implementation/microblaze_0_wrapper.ngc"...
-Loading design module
-"C:/CT427/427/SpaceInvaders_HW/implementation/axi_vdma_0_wrapper.ngc"...
-Loading design module
-"C:/CT427/427/SpaceInvaders_HW/implementation/microblaze_0_i_bram_ctrl_wrapper.n
-gc"...
-Loading design module
-"C:/CT427/427/SpaceInvaders_HW/implementation/microblaze_0_d_bram_ctrl_wrapper.n
-gc"...
-Loading design module
-"C:/CT427/427/SpaceInvaders_HW/implementation/debug_module_wrapper.ngc"...
-Loading design module
-"C:/CT427/427/SpaceInvaders_HW/implementation/digilent_quadspi_cntlr_wrapper.ngc
-"...
-Loading design module
-"C:/CT427/427/SpaceInvaders_HW/implementation/axi_intc_0_wrapper.ngc"...
-Loading design module
-"C:/CT427/427/SpaceInvaders_HW/implementation/axi_timer_0_wrapper.ngc"...
-Loading design module
-"C:/CT427/427/SpaceInvaders_HW/implementation/microblaze_0_bram_block_wrapper.ng
+"C:/CT427ChasesBitBucket/427/SpaceInvaders_HW/implementation/mcb_ddr2_wrapper.ng
 c"...
+Loading design module
+"C:/CT427ChasesBitBucket/427/SpaceInvaders_HW/implementation/axi4lite_0_wrapper.
+ngc"...
+Loading design module
+"C:/CT427ChasesBitBucket/427/SpaceInvaders_HW/implementation/axi4_0_wrapper.ngc"
+...
+Loading design module
+"C:/CT427ChasesBitBucket/427/SpaceInvaders_HW/implementation/microblaze_0_wrappe
+r.ngc"...
+Loading design module
+"C:/CT427ChasesBitBucket/427/SpaceInvaders_HW/implementation/axi_vdma_0_wrapper.
+ngc"...
+Loading design module
+"C:/CT427ChasesBitBucket/427/SpaceInvaders_HW/implementation/microblaze_0_i_bram
+_ctrl_wrapper.ngc"...
+Loading design module
+"C:/CT427ChasesBitBucket/427/SpaceInvaders_HW/implementation/microblaze_0_d_bram
+_ctrl_wrapper.ngc"...
+Loading design module
+"C:/CT427ChasesBitBucket/427/SpaceInvaders_HW/implementation/debug_module_wrappe
+r.ngc"...
+Loading design module
+"C:/CT427ChasesBitBucket/427/SpaceInvaders_HW/implementation/digilent_quadspi_cn
+tlr_wrapper.ngc"...
+Loading design module
+"C:/CT427ChasesBitBucket/427/SpaceInvaders_HW/implementation/axi_intc_0_wrapper.
+ngc"...
+Loading design module
+"C:/CT427ChasesBitBucket/427/SpaceInvaders_HW/implementation/axi_timer_0_wrapper
+.ngc"...
+Loading design module
+"C:/CT427ChasesBitBucket/427/SpaceInvaders_HW/implementation/microblaze_0_bram_b
+lock_wrapper.ngc"...
 Applying constraints in
-"C:/CT427/427/SpaceInvaders_HW/implementation/microblaze_0_ilmb_wrapper.ncf" to
-module "microblaze_0_ilmb"...
+"C:/CT427ChasesBitBucket/427/SpaceInvaders_HW/implementation/microblaze_0_ilmb_w
+rapper.ncf" to module "microblaze_0_ilmb"...
 Checking Constraint Associations...
 Applying constraints in
-"C:/CT427/427/SpaceInvaders_HW/implementation/microblaze_0_dlmb_wrapper.ncf" to
-module "microblaze_0_dlmb"...
+"C:/CT427ChasesBitBucket/427/SpaceInvaders_HW/implementation/microblaze_0_dlmb_w
+rapper.ncf" to module "microblaze_0_dlmb"...
 Checking Constraint Associations...
 Applying constraints in
-"C:/CT427/427/SpaceInvaders_HW/implementation/mcb_ddr2_wrapper.ncf" to module
-"MCB_DDR2"...
+"C:/CT427ChasesBitBucket/427/SpaceInvaders_HW/implementation/mcb_ddr2_wrapper.nc
+f" to module "MCB_DDR2"...
 Checking Constraint Associations...
 Applying constraints in
-"C:/CT427/427/SpaceInvaders_HW/implementation/axi4lite_0_wrapper.ncf" to module
-"axi4lite_0"...
+"C:/CT427ChasesBitBucket/427/SpaceInvaders_HW/implementation/axi4lite_0_wrapper.
+ncf" to module "axi4lite_0"...
 Checking Constraint Associations...
 Applying constraints in
-"C:/CT427/427/SpaceInvaders_HW/implementation/axi4_0_wrapper.ncf" to module
-"axi4_0"...
+"C:/CT427ChasesBitBucket/427/SpaceInvaders_HW/implementation/axi4_0_wrapper.ncf"
+to module "axi4_0"...
 Checking Constraint Associations...
 Applying constraints in
-"C:/CT427/427/SpaceInvaders_HW/implementation/microblaze_0_wrapper.ncf" to
-module "microblaze_0"...
+"C:/CT427ChasesBitBucket/427/SpaceInvaders_HW/implementation/microblaze_0_wrappe
+r.ncf" to module "microblaze_0"...
 Checking Constraint Associations...
 Applying constraints in
-"C:/CT427/427/SpaceInvaders_HW/implementation/axi_vdma_0_wrapper.ncf" to module
-"axi_vdma_0"...
+"C:/CT427ChasesBitBucket/427/SpaceInvaders_HW/implementation/axi_vdma_0_wrapper.
+ncf" to module "axi_vdma_0"...
 Checking Constraint Associations...
 Gathering constraint information from source properties...
 Done.
@@ -295,8 +312,8 @@ NGDBUILD Design Results Summary:
   Number of warnings:  37
 
 Writing NGD file "system.ngd" ...
-Total REAL time to NGDBUILD completion:  45 sec
-Total CPU time to NGDBUILD completion:   45 sec
+Total REAL time to NGDBUILD completion:  46 sec
+Total CPU time to NGDBUILD completion:   46 sec
 
 Writing NGDBUILD log file "system.bld"...
 
@@ -357,34 +374,34 @@ WARNING:Timing:3159 - The DCM, axi_hdmi_0/axi_hdmi_0/USE_HDMI_OUT.Inst_AxiHDMITr
 INFO:Map:215 - The Interim Design Summary has been generated in the MAP Report
    (.mrp).
 Running timing-driven placement...
-Total REAL time at the beginning of Placer: 22 secs 
-Total CPU  time at the beginning of Placer: 21 secs 
+Total REAL time at the beginning of Placer: 25 secs 
+Total CPU  time at the beginning of Placer: 22 secs 
 
 Phase 1.1  Initial Placement Analysis
-Phase 1.1  Initial Placement Analysis (Checksum:8f047c73) REAL time: 24 secs 
+Phase 1.1  Initial Placement Analysis (Checksum:8f047c73) REAL time: 28 secs 
 
 Phase 2.7  Design Feasibility Check
-Phase 2.7  Design Feasibility Check (Checksum:8f047c73) REAL time: 25 secs 
+Phase 2.7  Design Feasibility Check (Checksum:8f047c73) REAL time: 29 secs 
 
 Phase 3.31  Local Placement Optimization
-Phase 3.31  Local Placement Optimization (Checksum:4e7c5e63) REAL time: 25 secs 
+Phase 3.31  Local Placement Optimization (Checksum:4e7c5e63) REAL time: 29 secs 
 
 Phase 4.2  Initial Placement for Architecture Specific Features
 
 Phase 4.2  Initial Placement for Architecture Specific Features
-(Checksum:65271d29) REAL time: 53 secs 
+(Checksum:65271d29) REAL time: 57 secs 
 
 Phase 5.36  Local Placement Optimization
-Phase 5.36  Local Placement Optimization (Checksum:65271d29) REAL time: 53 secs 
+Phase 5.36  Local Placement Optimization (Checksum:65271d29) REAL time: 57 secs 
 
 Phase 6.30  Global Clock Region Assignment
-Phase 6.30  Global Clock Region Assignment (Checksum:65271d29) REAL time: 53 secs 
+Phase 6.30  Global Clock Region Assignment (Checksum:65271d29) REAL time: 57 secs 
 
 Phase 7.3  Local Placement Optimization
-Phase 7.3  Local Placement Optimization (Checksum:65271d29) REAL time: 53 secs 
+Phase 7.3  Local Placement Optimization (Checksum:65271d29) REAL time: 57 secs 
 
 Phase 8.5  Local Placement Optimization
-Phase 8.5  Local Placement Optimization (Checksum:65271d29) REAL time: 53 secs 
+Phase 8.5  Local Placement Optimization (Checksum:65271d29) REAL time: 57 secs 
 
 Phase 9.8  Global Placement
 ........................
@@ -392,22 +409,22 @@ Phase 9.8  Global Placement
 .....................................................................
 ...................................................................................................
 ......
-Phase 9.8  Global Placement (Checksum:b271bbff) REAL time: 1 mins 32 secs 
+Phase 9.8  Global Placement (Checksum:b271bbff) REAL time: 1 mins 37 secs 
 
 Phase 10.5  Local Placement Optimization
-Phase 10.5  Local Placement Optimization (Checksum:b271bbff) REAL time: 1 mins 32 secs 
+Phase 10.5  Local Placement Optimization (Checksum:b271bbff) REAL time: 1 mins 37 secs 
 
 Phase 11.18  Placement Optimization
-Phase 11.18  Placement Optimization (Checksum:bfb560ac) REAL time: 1 mins 39 secs 
+Phase 11.18  Placement Optimization (Checksum:bfb560ac) REAL time: 1 mins 46 secs 
 
 Phase 12.5  Local Placement Optimization
-Phase 12.5  Local Placement Optimization (Checksum:bfb560ac) REAL time: 1 mins 39 secs 
+Phase 12.5  Local Placement Optimization (Checksum:bfb560ac) REAL time: 1 mins 46 secs 
 
 Phase 13.34  Placement Validation
-Phase 13.34  Placement Validation (Checksum:22612ec6) REAL time: 1 mins 40 secs 
+Phase 13.34  Placement Validation (Checksum:22612ec6) REAL time: 1 mins 46 secs 
 
-Total REAL time to Placer completion: 1 mins 48 secs 
-Total CPU  time to Placer completion: 1 mins 48 secs 
+Total REAL time to Placer completion: 1 mins 55 secs 
+Total CPU  time to Placer completion: 1 mins 51 secs 
 Running post-placement packing...
 Writing output files...
 
@@ -503,9 +520,9 @@ Specific Feature Utilization:
 
 Average Fanout of Non-Clock Nets:                3.86
 
-Peak Memory Usage:  712 MB
-Total REAL time to MAP completion:  1 mins 54 secs 
-Total CPU time to MAP completion:   1 mins 53 secs 
+Peak Memory Usage:  713 MB
+Total REAL time to MAP completion:  2 mins 1 secs 
+Total CPU time to MAP completion:   1 mins 57 secs 
 
 Mapping completed.
 See MAP report file "system_map.mrp" for details.
@@ -726,23 +743,23 @@ Phase  2  : 37409 unrouted;      REAL time: 18 secs
 
 Phase  3  : 15457 unrouted;      REAL time: 31 secs 
 
-Phase  4  : 15457 unrouted; (Setup:0, Hold:0, Component Switching Limit:0)     REAL time: 32 secs 
+Phase  4  : 15457 unrouted; (Setup:0, Hold:0, Component Switching Limit:0)     REAL time: 33 secs 
 
 Updating file: system.ncd with current fully routed design.
 
-Phase  5  : 0 unrouted; (Setup:0, Hold:0, Component Switching Limit:0)     REAL time: 48 secs 
+Phase  5  : 0 unrouted; (Setup:0, Hold:0, Component Switching Limit:0)     REAL time: 49 secs 
 
-Phase  6  : 0 unrouted; (Setup:0, Hold:0, Component Switching Limit:0)     REAL time: 48 secs 
+Phase  6  : 0 unrouted; (Setup:0, Hold:0, Component Switching Limit:0)     REAL time: 49 secs 
 
-Phase  7  : 0 unrouted; (Setup:0, Hold:0, Component Switching Limit:0)     REAL time: 48 secs 
+Phase  7  : 0 unrouted; (Setup:0, Hold:0, Component Switching Limit:0)     REAL time: 49 secs 
 
-Phase  8  : 0 unrouted; (Setup:0, Hold:0, Component Switching Limit:0)     REAL time: 48 secs 
+Phase  8  : 0 unrouted; (Setup:0, Hold:0, Component Switching Limit:0)     REAL time: 49 secs 
 
-Phase  9  : 0 unrouted; (Setup:0, Hold:0, Component Switching Limit:0)     REAL time: 48 secs 
+Phase  9  : 0 unrouted; (Setup:0, Hold:0, Component Switching Limit:0)     REAL time: 49 secs 
 
-Phase 10  : 0 unrouted; (Setup:0, Hold:0, Component Switching Limit:0)     REAL time: 50 secs 
-Total REAL time to Router completion: 50 secs 
-Total CPU time to Router completion: 49 secs 
+Phase 10  : 0 unrouted; (Setup:0, Hold:0, Component Switching Limit:0)     REAL time: 51 secs 
+Total REAL time to Router completion: 51 secs 
+Total CPU time to Router completion: 50 secs 
 
 Partition Implementation Status
 -------------------------------
@@ -995,8 +1012,8 @@ All signals are completely routed.
 
 WARNING:Par:283 - There are 23 loadless signals in this design. This design will cause Bitgen to issue DRC warnings.
 
-Total REAL time to PAR completion: 1 mins 
-Total CPU time to PAR completion: 51 secs 
+Total REAL time to PAR completion: 1 mins 1 secs 
+Total CPU time to PAR completion: 52 secs 
 
 Peak Memory Usage:  643 MB
 
@@ -1074,7 +1091,7 @@ Design statistics:
    Maximum path delay from/to any node:   5.418ns
 
 
-Analysis completed Wed Sep 30 13:38:19 2015
+Analysis completed Mon Oct 05 17:46:10 2015
 --------------------------------------------------------------------------------
 
 Generating Report ...
