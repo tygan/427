@@ -116,6 +116,10 @@ int tankPosX;
 int tankPosY;
 int draw;
 int bulletMoveCounter;
+int drawAlienTimer;
+int direction;
+int aliens_x;
+int aliens_y;
 
 void print_aliens(int corner_top, int corner_left, int direction){
 	unsigned int * framePointer = (unsigned int *) FRAME_BUFFER_ADDR;
@@ -285,8 +289,8 @@ void erodeBunker(bunkerNumber){
 	int bunkDamage;
 	int bunkYOffset = 0;
 	int skipDraw = 0;
-	int randNum = rand() % 4;
-	int bunkPosX = (bunkerNumber * 4) + randNum;
+	int randNum = 0;// = rand() % 4;
+	int bunkPosX = (bunkerNumber * 4);// + randNum;
 	if(bunkerHealth[0][bunkPosX] <= -1){//the first row
 		if(bunkerHealth[1][bunkPosX] <= -1){//second row
 			if(bunkerHealth[2][bunkPosX] <= -1) {//third row
@@ -491,17 +495,39 @@ void button_decoder() {
 }
 
 void timer_interrupt_handler() {
-	//if(currentButtonState != 0){	//if any button(s) are pressed
-//	xil_printf("going to decode button");
 	button_decoder();
-	if(bulletMoveCounter == 3){
+	if(bulletMoveCounter >= 3){
 		moveBullets();
 		bulletMoveCounter = 0;
 	}else{
 		bulletMoveCounter++;
 	}
-	//}
-	//call move aliens function every once in a while...
+	if(drawAlienTimer >= 70){
+		if(direction == DOWN){	//if aliens have already gone down
+			if(aliens_x + first_row*(ALIEN_WIDTH+ALIEN_BUFFER) == 0){	//if aliens have hit the left edge of the screen
+			 direction = RIGHT;
+			}
+			else{		//if aliens have hit the right edge of the screen
+			 direction = LEFT;
+			}
+		}
+		else if(aliens_x + first_row*(ALIEN_WIDTH+ALIEN_BUFFER) == 0 || aliens_x == SCREEN_WIDTH - ALIENS_WIDE*(ALIEN_BUFFER+ALIEN_WIDTH)){	//if aliens hit the left or right edges
+		 direction = DOWN;
+		}
+		if(direction == DOWN){
+		 aliens_y = aliens_y + ALIEN_VERTICAL_MOVE + ALIEN_BUFFER;
+		}
+		else if(direction == LEFT){
+		 aliens_x = aliens_x - ALIEN_HORIZ_MOVE;
+		}
+		else{			//if direction == RIGHT
+		 aliens_x = aliens_x + ALIEN_HORIZ_MOVE;
+		}
+		print_aliens(aliens_y, aliens_x, direction);
+		drawAlienTimer = 0;
+	}else{
+		drawAlienTimer++;
+	}
 }
 
 // This is invoked each time there is a change in the button state (result of a push or a bounce).
@@ -678,13 +704,13 @@ int main()
 			 aliens_alive[i][j] = 1;
 		 }
 	 }
-	 int direction = LEFT;
+	 direction = LEFT;
 	 /////////////////////////////
 	 //initialize aliens on screen//
-	 srand((unsigned)time(NULL));
+	 //srand((unsigned)time(NULL));
 
-	 int aliens_x = ALIENS_START_X;
-	 int aliens_y = ALIENS_START_Y;
+	 aliens_x = ALIENS_START_X;
+	 aliens_y = ALIENS_START_Y;
 	 print_aliens(aliens_y, aliens_x, direction);
 	 setvbuf(stdin,NULL,_IONBF,0);
 
