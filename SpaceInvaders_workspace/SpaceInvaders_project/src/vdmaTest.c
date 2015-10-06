@@ -19,7 +19,16 @@
 /*
  * helloworld.c: simple test application
  */
-
+#include "xgpio.h"          // Provides access to PB GPIO driver.
+#include <stdio.h>          // xil_printf and so forth.
+#include "platform.h"       // Enables caching and other system stuff.
+#include "mb_interface.h"   // provides the microblaze interrupt enables, etc.
+#include "xintc_l.h"        // Provides handy macros for the interrupt controller.
+#include "xgpio.h"          // Provides access to PB GPIO driver.
+#include <stdio.h>          // xil_printf and so forth.
+#include "platform.h"       // Enables caching and other system stuff.
+#include "mb_interface.h"   // provides the microblaze interrupt enables, etc.
+#include "xintc_l.h"        // Provides handy macros for the interrupt controller.
 #include <stdio.h>
 #include "platform.h"
 #include "xparameters.h"
@@ -28,6 +37,11 @@
 #include "time.h"
 #include "unistd.h"
 #include "shapes.h"
+#define MIDDLEBTN 1
+#define RIGHTBTN 2
+#define DOWNBTN 4
+#define LEFTBTN 8
+#define UPBTN 16
 #define DEBUG
 void print(char *str);
 
@@ -84,7 +98,9 @@ void print(char *str);
 #define GREEN 0x0000FF00
 
 #define WORD_WIDTH 32
-
+XGpio gpLED;  // This is a handle for the LED GPIO block.
+XGpio gpPB;   // This is a handle for the push-button GPIO block.
+int currentButtonState;
 int aliens_in = 1;
 int first_row = 0;
 int last_row = ALIENS_WIDE - 1;
@@ -95,6 +111,9 @@ int bunkerHealth[Y_DAMAGE][X_DAMAGE] = {{3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3},
 										{3,0,0,3,3,0,0,3,3,0,0,3,3,0,0,3}};
 int tankBulletCoordinates[2];
 int alienMissileCoordinates[2];
+int tankPosX;
+int tankPosY;
+int draw;
 
 void print_aliens(int corner_top, int corner_left, int direction){
 	unsigned int * framePointer = (unsigned int *) FRAME_BUFFER_ADDR;
@@ -440,11 +459,87 @@ void reevaluate_aliens(){
 	}
 	last_row = x;
 }
-
+void button_decoder() {
+	int upFlag = 0;			//for up button
+	int downFlag = 0;		//for down button
+	if(currentButtonState & LEFTBTN){//move tank left
+		if(tankPosX > 0){
+			xil_printf("going left");
+			 draw = 1;
+			 tankPosX -= 2;
+			 drawTank(tankPosX, tankPosY, draw);
+		 }
+	}else if(currentButtonState & RIGHTBTN){//move tank right
+		 if(tankPosX < SCREEN_WIDTH - TANK_WIDTH){
+			 xil_printf("going right");
+			 draw = 1;
+			 tankPosX += 2;
+			 drawTank(tankPosX, tankPosY, draw);
+		 }
+	}else if(currentButtonState & MIDDLEBTN){//fire tank bullet
+		xil_printf("fire bullet");
+		draw = 1;
+		drawTankBullet(tankPosX,tankPosY,draw);
+	}
+}
+void timer_interrupt_handler() {
+	//if(currentButtonState != 0){	//if any button(s) are pressed
+//	xil_printf("going to decode button");
+	button_decoder();
+	//}
+	//call move aliens function every once in a while...
+}
+// This is invoked each time there is a change in the button state (result of a push or a bounce).
+void pb_interrupt_handler() {
+  // Clear the GPIO interrupt.
+  XGpio_InterruptGlobalDisable(&gpPB);                // Turn off all PB interrupts for now.
+  currentButtonState = XGpio_DiscreteRead(&gpPB, 1);  // Get the current state of the buttons.
+  XGpio_InterruptClear(&gpPB, 0xFFFFFFFF);            // Ack the PB interrupt.
+  XGpio_InterruptGlobalEnable(&gpPB);                 // Re-enable PB interrupts.
+}
+// Main interrupt handler, queries the interrupt controller to see what peripheral
+// fired the interrupt and then dispatches the corresponding interrupt handler.
+// This routine acks the interrupt at the controller level but the peripheral
+// interrupt must be ack'd by the dispatched interrupt handler.
+void interrupt_handler_dispatcher(void* ptr) {
+	int intc_status = XIntc_GetIntrStatus(XPAR_INTC_0_BASEADDR);
+	// Check the FIT interrupt first.
+	if (intc_status & XPAR_FIT_TIMER_0_INTERRUPT_MASK){
+		XIntc_AckIntr(XPAR_INTC_0_BASEADDR, XPAR_FIT_TIMER_0_INTERRUPT_MASK);
+//		xil_printf("calling timer interrupt handler");
+		timer_interrupt_handler();
+	}
+	// Check the push buttons.
+	if (intc_status & XPAR_PUSH_BUTTONS_5BITS_IP2INTC_IRPT_MASK){
+		XIntc_AckIntr(XPAR_INTC_0_BASEADDR, XPAR_PUSH_BUTTONS_5BITS_IP2INTC_IRPT_MASK);
+//		xil_printf("calling pb interrupt handler");
+		pb_interrupt_handler();
+	}
+}
 int main()
 {
 	init_platform();                   // Necessary for all programs.
 	int Status;                        // Keep track of success/failure of system function calls.
+
+	////////////////////////////////////////////////////////////
+	//Initialize interrupts and FIT
+	////////////////////////////////////////////////////////////
+	int success;
+	success = XGpio_Initialize(&gpPB, XPAR_PUSH_BUTTONS_5BITS_DEVICE_ID);
+	// Set the push button peripheral to be inputs.
+	XGpio_SetDataDirection(&gpPB, 1, 0x0000001F);
+	// Enable the global GPIO interrupt for push buttons.
+	XGpio_InterruptGlobalEnable(&gpPB);
+	// Enable all interrupts in the push button peripheral.
+	XGpio_InterruptEnable(&gpPB, 0xFFFFFFFF);
+
+	microblaze_register_handler(interrupt_handler_dispatcher, NULL);
+	XIntc_EnableIntr(XPAR_INTC_0_BASEADDR,
+			(XPAR_FIT_TIMER_0_INTERRUPT_MASK | XPAR_PUSH_BUTTONS_5BITS_IP2INTC_IRPT_MASK));
+	XIntc_MasterEnable(XPAR_INTC_0_BASEADDR);
+	microblaze_enable_interrupts();
+	////////////////////////////////////////////////////////////
+
 	XAxiVdma videoDMAController;
 	// There are 3 steps to initializing the vdma driver and IP.
 	// Step 1: lookup the memory structure that is used to access the vdma driver.
@@ -499,7 +594,7 @@ int main()
     	 xil_printf("DMA Set Address Failed Failed\r\n");
      }
      // Print a sanity message if you get this far.
-     xil_printf("Woohooz! I made it through initialization.\n\r");
+     xil_printf("\n\rWoohooz! I made it through initialization.\n\r");
 
      // Now, let's get ready to start displaying some stuff on the screen.
      // The variables framePointer and framePointer1 are just pointers to the base address
@@ -527,7 +622,7 @@ int main()
 
      ///////////////////////////////////
 	 //CLEAR THE SCREEN//
-     xil_printf("initialized!");
+     xil_printf("initialized!\n\r");
 	int y, x = 0;
 	unsigned int * frameP = (unsigned int *) FRAME_BUFFER_ADDR;
 	for (y=0; y<SCREEN_HEIGHT; y++) {
@@ -540,8 +635,8 @@ int main()
      /////////////////////////////
      //initialize tank on screen//
      int draw = 1;
-     int tankPosX = 0;
-     int tankPosY = 414;
+     tankPosX = 0;
+     tankPosY = 414;
 	 drawTank(tankPosX, tankPosY, draw);
 	 /////////////////////////////
 
@@ -578,91 +673,91 @@ int main()
 
 
      while (1) {
-    	 char c = getchar();
-    	 if(c == '6'){//key 6 so move right
-    		 if(tankPosX < SCREEN_WIDTH - TANK_WIDTH){
-    			 draw = 1;
-    			 tankPosX += 4;
-				 drawTank(tankPosX, tankPosY, draw);
-    		 }
-    	 }else if(c == '4'){//key 4 so move left
-    		 if(tankPosX > 0){
-    			 draw = 1;
-    			 tankPosX -= 4;
-				 drawTank(tankPosX, tankPosY, draw);
-    		 }
-		 }else if(c == '7'){//key 7 so erode bunker
-			 char bunkerNum = getchar(); //0 = 48, 1 = 49, 2 = 50, 3 = 51
-			 if(bunkerNum == BUNKER_0){
-				 int bunker0 = 0;
-				 erodeBunker(bunker0);
-			 }else if(bunkerNum == BUNKER_1){
-				 int bunker1 = 1;
-				 erodeBunker(bunker1);
-			 }else if(bunkerNum == BUNKER_2){
-				 int bunker2 = 2;
-				 erodeBunker(bunker2);
-			 }else if(bunkerNum == BUNKER_3){
-				 int bunker3 = 3;
-				 erodeBunker(bunker3);
-			 }
-		 }
-    	 else if(c=='8'){//update alien position if c='8'
-    		 if(direction == DOWN){	//if aliens have already gone down
-    			 if(aliens_x + first_row*(ALIEN_WIDTH+ALIEN_BUFFER) == 0){	//if aliens have hit the left edge of the screen
-    				 direction = RIGHT;
-    			 }
-    			 else{		//if aliens have hit the right edge of the screen
-    				 direction = LEFT;
-    			 }
-    		 }
-    		 else if(aliens_x + first_row*(ALIEN_WIDTH+ALIEN_BUFFER) == 0 || aliens_x == SCREEN_WIDTH - ALIENS_WIDE*(ALIEN_BUFFER+ALIEN_WIDTH)){	//if aliens hit the left or right edges
-    			 direction = DOWN;
-    		 }
-    		 if(direction == DOWN){
-    			 aliens_y = aliens_y + ALIEN_VERTICAL_MOVE + ALIEN_BUFFER;
-    		 }
-    		 else if(direction == LEFT){
-    			 aliens_x = aliens_x - ALIEN_HORIZ_MOVE;
-    		 }
-    		 else{			//if direction == RIGHT
-    			 aliens_x = aliens_x + ALIEN_HORIZ_MOVE;
-    		 }
-    		 print_aliens(aliens_y, aliens_x, direction);
-    	 }
-    	 else if(c=='5'){//key 5 so fire alien bullet
-    		 if(tankBulletCoordinates[1] <= 0){
-				 draw = 1;
-				 drawTankBullet(tankPosX + TANK_WIDTH/2 - 1, tankPosY - TANK_BULLET_HEIGHT, draw);
-				 tankBulletCoordinates[0] = tankPosX + TANK_WIDTH/2 - 1;
-				 tankBulletCoordinates[1] = tankPosY - TANK_BULLET_HEIGHT;
-			 }
-    	 }
-    	 else if(c=='3'){//key 3 so fire tank bullet
-    		 if(!exists_missile){
-    			 exists_missile = 1;
-				 draw = 1;
-				 int randNum = rand() % ALIENS_WIDE;
-				 int shoot_pos_x = aliens_x+randNum*(ALIEN_WIDTH+ALIEN_BUFFER)+(ALIEN_WIDTH/2)-2;
-				 int shoot_pos_y = aliens_y+ALIENS_TALL*(ALIEN_HEIGHT+ALIEN_BUFFER)-ALIEN_BUFFER;
-				 drawAlienMissile(shoot_pos_x, shoot_pos_y, draw);
-				 alienMissileCoordinates[0] = shoot_pos_x;
-				 alienMissileCoordinates[1] = shoot_pos_y;
-    		 }
-		 }
-    	 else if(c == '9'){//key 9 so move all bullets
-    		 moveBullets();
-    	 }
-    	 else if(c=='2'){//key 2
-    		 c = getchar();
-    		 char c2 = getchar();
-    		 int index = (((u_int)c)-'0')*10+((uint)c2-'0');	//combine 2 keypresses on keypad into 1 number
-    		 int alien_y_index = index/ALIENS_WIDE;
-    		 int alien_x_index = index%ALIENS_WIDE;
-    		 aliens_alive[alien_y_index][alien_x_index] = 0;
-    		 erase_alien(aliens_y+alien_y_index*(ALIEN_HEIGHT+ALIEN_BUFFER), aliens_x+alien_x_index*(ALIEN_WIDTH+ALIEN_BUFFER));
-    		 reevaluate_aliens();
-    	 }
+//    	 char c = getchar();
+//    	 if(c == '6'){//key 6 so move right
+//    		 if(tankPosX < SCREEN_WIDTH - TANK_WIDTH){
+//    			 draw = 1;
+//    			 tankPosX += 4;
+//				 drawTank(tankPosX, tankPosY, draw);
+//    		 }
+//    	 }else if(c == '4'){//key 4 so move left
+//    		 if(tankPosX > 0){
+//    			 draw = 1;
+//    			 tankPosX -= 4;
+//				 drawTank(tankPosX, tankPosY, draw);
+//    		 }
+//		 }else if(c == '7'){//key 7 so erode bunker
+//			 char bunkerNum = getchar(); //0 = 48, 1 = 49, 2 = 50, 3 = 51
+//			 if(bunkerNum == BUNKER_0){
+//				 int bunker0 = 0;
+//				 erodeBunker(bunker0);
+//			 }else if(bunkerNum == BUNKER_1){
+//				 int bunker1 = 1;
+//				 erodeBunker(bunker1);
+//			 }else if(bunkerNum == BUNKER_2){
+//				 int bunker2 = 2;
+//				 erodeBunker(bunker2);
+//			 }else if(bunkerNum == BUNKER_3){
+//				 int bunker3 = 3;
+//				 erodeBunker(bunker3);
+//			 }
+//		 }
+//    	 else if(c=='8'){//update alien position if c='8'
+//    		 if(direction == DOWN){	//if aliens have already gone down
+//    			 if(aliens_x + first_row*(ALIEN_WIDTH+ALIEN_BUFFER) == 0){	//if aliens have hit the left edge of the screen
+//    				 direction = RIGHT;
+//    			 }
+//    			 else{		//if aliens have hit the right edge of the screen
+//    				 direction = LEFT;
+//    			 }
+//    		 }
+//    		 else if(aliens_x + first_row*(ALIEN_WIDTH+ALIEN_BUFFER) == 0 || aliens_x == SCREEN_WIDTH - ALIENS_WIDE*(ALIEN_BUFFER+ALIEN_WIDTH)){	//if aliens hit the left or right edges
+//    			 direction = DOWN;
+//    		 }
+//    		 if(direction == DOWN){
+//    			 aliens_y = aliens_y + ALIEN_VERTICAL_MOVE + ALIEN_BUFFER;
+//    		 }
+//    		 else if(direction == LEFT){
+//    			 aliens_x = aliens_x - ALIEN_HORIZ_MOVE;
+//    		 }
+//    		 else{			//if direction == RIGHT
+//    			 aliens_x = aliens_x + ALIEN_HORIZ_MOVE;
+//    		 }
+//    		 print_aliens(aliens_y, aliens_x, direction);
+//    	 }
+//    	 else if(c=='5'){//key 5 so fire alien bullet
+//    		 if(tankBulletCoordinates[1] <= 0){
+//				 draw = 1;
+//				 drawTankBullet(tankPosX + TANK_WIDTH/2 - 1, tankPosY - TANK_BULLET_HEIGHT, draw);
+//				 tankBulletCoordinates[0] = tankPosX + TANK_WIDTH/2 - 1;
+//				 tankBulletCoordinates[1] = tankPosY - TANK_BULLET_HEIGHT;
+//			 }
+//    	 }
+//    	 else if(c=='3'){//key 3 so fire tank bullet
+//    		 if(!exists_missile){
+//    			 exists_missile = 1;
+//				 draw = 1;
+//				 int randNum = rand() % ALIENS_WIDE;
+//				 int shoot_pos_x = aliens_x+randNum*(ALIEN_WIDTH+ALIEN_BUFFER)+(ALIEN_WIDTH/2)-2;
+//				 int shoot_pos_y = aliens_y+ALIENS_TALL*(ALIEN_HEIGHT+ALIEN_BUFFER)-ALIEN_BUFFER;
+//				 drawAlienMissile(shoot_pos_x, shoot_pos_y, draw);
+//				 alienMissileCoordinates[0] = shoot_pos_x;
+//				 alienMissileCoordinates[1] = shoot_pos_y;
+//    		 }
+//		 }
+//    	 else if(c == '9'){//key 9 so move all bullets
+//    		 moveBullets();
+//    	 }
+//    	 else if(c=='2'){//key 2
+//    		 c = getchar();
+//    		 char c2 = getchar();
+//    		 int index = (((u_int)c)-'0')*10+((uint)c2-'0');	//combine 2 keypresses on keypad into 1 number
+//    		 int alien_y_index = index/ALIENS_WIDE;
+//    		 int alien_x_index = index%ALIENS_WIDE;
+//    		 aliens_alive[alien_y_index][alien_x_index] = 0;
+//    		 erase_alien(aliens_y+alien_y_index*(ALIEN_HEIGHT+ALIEN_BUFFER), aliens_x+alien_x_index*(ALIEN_WIDTH+ALIEN_BUFFER));
+//    		 reevaluate_aliens();
+//    	 }
      }
      cleanup_platform();
 

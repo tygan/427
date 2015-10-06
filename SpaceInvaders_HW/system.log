@@ -7372,3 +7372,26 @@ Xilinx Software Development Kit
 Xilinx EDK 13.4 Build EDK_O.87xd
 Copyright (c) 1995-2010 Xilinx, Inc.  All rights reserved.
 Done!
+WARNING:EDK:3605 - Use of the repository located at C:\Xilinx\13.4\ISE_DS\edk_user_repository\ 
+(equivalent of $XILINX_EDK/../edk_user_repository) is now deprecated. 
+It is recommended that you use Global SearchPath preference to specify search paths that apply to all the projects.
+WARNING:EDK:3605 - Use of the repository located at C:\Xilinx\13.4\ISE_DS\edk_user_repository\ 
+(equivalent of $XILINX_EDK/../edk_user_repository) is now deprecated. 
+It is recommended that you use Global SearchPath preference to specify search paths that apply to all the projects.
+Writing filter settings....
+Done writing filter settings to:
+	C:\CT427ChasesBitBucket\427\SpaceInvaders_HW\etc\system.filters
+Done writing Tab View settings to:
+	C:\CT427ChasesBitBucket\427\SpaceInvaders_HW\etc\system.gui
+Xilinx Platform Studio (XPS)
+Xilinx EDK 13.4 Build EDK_O.87xd
+Copyright (c) 1995-2011 Xilinx, Inc.  All rights reserved.
+
+fit_timer_0 has been added to the project
+fit_timer_0 has been deleted from the project
+fit_timer_0 has been added to the project
+Writing filter settings....
+Done writing filter settings to:
+	C:\CT427ChasesBitBucket\427\SpaceInvaders_HW\etc\system.filters
+Done writing Tab View settings to:
+	C:\CT427ChasesBitBucket\427\SpaceInvaders_HW\etc\system.gui
