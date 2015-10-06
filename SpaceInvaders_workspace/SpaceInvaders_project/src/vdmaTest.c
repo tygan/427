@@ -417,33 +417,41 @@ void moveBullets(){
 	int tankBulletX = tankBulletCoordinates[0];
 	int tankBullety = tankBulletCoordinates[1];
 	drawTankBullet(tankBulletX, tankBullety, draw);//erase previous tank bullet
-	if(tankBullety > 0){
-		exists_tank_missile = 1;
-		tankBullety -= 10;
-		draw = 1;
-		drawTankBullet(tankBulletX, tankBullety, draw);//draw new tank bullet
-		tankBulletCoordinates[0] = tankBulletX;
-		tankBulletCoordinates[1] = tankBullety;
-	}else{
+//	xil_printf("aliens y is %d", aliens_y);
+//	xil_printf("tankBullety y is %d", tankBullety);
+	if((tankBullety-1) <= aliens_y){//kill alien
 		exists_tank_missile = 0;
+		draw = 0;
+		drawTankBullet(tankBulletX, tankBullety, draw);//draw new tank bullet
+	}else{
+		if(tankBullety > 0){
+			exists_tank_missile = 1;
+			tankBullety -= 10;
+			draw = 1;
+			drawTankBullet(tankBulletX, tankBullety, draw);//draw new tank bullet
+			tankBulletCoordinates[0] = tankBulletX;
+			tankBulletCoordinates[1] = tankBullety;
+		}else{
+			exists_tank_missile = 0;
+		}
 	}
 
-	if(exists_missile){
-		draw = 0;
-		int alienMissileX = alienMissileCoordinates[0];
-		int alienMissileY = alienMissileCoordinates[1];
-		drawAlienMissile(alienMissileX, alienMissileY, draw);//erase previous alien missile
-		if(alienMissileY < SCREEN_HEIGHT - ALIEN_MISSILE_HEIGHT){
-			alienMissileY += 2;
-			draw = 1;
-			drawAlienMissile(alienMissileX, alienMissileY, draw);//draw new tank bullet
-			alienMissileCoordinates[0] = alienMissileX;
-			alienMissileCoordinates[1] = alienMissileY;
-		}
-		else{
-			exists_missile = 0;
-		}
-	}
+//	if(exists_missile){
+//		draw = 0;
+//		int alienMissileX = alienMissileCoordinates[0];
+//		int alienMissileY = alienMissileCoordinates[1];
+//		drawAlienMissile(alienMissileX, alienMissileY, draw);//erase previous alien missile
+//		if(alienMissileY < SCREEN_HEIGHT - ALIEN_MISSILE_HEIGHT){
+//			alienMissileY += 2;
+//			draw = 1;
+//			drawAlienMissile(alienMissileX, alienMissileY, draw);//draw new tank bullet
+//			alienMissileCoordinates[0] = alienMissileX;
+//			alienMissileCoordinates[1] = alienMissileY;
+//		}
+//		else{
+//			exists_missile = 0;
+//		}
+//	}
 }
 
 void reevaluate_aliens(){
@@ -663,9 +671,9 @@ int main()
      }
 
 
-     ///////////////////////////////////
-	 //CLEAR THE SCREEN//
-     xil_printf("initialized!\n\r");
+    ///////////////////////////////////
+	//CLEAR THE SCREEN//
+    xil_printf("initialized!\n\r");
 	int y, x = 0;
 	unsigned int * frameP = (unsigned int *) FRAME_BUFFER_ADDR;
 	for (y=0; y<SCREEN_HEIGHT; y++) {
