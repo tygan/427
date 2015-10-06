@@ -105,6 +105,7 @@ int aliens_in = 1;
 int first_row = 0;
 int last_row = ALIENS_WIDE - 1;
 int exists_missile = 0;
+int exists_tank_missile = 0;
 int aliens_alive[ALIENS_TALL][ALIENS_WIDE];
 int bunkerHealth[Y_DAMAGE][X_DAMAGE] = {{3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3},
 										{3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3},
@@ -114,6 +115,7 @@ int alienMissileCoordinates[2];
 int tankPosX;
 int tankPosY;
 int draw;
+int bulletMoveCounter;
 
 void print_aliens(int corner_top, int corner_left, int direction){
 	unsigned int * framePointer = (unsigned int *) FRAME_BUFFER_ADDR;
@@ -377,7 +379,7 @@ void drawTankBullet(x,y,draw){
 	int row, column;
 	for (row=y; row<y+TANK_BULLET_HEIGHT; row++) {
 		for (column = x; column<x+TANK_BULLET_WIDTH; column++) {
-			if ((alienMissileForwardSlash_3x10[row-y] & (1<<(TANK_BULLET_WIDTH-1-(column-x))))) {
+			if ((tankBullet_3x10[row-y] & (1<<(TANK_BULLET_WIDTH-1-(column-x))))) {
 				framePointer[(row)*SCREEN_WIDTH + (column)] = color;
 			}else{
 				framePointer[(row)*SCREEN_WIDTH + (column)] = BLACK;
@@ -412,11 +414,14 @@ void moveBullets(){
 	int tankBullety = tankBulletCoordinates[1];
 	drawTankBullet(tankBulletX, tankBullety, draw);//erase previous tank bullet
 	if(tankBullety > 0){
-		tankBullety -= 2;
+		exists_tank_missile = 1;
+		tankBullety -= 10;
 		draw = 1;
 		drawTankBullet(tankBulletX, tankBullety, draw);//draw new tank bullet
 		tankBulletCoordinates[0] = tankBulletX;
 		tankBulletCoordinates[1] = tankBullety;
+	}else{
+		exists_tank_missile = 0;
 	}
 
 	if(exists_missile){
@@ -459,36 +464,46 @@ void reevaluate_aliens(){
 	}
 	last_row = x;
 }
+//////////////////////////////////////////////////////////////////////////////////////////////////
+//Interrupt handling code
+//////////////////////////////////////////////////////////////////////////////////////////////////
 void button_decoder() {
-	int upFlag = 0;			//for up button
-	int downFlag = 0;		//for down button
 	if(currentButtonState & LEFTBTN){//move tank left
 		if(tankPosX > 0){
-			xil_printf("going left");
 			 draw = 1;
 			 tankPosX -= 2;
 			 drawTank(tankPosX, tankPosY, draw);
 		 }
 	}else if(currentButtonState & RIGHTBTN){//move tank right
 		 if(tankPosX < SCREEN_WIDTH - TANK_WIDTH){
-			 xil_printf("going right");
 			 draw = 1;
 			 tankPosX += 2;
 			 drawTank(tankPosX, tankPosY, draw);
 		 }
 	}else if(currentButtonState & MIDDLEBTN){//fire tank bullet
-		xil_printf("fire bullet");
-		draw = 1;
-		drawTankBullet(tankPosX,tankPosY,draw);
+		if(exists_tank_missile == 0){
+			draw = 1;
+			drawTankBullet(tankPosX + TANK_WIDTH/2 - 1, tankPosY - TANK_BULLET_HEIGHT, draw);
+			tankBulletCoordinates[0] = tankPosX + TANK_WIDTH/2 - 1;
+			tankBulletCoordinates[1] = tankPosY - TANK_BULLET_HEIGHT;
+		}
 	}
 }
+
 void timer_interrupt_handler() {
 	//if(currentButtonState != 0){	//if any button(s) are pressed
 //	xil_printf("going to decode button");
 	button_decoder();
+	if(bulletMoveCounter == 3){
+		moveBullets();
+		bulletMoveCounter = 0;
+	}else{
+		bulletMoveCounter++;
+	}
 	//}
 	//call move aliens function every once in a while...
 }
+
 // This is invoked each time there is a change in the button state (result of a push or a bounce).
 void pb_interrupt_handler() {
   // Clear the GPIO interrupt.
@@ -497,6 +512,7 @@ void pb_interrupt_handler() {
   XGpio_InterruptClear(&gpPB, 0xFFFFFFFF);            // Ack the PB interrupt.
   XGpio_InterruptGlobalEnable(&gpPB);                 // Re-enable PB interrupts.
 }
+
 // Main interrupt handler, queries the interrupt controller to see what peripheral
 // fired the interrupt and then dispatches the corresponding interrupt handler.
 // This routine acks the interrupt at the controller level but the peripheral
@@ -516,6 +532,7 @@ void interrupt_handler_dispatcher(void* ptr) {
 		pb_interrupt_handler();
 	}
 }
+//////////////////////////////////////////////////////////////////////////////////////////////////
 int main()
 {
 	init_platform();                   // Necessary for all programs.
