@@ -37,7 +37,7 @@ void print(char *str);
 #define ALIEN_HEIGHT 16
 #define ALIEN_WIDTH 24
 
-#define TANK_WIDTH 32
+#define TANK_WIDTH 48
 #define TANK_HEIGHT 16
 
 #define BUNKER_WIDTH 48
@@ -204,15 +204,33 @@ void drawTank(left_corner, top_corner, draw){
 	}else{
 		color = BLACK;
 	}
+	int bunkerX = 0;
+	int bunkerY = 0;
+	int dupBitX = 0;
+	int dupBitY = 0;
 	unsigned int * framePointer = (unsigned int *) FRAME_BUFFER_ADDR;
 	int row, column;
 	for (row=top_corner; row<top_corner+TANK_HEIGHT; row++) {
 	    for (column = left_corner; column<left_corner+TANK_WIDTH; column++) {
-			if ((tank_32x16[row-top_corner] & (1<<(TANK_WIDTH-1-(column-left_corner))))) {
+			if ((tank_22x8[bunkerY] & (1<<bunkerX))) {
 				framePointer[(row)*SCREEN_WIDTH + (column)] = color;
 			}else{
 				framePointer[(row)*SCREEN_WIDTH + (column)] = BLACK;
 			}
+			if(dupBitX == 1)
+			{
+				bunkerX++;
+				dupBitX = 0;
+			}else{
+				dupBitX = 1;
+			}
+		}
+	    bunkerX = 0;
+		if(dupBitY == 1){
+			bunkerY++;
+			dupBitY = 0;
+		}else{
+			dupBitY = 1;
 		}
 	 }
 }
@@ -564,14 +582,13 @@ int main()
     	 if(c == '6'){//key 6 so move right
     		 if(tankPosX < SCREEN_WIDTH - TANK_WIDTH){
     			 draw = 1;
-    			 tankPosX += 3;
+    			 tankPosX += 4;
 				 drawTank(tankPosX, tankPosY, draw);
     		 }
     	 }else if(c == '4'){//key 4 so move left
-    		 xil_printf("moving left\n\r");
     		 if(tankPosX > 0){
     			 draw = 1;
-    			 tankPosX -= 3;
+    			 tankPosX -= 4;
 				 drawTank(tankPosX, tankPosY, draw);
     		 }
 		 }else if(c == '7'){//key 7 so erode bunker
