@@ -1,0 +1,14 @@
+#Mon Oct 05 19:42:46 MDT 2015
+com.xilinx.sdk.linkgen.prefs.SpaceInvaders_project\:.sbss2=microblaze_0_i_bram_ctrl_microblaze_0_d_bram_ctrl
+com.xilinx.sdk.linkgen.prefs.SpaceInvaders_project\:.sbss=microblaze_0_i_bram_ctrl_microblaze_0_d_bram_ctrl
+com.xilinx.sdk.linkgen.prefs.SpaceInvaders_project\:.data=microblaze_0_i_bram_ctrl_microblaze_0_d_bram_ctrl
+com.xilinx.sdk.linkgen.prefs.SpaceInvaders_project\:.sdata=microblaze_0_i_bram_ctrl_microblaze_0_d_bram_ctrl
+com.xilinx.sdk.linkgen.prefs.SpaceInvaders_project\:.sdata2=microblaze_0_i_bram_ctrl_microblaze_0_d_bram_ctrl
+com.xilinx.sdk.linkgen.prefs.SpaceInvaders_project\:Stack=microblaze_0_i_bram_ctrl_microblaze_0_d_bram_ctrl
+com.xilinx.sdk.linkgen.prefs.SpaceInvaders_project\:Heap-size=2048
+com.xilinx.sdk.linkgen.prefs.SpaceInvaders_project\:.rodata=microblaze_0_i_bram_ctrl_microblaze_0_d_bram_ctrl
+com.xilinx.sdk.linkgen.prefs.SpaceInvaders_project\:.bss=microblaze_0_i_bram_ctrl_microblaze_0_d_bram_ctrl
+eclipse.preferences.version=1
+com.xilinx.sdk.linkgen.prefs.SpaceInvaders_project\:Stack-size=2048
+com.xilinx.sdk.linkgen.prefs.SpaceInvaders_project\:.text=MCB_DDR2_S0_AXI_BASEADDR
+com.xilinx.sdk.linkgen.prefs.SpaceInvaders_project\:Heap=microblaze_0_i_bram_ctrl_microblaze_0_d_bram_ctrl
