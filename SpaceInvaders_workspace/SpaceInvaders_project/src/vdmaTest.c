@@ -37,49 +37,39 @@
 #include "time.h"
 #include "unistd.h"
 #include "shapes.h"
+
 #define MIDDLEBTN 1
 #define RIGHTBTN 2
 #define DOWNBTN 4
 #define LEFTBTN 8
 #define UPBTN 16
 #define DEBUG
-void print(char *str);
-
 #define FRAME_BUFFER_ADDR 0xC1000000  // Starting location in DDR where we will store the images that we display.
-#define MAX_SILLY_TIMER 10000000;	//For nostalgia
-
 #define ALIEN_HEIGHT 16
 #define ALIEN_WIDTH 24
-
 #define TANK_WIDTH 48
 #define TANK_HEIGHT 16
-
 #define BUNKER_WIDTH 48
 #define BUNKER_HEIGHT 36
-
 #define BUNKER_DAMAGE_HEIGHT 12
 #define BUNKER_DAMAGE_WIDTH 12
-
 #define X_DAMAGE 16
 #define Y_DAMAGE 3
 #define NUM_ALIENS 11 * 32
-
 #define BUNKER_0 48
 #define BUNKER_1 49
 #define BUNKER_2 50
 #define BUNKER_3 51
-
 #define TANK_BULLET_HEIGHT 10
 #define TANK_BULLET_WIDTH 3
 #define ALIEN_MISSILE_HEIGHT 10
 #define ALIEN_MISSILE_WIDTH 3
-
+#define ALIEN_EXPLOSION_WIDTH 24
+#define ALIEN_EXPLOSION_HEIGHT 20
 #define BUNKER_NUM_0_X 72
 #define BUNKER_NUM_1_X 216
 #define BUNKER_NUM_2_X 360
 #define BUNKER_NUM_3_X 504
-#define BUNKER_Y 300
-
 #define SCREEN_WIDTH 640
 #define SCREEN_HEIGHT 480
 #define ALIENS_TALL 5
@@ -92,14 +82,17 @@ void print(char *str);
 #define DOWN 0
 #define LEFT 1
 #define RIGHT 2
-
 #define BLACK 0x00000000
 #define WHITE 0x00FFFFFF
 #define GREEN 0x0000FF00
-
 #define WORD_WIDTH 32
+#define BUNKER_BOTTOM 336
+#define BUNKER_TOP 300
+
+void print(char *str);
 XGpio gpLED;  // This is a handle for the LED GPIO block.
 XGpio gpPB;   // This is a handle for the push-button GPIO block.
+
 int currentButtonState;
 int aliens_in = 1;
 int first_row = 0;
@@ -121,6 +114,9 @@ int direction;
 int aliens_x;
 int aliens_y;
 
+//////////////////////////////////////////////////////////////////////////////////////////////////
+//Draw functions
+//////////////////////////////////////////////////////////////////////////////////////////////////
 void print_aliens(int corner_top, int corner_left, int direction){
 	unsigned int * framePointer = (unsigned int *) FRAME_BUFFER_ADDR;
 	int i;
@@ -259,80 +255,6 @@ void drawTank(left_corner, top_corner, draw){
 		}
 	 }
 }
-void drawBunkerDamage(x_pos, y_pos, damageType){
-	unsigned int * framePointer = (unsigned int *) FRAME_BUFFER_ADDR;
-	int row, column;
-	for (row=y_pos; row<y_pos+BUNKER_DAMAGE_HEIGHT; row++) {
-	    for (column = x_pos; column<x_pos+BUNKER_DAMAGE_WIDTH; column++) {
-	    	if(damageType == 3){
-	    		if ((bunkerDamage0_12x12[row-y_pos] & (1<<(BUNKER_DAMAGE_WIDTH-1-(column-x_pos))))) {
-					framePointer[(row)*SCREEN_WIDTH + (column)] = BLACK;
-				}
-	    	}else if(damageType == 2){
-	    		if ((bunkerDamage1_12x12[row-y_pos] & (1<<(BUNKER_DAMAGE_WIDTH-1-(column-x_pos))))) {
-					framePointer[(row)*SCREEN_WIDTH + (column)] = BLACK;
-				}
-	    	}else if(damageType == 1){
-	    		if ((bunkerDamage2_12x12[row-y_pos] & (1<<(BUNKER_DAMAGE_WIDTH-1-(column-x_pos))))) {
-					framePointer[(row)*SCREEN_WIDTH + (column)] = BLACK;
-				}
-	    	}else if(damageType == 0){
-				framePointer[(row)*SCREEN_WIDTH + (column)] = BLACK;
-	    	}
-
-		}
-	 }
-}
-void erodeBunker(bunkerNumber){
-	//This will get the current damage of the place you are going to erode.
-	int bunkPosY;
-	int bunkDamage;
-	int bunkYOffset = 0;
-	int skipDraw = 0;
-	int randNum = 0;// = rand() % 4;
-	int bunkPosX = (bunkerNumber * 4);// + randNum;
-	if(bunkerHealth[0][bunkPosX] <= -1){//the first row
-		if(bunkerHealth[1][bunkPosX] <= -1){//second row
-			if(bunkerHealth[2][bunkPosX] <= -1) {//third row
-				skipDraw = 1;//do nothing
-			}else{
-				bunkDamage = bunkerHealth[2][bunkPosX];
-				bunkerHealth[2][bunkPosX]--;
-				bunkYOffset = 2;
-			}
-		}else{
-			bunkDamage = bunkerHealth[1][bunkPosX];
-			bunkerHealth[1][bunkPosX]--;
-			bunkYOffset = 1;
-		}
-	}else{
-		bunkDamage = bunkerHealth[0][bunkPosX];
-		bunkerHealth[0][bunkPosX]--;
-		bunkYOffset = 0;
-	}
-	//This will get the x position of the bunker to erode.
-	if(bunkerNumber == 0){
-		bunkPosX = BUNKER_NUM_0_X + randNum*BUNKER_DAMAGE_WIDTH;
-	}else if(bunkerNumber == 1){
-		bunkPosX = BUNKER_NUM_1_X + randNum*BUNKER_DAMAGE_WIDTH;
-	}else if(bunkerNumber == 2){
-		bunkPosX = BUNKER_NUM_2_X + randNum*BUNKER_DAMAGE_WIDTH;
-	}else if(bunkerNumber == 3){
-		bunkPosX = BUNKER_NUM_3_X + randNum*BUNKER_DAMAGE_WIDTH;
-	}
-	//This will get the y position of the bunker to erode.
-	if(bunkYOffset == 0){
-		bunkPosY = BUNKER_Y;
-	}else if(bunkYOffset == 1){
-		bunkPosY = BUNKER_Y + BUNKER_DAMAGE_HEIGHT;
-	}else if(bunkYOffset == 2){
-		bunkPosY = BUNKER_Y + (BUNKER_DAMAGE_HEIGHT * 2);
-	}
-	if(skipDraw == 0){
-		drawBunkerDamage(bunkPosX, bunkPosY, bunkDamage);
-	}
-}
-
 
 void drawBunker(left_corner, top_corner, draw){
 	int color;
@@ -412,29 +334,179 @@ void drawAlienMissile(x,y,draw){
 	}
 }
 
-void moveBullets(){
-	int draw = 0;
-	int tankBulletX = tankBulletCoordinates[0];
-	int tankBullety = tankBulletCoordinates[1];
-	drawTankBullet(tankBulletX, tankBullety, draw);//erase previous tank bullet
-//	xil_printf("aliens y is %d", aliens_y);
-//	xil_printf("tankBullety y is %d", tankBullety);
-	if((tankBullety-1) <= aliens_y){//kill alien
-		exists_tank_missile = 0;
-		draw = 0;
-		drawTankBullet(tankBulletX, tankBullety, draw);//draw new tank bullet
-	}else{
-		if(tankBullety > 0){
-			exists_tank_missile = 1;
-			tankBullety -= 10;
-			draw = 1;
-			drawTankBullet(tankBulletX, tankBullety, draw);//draw new tank bullet
-			tankBulletCoordinates[0] = tankBulletX;
-			tankBulletCoordinates[1] = tankBullety;
-		}else{
-			exists_tank_missile = 0;
+void drawBunkerDamage(x_pos, y_pos, damageType){
+	unsigned int * framePointer = (unsigned int *) FRAME_BUFFER_ADDR;
+	int row, column;
+	for (row=y_pos; row<y_pos+BUNKER_DAMAGE_HEIGHT; row++) {
+	    for (column = x_pos; column<x_pos+BUNKER_DAMAGE_WIDTH; column++) {
+	    	if(damageType == 3){
+	    		if ((bunkerDamage0_12x12[row-y_pos] & (1<<(BUNKER_DAMAGE_WIDTH-1-(column-x_pos))))) {
+					framePointer[(row)*SCREEN_WIDTH + (column)] = BLACK;
+				}
+	    	}else if(damageType == 2){
+	    		if ((bunkerDamage1_12x12[row-y_pos] & (1<<(BUNKER_DAMAGE_WIDTH-1-(column-x_pos))))) {
+					framePointer[(row)*SCREEN_WIDTH + (column)] = BLACK;
+				}
+	    	}else if(damageType == 1){
+	    		if ((bunkerDamage2_12x12[row-y_pos] & (1<<(BUNKER_DAMAGE_WIDTH-1-(column-x_pos))))) {
+					framePointer[(row)*SCREEN_WIDTH + (column)] = BLACK;
+				}
+	    	}else if(damageType == 0){
+				framePointer[(row)*SCREEN_WIDTH + (column)] = BLACK;
+	    	}
+
+		}
+	 }
+}
+//switch(expression){
+//    case constant-expression  :
+//       statement(s);
+//       break; /* optional */
+//    case constant-expression  :
+//       statement(s);
+//       break; /* optional */
+//
+//    /* you can have any number of case statements */
+//    default : /* Optional */
+//       statement(s);
+//}
+void erodeBunker(bunkerNumber, xPos, yPos){
+	//This will tell you what row of the bunker is going to erode.
+	// check if y pos is between bunker bottom(336) and 324(bottom row of bunker) or 324 and 312(second row) or
+	// 312 and top(300)(first row)
+	int row, column;
+	//BUNKER_BOTTOM
+	//BUNKER_TOP
+	if(yPos < BUNKER_BOTTOM && yPos > BUNKER_BOTTOM-BUNKER_DAMAGE_HEIGHT)//This is bottom row of bunkers
+		row = 2;
+	else if(yPos < BUNKER_BOTTOM-BUNKER_DAMAGE_HEIGHT && yPos > BUNKER_TOP+BUNKER_DAMAGE_HEIGHT)//Middle row
+		row = 1;
+	else if(yPos < BUNKER_TOP+BUNKER_DAMAGE_HEIGHT && yPos > BUNKER_TOP)//Top row
+		row = 0;
+	//This will tell you which column of the bunker array is going to erode.
+	if(xPos > BUNKER_NUM_0_X && xPos < BUNKER_NUM_0_X+BUNKER_DAMAGE_WIDTH)
+		column = 0;
+	if(xPos > BUNKER_NUM_0_X+BUNKER_DAMAGE_WIDTH && xPos < BUNKER_NUM_0_X+2*BUNKER_DAMAGE_WIDTH)
+		column = 1;
+	if(xPos > BUNKER_NUM_0_X+2*BUNKER_DAMAGE_WIDTH && xPos < BUNKER_NUM_1_X-BUNKER_DAMAGE_WIDTH)
+		column = 2;
+	if(xPos > BUNKER_NUM_1_X-BUNKER_DAMAGE_WIDTH && xPos < BUNKER_NUM_1_X)
+		column = 3;
+	///////////////////DO THIS 4 MORE TIMES
+	//This will get the current damage of the place you are going to erode.
+//	int bunkPosY;
+//	int bunkDamage;
+//	int bunkYOffset = 0;
+//	int skipDraw = 0;
+//	//int randNum = 0;// = rand() % 4;
+//	int bunkPosX = (bunkerNumber * 4);// + randNum;
+//	if(bunkerHealth[0][bunkPosX] <= -1){//the first row
+//		if(bunkerHealth[1][bunkPosX] <= -1){//second row
+//			if(bunkerHealth[2][bunkPosX] <= -1) {//third row
+//				skipDraw = 1;//do nothing
+//			}else{
+//				bunkDamage = bunkerHealth[2][bunkPosX];
+//				bunkerHealth[2][bunkPosX]--;
+//				bunkYOffset = 2;
+//			}
+//		}else{
+//			bunkDamage = bunkerHealth[1][bunkPosX];
+//			bunkerHealth[1][bunkPosX]--;
+//			bunkYOffset = 1;
+//		}
+//	}else{
+//		bunkDamage = bunkerHealth[0][bunkPosX];
+//		bunkerHealth[0][bunkPosX]--;
+//		bunkYOffset = 0;
+//	}
+//	//This will get the x position of the bunker to erode.
+//	if(bunkerNumber == 0){
+//		bunkPosX = BUNKER_NUM_0_X + randNum*BUNKER_DAMAGE_WIDTH;
+//	}else if(bunkerNumber == 1){
+//		bunkPosX = BUNKER_NUM_1_X + randNum*BUNKER_DAMAGE_WIDTH;
+//	}else if(bunkerNumber == 2){
+//		bunkPosX = BUNKER_NUM_2_X + randNum*BUNKER_DAMAGE_WIDTH;
+//	}else if(bunkerNumber == 3){
+//		bunkPosX = BUNKER_NUM_3_X + randNum*BUNKER_DAMAGE_WIDTH;
+//	}
+//	//This will get the y position of the bunker to erode.
+//	if(bunkYOffset == 0){
+//		bunkPosY = BUNKER_Y;
+//	}else if(bunkYOffset == 1){
+//		bunkPosY = BUNKER_Y + BUNKER_DAMAGE_HEIGHT;
+//	}else if(bunkYOffset == 2){
+//		bunkPosY = BUNKER_Y + (BUNKER_DAMAGE_HEIGHT * 2);
+//	}
+//	if(skipDraw == 0){
+//		drawBunkerDamage(bunkPosX, bunkPosY, bunkDamage);
+//	}
+}
+
+void drawAlienExplosion(xExplosion, yExplosion){
+	//alien_explosion_24x20
+	unsigned int * framePointer = (unsigned int *) FRAME_BUFFER_ADDR;
+	int row, column;
+	for (row=yExplosion; row<yExplosion+ALIEN_EXPLOSION_HEIGHT; row++) {
+		for (column = xExplosion; column<xExplosion+ALIEN_EXPLOSION_WIDTH; column++) {
+			if ((alien_explosion_24x20[row-yExplosion] & (1<<(ALIEN_EXPLOSION_HEIGHT-1-(column-xExplosion))))) {
+				framePointer[(row)*SCREEN_WIDTH + (column)] = WHITE;
+			}else{
+				framePointer[(row)*SCREEN_WIDTH + (column)] = BLACK;
+			}
 		}
 	}
+}
+int evalTankBulletCollision(bulletx, bullety){//also needs to kill alien or erode bunker if there was a collision
+	unsigned int * framePointer = (unsigned int *) FRAME_BUFFER_ADDR;
+	int collision = 0;
+	int nextPixColor = framePointer[(bullety-1)*SCREEN_WIDTH + (bulletx)];
+	//int y_collision = aliens_y+ALIENS_TALL*(ALIEN_HEIGHT+ALIEN_BUFFER);//bottom row of aliens
+	if(nextPixColor == WHITE){//Kill alien
+		xil_printf("color of next pixel is white\n\r");
+	}else if(nextPixColor == GREEN){//Erode bunker
+		xil_printf("color of next pixel is green\n\r");
+
+	}
+	//xil_printf("color of next pixel is %04x\n\r", framePointer[(bulletx)*SCREEN_WIDTH + (bullety-1)]);
+	//xil_printf("color of next pixel is %04x\n\r", framePointer[(bullety-1)*SCREEN_WIDTH + (bulletx)]);
+
+	//if((tankBullety-1) <= y_collision){
+
+	//}
+	//(tankBullety-1) <= aliens_y+ALIENS_TALL*(ALIEN_HEIGHT+ALIEN_BUFFER)	<- this means it is at the bottom of the aliens block
+	//    		 int alien_y_index = index/ALIENS_WIDE;
+	//    		 int alien_x_index = index%ALIENS_WIDE;
+	//    		 aliens_alive[alien_y_index][alien_x_index] = 0;
+	//    		 erase_alien(aliens_y+alien_y_index*(ALIEN_HEIGHT+ALIEN_BUFFER), aliens_x+alien_x_index*(ALIEN_WIDTH+ALIEN_BUFFER));
+	//    		 reevaluate_aliens();
+	return collision;
+}
+void moveBullets(){
+	if(exists_tank_missile){
+		//Erase previous tank bullet
+		int draw = 0;
+		int tankBulletX = tankBulletCoordinates[0];
+		int tankBullety = tankBulletCoordinates[1];
+		int isCollision;
+		drawTankBullet(tankBulletX, tankBullety, draw);
+		//There is a bullet so must check if next pos is a collision and act accordingly otherwise just erase it and move it up
+		isCollision = evalTankBulletCollision(tankBulletX, tankBullety);
+		//	xil_printf("aliens y is %d", aliens_y);
+		//	xil_printf("tankBullety y is %d", tankBullety);
+		if(isCollision == 0){//There is a bullet but no collision so draw bullet up one
+			if(tankBullety > 0){//If the bullet is still on the screen move it up
+				exists_tank_missile = 1;
+				tankBullety -= 10;
+				draw = 1;
+				drawTankBullet(tankBulletX, tankBullety, draw);	//draw new tank bullet
+				tankBulletCoordinates[0] = tankBulletX;//update x bullet's coordinate
+				tankBulletCoordinates[1] = tankBullety;//update y bullet's coordinate
+			}else{//If bullet is at the top of the screen don't draw a new one and tell code that there is no tank missile
+				exists_tank_missile = 0;
+			}
+		}
+	}
+
 
 //	if(exists_missile){
 //		draw = 0;
@@ -476,9 +548,11 @@ void reevaluate_aliens(){
 	}
 	last_row = x;
 }
+
 //////////////////////////////////////////////////////////////////////////////////////////////////
 //Interrupt handling code
 //////////////////////////////////////////////////////////////////////////////////////////////////
+
 void button_decoder() {
 	if(currentButtonState & LEFTBTN){//move tank left
 		if(tankPosX > 0){
@@ -498,6 +572,7 @@ void button_decoder() {
 			drawTankBullet(tankPosX + TANK_WIDTH/2 - 1, tankPosY - TANK_BULLET_HEIGHT, draw);
 			tankBulletCoordinates[0] = tankPosX + TANK_WIDTH/2 - 1;
 			tankBulletCoordinates[1] = tankPosY - TANK_BULLET_HEIGHT;
+			exists_tank_missile = 1;
 		}
 	}
 }
@@ -567,6 +642,8 @@ void interrupt_handler_dispatcher(void* ptr) {
 	}
 }
 //////////////////////////////////////////////////////////////////////////////////////////////////
+//MAIN (Init hardware and screen. Enter while(1) loop.
+//////////////////////////////////////////////////////////////////////////////////////////////////
 int main()
 {
 	init_platform();                   // Necessary for all programs.
@@ -583,14 +660,12 @@ int main()
 	XGpio_InterruptGlobalEnable(&gpPB);
 	// Enable all interrupts in the push button peripheral.
 	XGpio_InterruptEnable(&gpPB, 0xFFFFFFFF);
-
 	microblaze_register_handler(interrupt_handler_dispatcher, NULL);
 	XIntc_EnableIntr(XPAR_INTC_0_BASEADDR,
 			(XPAR_FIT_TIMER_0_INTERRUPT_MASK | XPAR_PUSH_BUTTONS_5BITS_IP2INTC_IRPT_MASK));
 	XIntc_MasterEnable(XPAR_INTC_0_BASEADDR);
 	microblaze_enable_interrupts();
 	////////////////////////////////////////////////////////////
-
 	XAxiVdma videoDMAController;
 	// There are 3 steps to initializing the vdma driver and IP.
 	// Step 1: lookup the memory structure that is used to access the vdma driver.
@@ -604,7 +679,6 @@ int main()
     	xil_printf("Set Frame Store Failed.");
     }
     // Initialization is complete at this point.
-
     // Setup the frame counter. We want two read frames. We don't need any write frames but the
     // function generates an error if you set the write frame count to 0. We set it to 2
     // but ignore it because we don't need a write channel at all.
@@ -615,9 +689,9 @@ int main()
     myFrameConfig.WriteDelayTimerCount = 10;
     Status = XAxiVdma_SetFrameCounter(&videoDMAController, &myFrameConfig);
     if (Status != XST_SUCCESS) {
-	   xil_printf("Set frame counter failed %d\r\n", Status);
-	   if(Status == XST_VDMA_MISMATCH_ERROR)
-		   xil_printf("DMA Mismatch Error\r\n");
+    	xil_printf("Set frame counter failed %d\r\n", Status);
+    	if(Status == XST_VDMA_MISMATCH_ERROR)
+    		xil_printf("DMA Mismatch Error\r\n");
     }
     // Now we tell the driver about the geometry of our frame buffer and a few other things.
     // Our image is 480 x 640.
@@ -633,47 +707,43 @@ int main()
     myFrameBuffer.FixedFrameStoreAddr = 0;
     if(XST_FAILURE == XAxiVdma_DmaConfig(&videoDMAController, XAXIVDMA_READ, &myFrameBuffer)) {
     	xil_printf("DMA Config Failed\r\n");
-     }
+    }
     // We need to give the frame buffer pointers to the memory that it will use. This memory
     // is where you will write your video data. The vdma IP/driver then streams it to the HDMI
     // IP.
-     myFrameBuffer.FrameStoreStartAddr[0] = FRAME_BUFFER_ADDR;
-     myFrameBuffer.FrameStoreStartAddr[1] = FRAME_BUFFER_ADDR + 4*640*480;
-
-     if(XST_FAILURE == XAxiVdma_DmaSetBufferAddr(&videoDMAController, XAXIVDMA_READ,
-    		               myFrameBuffer.FrameStoreStartAddr)) {
-    	 xil_printf("DMA Set Address Failed Failed\r\n");
-     }
+    myFrameBuffer.FrameStoreStartAddr[0] = FRAME_BUFFER_ADDR;
+    myFrameBuffer.FrameStoreStartAddr[1] = FRAME_BUFFER_ADDR + 4*640*480;
+    if(XST_FAILURE == XAxiVdma_DmaSetBufferAddr(&videoDMAController, XAXIVDMA_READ,
+    	               myFrameBuffer.FrameStoreStartAddr)) {
+     xil_printf("DMA Set Address Failed Failed\r\n");
+    }
      // Print a sanity message if you get this far.
-     xil_printf("\n\rWoohooz! I made it through initialization.\n\r");
-
-     // Now, let's get ready to start displaying some stuff on the screen.
-     // The variables framePointer and framePointer1 are just pointers to the base address
-     // of frame 0 and frame 1.
-
-    // Let's print out the alien as ASCII characters on the screen.
+    xil_printf("\n\rWoohoo! I made it through initialization.\n\r");
+	// Now, let's get ready to start displaying some stuff on the screen.
+	// The variables framePointer and framePointer1 are just pointers to the base address
+	// of frame 0 and frame 1.
+	// Let's print out the alien as ASCII characters on the screen.
 	// Each line of the alien is a 32-bit integer. We just need to strip the bits out and send
 	// them to stdout.
 	// MSB is the left-most pixel for the alien, so start from the MSB as we print from left to right.
-
-    // This tells the HDMI controller the resolution of your display (there must be a better way to do this).
-     XIo_Out32(XPAR_AXI_HDMI_0_BASEADDR, SCREEN_WIDTH*SCREEN_HEIGHT);
-
+	// This tells the HDMI controller the resolution of your display (there must be a better way to do this).
+    XIo_Out32(XPAR_AXI_HDMI_0_BASEADDR, SCREEN_WIDTH*SCREEN_HEIGHT);
     // Start the DMA for the read channel only.
-     if(XST_FAILURE == XAxiVdma_DmaStart(&videoDMAController, XAXIVDMA_READ)){
-    	 xil_printf("DMA START FAILED\r\n");
-     }
-     int frameIndex = 0;
-//     // We have two frames, let's park on frame 0. Use frameIndex to index them.
-//     // Note that you have to start the DMA process before parking on a frame.
-     if (XST_FAILURE == XAxiVdma_StartParking(&videoDMAController, frameIndex,  XAXIVDMA_READ)) {
-    	 xil_printf("vdma parking failed\n\r");
-     }
+    if(XST_FAILURE == XAxiVdma_DmaStart(&videoDMAController, XAXIVDMA_READ)){
+    	xil_printf("DMA START FAILED\r\n");
+    }
+    int frameIndex = 0;
+    // We have two frames, let's park on frame 0. Use frameIndex to index them.
+    // Note that you have to start the DMA process before parking on a frame.
+	if (XST_FAILURE == XAxiVdma_StartParking(&videoDMAController, frameIndex,  XAXIVDMA_READ)) {
+		xil_printf("vdma parking failed\n\r");
+	}
 
 
-    ///////////////////////////////////
-	//CLEAR THE SCREEN//
-    xil_printf("initialized!\n\r");
+	 //////////////////////////////////////////////////////////////////////////////////////////////////
+	 //Clear Screen, initialize
+	 //////////////////////////////////////////////////////////////////////////////////////////////////
+	xil_printf("initialized!\n\r");
 	int y, x = 0;
 	unsigned int * frameP = (unsigned int *) FRAME_BUFFER_ADDR;
 	for (y=0; y<SCREEN_HEIGHT; y++) {
@@ -681,13 +751,11 @@ int main()
 			frameP[(y)*SCREEN_WIDTH + (x)] = BLACK;
 		}
 	 }
-     ///////////////////////////////////
-
-     /////////////////////////////
-     //initialize tank on screen//
-     int draw = 1;
-     tankPosX = 0;
-     tankPosY = 414;
+	 /////////////////////////////
+	 //initialize tank on screen//
+	 int draw = 1;
+	 tankPosX = 0;
+	 tankPosY = 414;
 	 drawTank(tankPosX, tankPosY, draw);
 	 /////////////////////////////
 
@@ -695,7 +763,7 @@ int main()
 	 //initialize bunkers on screen//
 	 draw = 1;
 	 int bunkerPosX = BUNKER_NUM_0_X;
-	 int bunkerPosY = BUNKER_Y;
+	 int bunkerPosY = BUNKER_TOP;
 	 drawBunker(bunkerPosX, bunkerPosY, draw);
 	 bunkerPosX = BUNKER_NUM_1_X;
 	 drawBunker(bunkerPosX, bunkerPosY, draw);
@@ -703,6 +771,7 @@ int main()
 	 drawBunker(bunkerPosX, bunkerPosY, draw);
 	 bunkerPosX = BUNKER_NUM_3_X;
 	 drawBunker(bunkerPosX, bunkerPosY, draw);
+	 /////////////////////////////
 
 	 /////////////////////////////
 	 //initialize aliens alive array//
@@ -714,6 +783,8 @@ int main()
 	 }
 	 direction = LEFT;
 	 /////////////////////////////
+
+	 /////////////////////////////
 	 //initialize aliens on screen//
 	 //srand((unsigned)time(NULL));
 
@@ -721,9 +792,15 @@ int main()
 	 aliens_y = ALIENS_START_Y;
 	 print_aliens(aliens_y, aliens_x, direction);
 	 setvbuf(stdin,NULL,_IONBF,0);
+	 /////////////////////////////
+
+	while (1);
+	cleanup_platform();
+	return 0;
+}
 
 
-     while (1) {
+
 //    	 char c = getchar();
 //    	 if(c == '6'){//key 6 so move right
 //    		 if(tankPosX < SCREEN_WIDTH - TANK_WIDTH){
@@ -809,8 +886,3 @@ int main()
 //    		 erase_alien(aliens_y+alien_y_index*(ALIEN_HEIGHT+ALIEN_BUFFER), aliens_x+alien_x_index*(ALIEN_WIDTH+ALIEN_BUFFER));
 //    		 reevaluate_aliens();
 //    	 }
-     }
-     cleanup_platform();
-
-    return 0;
-}
