@@ -76,7 +76,7 @@
 #define ALIENS_WIDE 11
 #define ALIEN_BUFFER 8
 #define ALIENS_START_X 160
-#define ALIENS_START_Y 40
+#define ALIENS_START_Y 60
 #define ALIEN_HORIZ_MOVE 4
 #define ALIEN_VERTICAL_MOVE 8
 #define DOWN 0
@@ -88,6 +88,13 @@
 #define WORD_WIDTH 32
 #define BUNKER_BOTTOM 336
 #define BUNKER_TOP 300
+#define SCORE_WORD_Y 5
+#define SCORE_WORD_X 5
+#define LETTER_WIDTH 15
+#define LETTER_HEIGHT 15
+#define LETTER_WIDTH_I 3
+#define LETTER_WIDTH_ONE 6
+#define LETTER_BUFFER 3
 
 void print(char *str);
 XGpio gpLED;  // This is a handle for the LED GPIO block.
@@ -214,6 +221,17 @@ void erase_alien(int corner_top, int corner_left){	//erases alien of given coord
 	for (row=corner_top; row<corner_top+ALIEN_HEIGHT; row++) {
 			for (column = corner_left; column<corner_left+ALIEN_WIDTH; column++) {
 				framePointer[row*SCREEN_WIDTH + column] = BLACK;
+			}
+	}
+}
+
+void drawScoreWord(){ //draws "score 0" at beginning
+	unsigned int * framePointer = (unsigned int *) FRAME_BUFFER_ADDR;
+	int row,column,letter_index;
+	letter_index = 0;
+	for (row=SCORE_WORD_Y; row<LETTER_HEIGHT; row++) {
+			for (column = SCORE_WORD_X+letter_index*(LETTER_WIDTH+LETTER_BUFFER); column<SCORE_WORD_X+(letter_index+1)*(LETTER_WIDTH+LETTER_BUFFER); column++) {
+				framePointer[row*SCREEN_WIDTH + column] = WHITE;
 			}
 	}
 }
