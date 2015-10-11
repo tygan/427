@@ -574,6 +574,18 @@ void button_decoder() {
 			tankBulletCoordinates[1] = tankPosY - TANK_BULLET_HEIGHT;
 			exists_tank_missile = 1;
 		}
+	}else if(currentButtonState & DOWNBTN){//kill left and right aliens	//for testing	//delete
+		int i;
+		for(i=0;i<ALIENS_TALL;i++){
+			aliens_alive[i][0] = 0;
+			erase_alien(aliens_y+i*(ALIEN_HEIGHT+ALIEN_BUFFER), aliens_x+0*(ALIEN_WIDTH+ALIEN_BUFFER));
+			reevaluate_aliens();
+		}
+		for(i=0;i<ALIENS_TALL;i++){
+			aliens_alive[i][ALIENS_WIDE-1] = 0;
+			erase_alien(aliens_y+i*(ALIEN_HEIGHT+ALIEN_BUFFER), aliens_x+(ALIENS_WIDE-1)*(ALIEN_WIDTH+ALIEN_BUFFER));
+			reevaluate_aliens();
+		}
 	}
 }
 
@@ -594,7 +606,7 @@ void timer_interrupt_handler() {
 			 direction = LEFT;
 			}
 		}
-		else if(aliens_x + first_row*(ALIEN_WIDTH+ALIEN_BUFFER) == 0 || aliens_x == SCREEN_WIDTH - ALIENS_WIDE*(ALIEN_BUFFER+ALIEN_WIDTH)){	//if aliens hit the left or right edges
+		else if(aliens_x + first_row*(ALIEN_WIDTH+ALIEN_BUFFER) == 0 || aliens_x == SCREEN_WIDTH - (last_row+1)*(ALIEN_BUFFER+ALIEN_WIDTH)+ALIEN_BUFFER){	//if aliens hit the left or right edges
 		 direction = DOWN;
 		}
 		if(direction == DOWN){
@@ -781,7 +793,7 @@ int main()
 			 aliens_alive[i][j] = 1;
 		 }
 	 }
-	 direction = LEFT;
+	 direction = RIGHT;
 	 /////////////////////////////
 
 	 /////////////////////////////
