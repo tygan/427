@@ -718,7 +718,7 @@ int main()
      xil_printf("DMA Set Address Failed Failed\r\n");
     }
      // Print a sanity message if you get this far.
-    xil_printf("\n\rWoohoo! I made it through initialization.\n\r");
+    xil_printf("\n\rWoohooz! I made it through initialization.\n\r");
 	// Now, let's get ready to start displaying some stuff on the screen.
 	// The variables framePointer and framePointer1 are just pointers to the base address
 	// of frame 0 and frame 1.
