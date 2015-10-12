@@ -215,16 +215,6 @@ void print_aliens(int corner_top, int corner_left, int direction){
 	}
 }
 
-void erase_alien(int corner_top, int corner_left){	//erases alien of given coordinates
-	unsigned int * framePointer = (unsigned int *) FRAME_BUFFER_ADDR;
-	int row,column;
-	for (row=corner_top; row<corner_top+ALIEN_HEIGHT; row++) {
-			for (column = corner_left; column<corner_left+ALIEN_WIDTH; column++) {
-				framePointer[row*SCREEN_WIDTH + column] = BLACK;
-			}
-	}
-}
-
 void drawScoreWord(){ //draws "score 0" at beginning
 	unsigned int * framePointer = (unsigned int *) FRAME_BUFFER_ADDR;
 	int row,column,letter_index;
@@ -456,37 +446,39 @@ int erodeBunker(xPos, yPos){
 	return 1;
 }
 
-void drawAlienExplosion(xExplosion, yExplosion){
-	//alien_explosion_24x20
+void destroy_alien(int corner_top, int corner_left){	//erases alien of given coordinates
 	unsigned int * framePointer = (unsigned int *) FRAME_BUFFER_ADDR;
-	int row, column;
-	for (row=yExplosion; row<yExplosion+ALIEN_EXPLOSION_HEIGHT; row++) {
-		for (column = xExplosion; column<xExplosion+ALIEN_EXPLOSION_WIDTH; column++) {
-			if ((alien_explosion_24x20[row-yExplosion] & (1<<(ALIEN_EXPLOSION_HEIGHT-1-(column-xExplosion))))) {
-				framePointer[(row)*SCREEN_WIDTH + (column)] = WHITE;
-			}else{
-				framePointer[(row)*SCREEN_WIDTH + (column)] = BLACK;
+	int row,column;
+	for (row=corner_top; row<corner_top+ALIEN_HEIGHT; row++) {
+			for (column = corner_left; column<corner_left+ALIEN_WIDTH; column++) {
+				if ((alien_explosion_24x20[row-corner_top] & (1<<(ALIEN_EXPLOSION_HEIGHT-1-(column-corner_left))))) {
+					framePointer[(row)*SCREEN_WIDTH + (column)] = WHITE;
+				}else{
+					framePointer[(row)*SCREEN_WIDTH + (column)] = BLACK;
+				}
 			}
-		}
 	}
 }
+
+int killAlien(pointx, pointy){
+	int alien_x_index, alien_y_index;
+	alien_x_index = (pointx-aliens_x)/(ALIEN_WIDTH+ALIEN_BUFFER);
+	alien_y_index = (pointy-aliens_y)/(ALIEN_HEIGHT+ALIEN_BUFFER);
+	aliens_alive[alien_y_index][alien_x_index] = 0;
+	destroy_alien(aliens_y+alien_y_index*(ALIEN_HEIGHT+ALIEN_BUFFER), aliens_x+alien_x_index*(ALIEN_WIDTH+ALIEN_BUFFER));
+	return 1;
+}
+
 int evalTankBulletCollision(bulletx, bullety){//also needs to kill alien or erode bunker if there was a collision
 	unsigned int * framePointer = (unsigned int *) FRAME_BUFFER_ADDR;
 	int collision = 0;
-	int eroded = 0;
 	int nextPixColor = framePointer[(bullety-1)*SCREEN_WIDTH + (bulletx)];
 	//int y_collision = aliens_y+ALIENS_TALL*(ALIEN_HEIGHT+ALIEN_BUFFER);//bottom row of aliens
 	if(nextPixColor == WHITE){//Kill alien
-		xil_printf("color of next pixel is white\n\r");
+		collision = killAlien(bulletx, bullety);
 	}else if(bullety-1 <= BUNKER_BOTTOM && bullety-1 > BUNKER_TOP){//if its in the bunker region
-		eroded = erodeBunker(bulletx, bullety);
-		if(eroded == 1){
-			return 1;
-		}
+		collision = erodeBunker(bulletx, bullety);
 	}
-	//xil_printf("color of next pixel is %04x\n\r", framePointer[(bulletx)*SCREEN_WIDTH + (bullety-1)]);
-	//xil_printf("color of next pixel is %04x\n\r", framePointer[(bullety-1)*SCREEN_WIDTH + (bulletx)]);
-
 	//if((tankBullety-1) <= y_collision){
 
 	//}
@@ -496,6 +488,7 @@ int evalTankBulletCollision(bulletx, bullety){//also needs to kill alien or erod
 	//    		 aliens_alive[alien_y_index][alien_x_index] = 0;
 	//    		 erase_alien(aliens_y+alien_y_index*(ALIEN_HEIGHT+ALIEN_BUFFER), aliens_x+alien_x_index*(ALIEN_WIDTH+ALIEN_BUFFER));
 	//    		 reevaluate_aliens();
+
 	return collision;
 }
 void moveBullets(){
@@ -597,12 +590,12 @@ void button_decoder() {
 		int i;
 		for(i=0;i<ALIENS_TALL;i++){
 			aliens_alive[i][0] = 0;
-			erase_alien(aliens_y+i*(ALIEN_HEIGHT+ALIEN_BUFFER), aliens_x+0*(ALIEN_WIDTH+ALIEN_BUFFER));
+			destroy_alien(aliens_y+i*(ALIEN_HEIGHT+ALIEN_BUFFER), aliens_x+0*(ALIEN_WIDTH+ALIEN_BUFFER));
 			reevaluate_aliens();
 		}
 		for(i=0;i<ALIENS_TALL;i++){
 			aliens_alive[i][ALIENS_WIDE-1] = 0;
-			erase_alien(aliens_y+i*(ALIEN_HEIGHT+ALIEN_BUFFER), aliens_x+(ALIENS_WIDE-1)*(ALIEN_WIDTH+ALIEN_BUFFER));
+			destroy_alien(aliens_y+i*(ALIEN_HEIGHT+ALIEN_BUFFER), aliens_x+(ALIENS_WIDE-1)*(ALIEN_WIDTH+ALIEN_BUFFER));
 			reevaluate_aliens();
 		}
 	}
