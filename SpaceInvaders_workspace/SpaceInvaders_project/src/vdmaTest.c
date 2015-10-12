@@ -461,20 +461,35 @@ void destroy_alien(int corner_top, int corner_left){	//erases alien of given coo
 }
 
 int killAlien(pointx, pointy){
+	unsigned int * framePointer = (unsigned int *) FRAME_BUFFER_ADDR;
 	int alien_x_index, alien_y_index;
 	alien_x_index = (pointx-aliens_x)/(ALIEN_WIDTH+ALIEN_BUFFER);
 	alien_y_index = (pointy-aliens_y)/(ALIEN_HEIGHT+ALIEN_BUFFER);
+//	if(aliens_alive[alien_y_index][alien_x_index] == 0){
+//		return 0;
+//	}
+
+	int nextPixColor = framePointer[(pointy-1)*SCREEN_WIDTH + (pointx)];
+	if(nextPixColor == WHITE){
+		xil_printf("color: white\n\r");
+	}else if(nextPixColor == BLACK){
+		xil_printf("color: black\n\r");
+	}
+
+	if(nextPixColor == WHITE){
 	aliens_alive[alien_y_index][alien_x_index] = 0;
 	destroy_alien(aliens_y+alien_y_index*(ALIEN_HEIGHT+ALIEN_BUFFER), aliens_x+alien_x_index*(ALIEN_WIDTH+ALIEN_BUFFER));
 	return 1;
+	}else{
+		return 0;
+	}
 }
 
 int evalTankBulletCollision(bulletx, bullety){//also needs to kill alien or erode bunker if there was a collision
-	unsigned int * framePointer = (unsigned int *) FRAME_BUFFER_ADDR;
 	int collision = 0;
-	int nextPixColor = framePointer[(bullety-1)*SCREEN_WIDTH + (bulletx)];
+
 	//int y_collision = aliens_y+ALIENS_TALL*(ALIEN_HEIGHT+ALIEN_BUFFER);//bottom row of aliens
-	if(nextPixColor == WHITE){//Kill alien
+	if(bullety-1 <= aliens_y+5*(ALIEN_HEIGHT+ALIEN_BUFFER) && bullety-1 > aliens_y){//Kill alien
 		collision = killAlien(bulletx, bullety);
 	}else if(bullety-1 <= BUNKER_BOTTOM && bullety-1 > BUNKER_TOP){//if its in the bunker region
 		collision = erodeBunker(bulletx, bullety);
