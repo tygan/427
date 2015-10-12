@@ -368,10 +368,10 @@ void drawBunkerDamage(x_pos, y_pos, damageType){
 }
 int erodeBunker(xPos, yPos){
 	//This will tell you what row of the bunker array that is going to erode.
-	int row, bunkerColumn;
+	int row, bunkerColumn = 0;
 	int column = 16;//this is for if the xPos is not somewhere where the bunkers exist(black space)
 	int bunkDamage;
-	int bunkPosX,bunkPosY ;
+	int bunkPosX,bunkPosY = 0;
 	if(yPos < BUNKER_BOTTOM && yPos > BUNKER_BOTTOM-BUNKER_DAMAGE_HEIGHT)//This is bottom row of bunkers
 		row = 2;
 	else if(yPos < BUNKER_BOTTOM-BUNKER_DAMAGE_HEIGHT && yPos > BUNKER_TOP+BUNKER_DAMAGE_HEIGHT)//Middle row
@@ -461,48 +461,30 @@ void destroy_alien(int corner_top, int corner_left){	//erases alien of given coo
 }
 
 int killAlien(pointx, pointy){
-	unsigned int * framePointer = (unsigned int *) FRAME_BUFFER_ADDR;
 	int alien_x_index, alien_y_index;
 	alien_x_index = (pointx-aliens_x)/(ALIEN_WIDTH+ALIEN_BUFFER);
 	alien_y_index = (pointy-aliens_y)/(ALIEN_HEIGHT+ALIEN_BUFFER);
-//	if(aliens_alive[alien_y_index][alien_x_index] == 0){
-//		return 0;
-//	}
-
-	int nextPixColor = framePointer[(pointy-1)*SCREEN_WIDTH + (pointx)];
-	if(nextPixColor == WHITE){
-		xil_printf("color: white\n\r");
-	}else if(nextPixColor == BLACK){
-		xil_printf("color: black\n\r");
+	if(aliens_alive[alien_y_index][alien_x_index] == 0){
+		return 0;
 	}
 
-	if(nextPixColor == WHITE){
+	if((pointx-aliens_x)%(ALIEN_WIDTH+ALIEN_BUFFER) > ALIEN_WIDTH)
+	{
+		return 0;
+	}
+
 	aliens_alive[alien_y_index][alien_x_index] = 0;
 	destroy_alien(aliens_y+alien_y_index*(ALIEN_HEIGHT+ALIEN_BUFFER), aliens_x+alien_x_index*(ALIEN_WIDTH+ALIEN_BUFFER));
 	return 1;
-	}else{
-		return 0;
-	}
 }
 
 int evalTankBulletCollision(bulletx, bullety){//also needs to kill alien or erode bunker if there was a collision
 	int collision = 0;
-
-	//int y_collision = aliens_y+ALIENS_TALL*(ALIEN_HEIGHT+ALIEN_BUFFER);//bottom row of aliens
 	if(bullety-1 <= aliens_y+5*(ALIEN_HEIGHT+ALIEN_BUFFER) && bullety-1 > aliens_y){//Kill alien
 		collision = killAlien(bulletx, bullety);
 	}else if(bullety-1 <= BUNKER_BOTTOM && bullety-1 > BUNKER_TOP){//if its in the bunker region
 		collision = erodeBunker(bulletx, bullety);
 	}
-	//if((tankBullety-1) <= y_collision){
-
-	//}
-	//(tankBullety-1) <= aliens_y+ALIENS_TALL*(ALIEN_HEIGHT+ALIEN_BUFFER)	<- this means it is at the bottom of the aliens block
-	//    		 int alien_y_index = index/ALIENS_WIDE;
-	//    		 int alien_x_index = index%ALIENS_WIDE;
-	//    		 aliens_alive[alien_y_index][alien_x_index] = 0;
-	//    		 erase_alien(aliens_y+alien_y_index*(ALIEN_HEIGHT+ALIEN_BUFFER), aliens_x+alien_x_index*(ALIEN_WIDTH+ALIEN_BUFFER));
-	//    		 reevaluate_aliens();
 
 	return collision;
 }
