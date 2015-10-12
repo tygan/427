@@ -95,6 +95,8 @@
 #define LETTER_WIDTH_I 3
 #define LETTER_WIDTH_ONE 6
 #define LETTER_BUFFER 3
+#define SCORE_Y 5
+#define SCORE_X 105
 
 void print(char *str);
 XGpio gpLED;  // This is a handle for the LED GPIO block.
@@ -120,6 +122,8 @@ int drawAlienTimer;
 int direction;
 int aliens_x;
 int aliens_y;
+int score = 324;
+int score_digits = 1;
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
 //Draw functions
@@ -225,14 +229,127 @@ void erase_alien(int corner_top, int corner_left){	//erases alien of given coord
 	}
 }
 
-void drawScoreWord(){ //draws "score 0" at beginning
+void draw_score_word(){ //draws "score 0" at beginning
 	unsigned int * framePointer = (unsigned int *) FRAME_BUFFER_ADDR;
-	int row,column,letter_index;
+	int localx,localy,letter_index,worldx,worldy;
 	letter_index = 0;
-	for (row=SCORE_WORD_Y; row<LETTER_HEIGHT; row++) {
-			for (column = SCORE_WORD_X+letter_index*(LETTER_WIDTH+LETTER_BUFFER); column<SCORE_WORD_X+(letter_index+1)*(LETTER_WIDTH+LETTER_BUFFER); column++) {
-				framePointer[row*SCREEN_WIDTH + column] = WHITE;
+	for (localy=0; localy<LETTER_HEIGHT; localy++) {
+		worldy = localy + SCORE_WORD_Y;
+		for (localx = 0; localx<LETTER_WIDTH+LETTER_BUFFER; localx++) {
+			if(localx < LETTER_WIDTH){
+				if ((letterS_15x15[localy] & (1<<(LETTER_WIDTH-1-localx)))) {
+					worldx = localx + SCORE_WORD_X + letter_index * (LETTER_WIDTH + LETTER_BUFFER);
+					framePointer[worldy*SCREEN_WIDTH + worldx] = WHITE;
+				}
 			}
+		}
+	}
+	letter_index++;
+	for (localy=0; localy<LETTER_HEIGHT; localy++) {
+		worldy = localy + SCORE_WORD_Y;
+		for (localx = 0; localx<LETTER_WIDTH+LETTER_BUFFER; localx++) {
+			if(localx < LETTER_WIDTH){
+				if ((letterC_15x15[localy] & (1<<(LETTER_WIDTH-1-localx)))) {
+					worldx = localx + SCORE_WORD_X + letter_index * (LETTER_WIDTH + LETTER_BUFFER);
+					framePointer[worldy*SCREEN_WIDTH + worldx] = WHITE;
+				}
+			}
+		}
+	}
+	letter_index++;
+	for (localy=0; localy<LETTER_HEIGHT; localy++) {
+		worldy = localy + SCORE_WORD_Y;
+		for (localx = 0; localx<LETTER_WIDTH+LETTER_BUFFER; localx++) {
+			if(localx < LETTER_WIDTH){
+				if ((letterO_15x15[localy] & (1<<(LETTER_WIDTH-1-localx)))) {
+					worldx = localx + SCORE_WORD_X + letter_index * (LETTER_WIDTH + LETTER_BUFFER);
+					framePointer[worldy*SCREEN_WIDTH + worldx] = WHITE;
+				}
+			}
+		}
+	}
+	letter_index++;
+	for (localy=0; localy<LETTER_HEIGHT; localy++) {
+		worldy = localy + SCORE_WORD_Y;
+		for (localx = 0; localx<LETTER_WIDTH+LETTER_BUFFER; localx++) {
+			if(localx < LETTER_WIDTH){
+				if ((letterR_15x15[localy] & (1<<(LETTER_WIDTH-1-localx)))) {
+					worldx = localx + SCORE_WORD_X + letter_index * (LETTER_WIDTH + LETTER_BUFFER);
+					framePointer[worldy*SCREEN_WIDTH + worldx] = WHITE;
+				}
+			}
+		}
+	}
+	letter_index++;
+	for (localy=0; localy<LETTER_HEIGHT; localy++) {
+		worldy = localy + SCORE_WORD_Y;
+		for (localx = 0; localx<LETTER_WIDTH+LETTER_BUFFER; localx++) {
+			if(localx < LETTER_WIDTH){
+				if ((letterE_15x15[localy] & (1<<(LETTER_WIDTH-1-localx)))) {
+					worldx = localx + SCORE_WORD_X + letter_index * (LETTER_WIDTH + LETTER_BUFFER);
+					framePointer[worldy*SCREEN_WIDTH + worldx] = WHITE;
+				}
+			}
+		}
+	}
+}
+
+int add_score(int points){
+	score += points;
+	int n = score;
+	int digits = 0;
+	if(n==0){
+		digits = 1;
+	}
+	else{
+		while(n!=0)	//find number of digits
+		{
+			n/=10;
+			++digits;
+		}
+	}
+	score_digits = digits;
+	xil_printf("\n\rscore: %d\n\rdigits: %d",score,score_digits);
+	//erase current score
+	unsigned int * framePointer = (unsigned int *) FRAME_BUFFER_ADDR;
+	int localx,localy,worldx,worldy;
+	int digit_index;
+	for(digit_index=0; digit_index<score_digits; digit_index++){
+		for (localy=0; localy<LETTER_HEIGHT; localy++) {
+			worldy = localy + SCORE_Y;
+			for (localx = 0; localx<LETTER_WIDTH+LETTER_BUFFER; localx++) {
+				if(localx < LETTER_WIDTH){
+					worldx = localx + SCORE_X + digit_index * (LETTER_WIDTH + LETTER_BUFFER);
+					framePointer[worldy*SCREEN_WIDTH + worldx] = BLACK;
+				}
+			}
+		}
+	}
+	int temp_score = score;
+	int display_digit;
+	for(digit_index=0; digit_index<score_digits; digit_index++){
+		int n = 1;
+		int i;
+		int digit = score_digits - digit_index;
+		for(i=0;i<digit-1;i++){
+			n*=10;
+		}
+		display_digit = temp_score/n;
+		xil_printf("\n\rdigit_index:%d score_digits:%d display_digit:%d temp_score:%d",digit_index,score_digits,display_digit,temp_score);
+		temp_score = temp_score - display_digit*n;
+		for (localy=0; localy<LETTER_HEIGHT; localy++) {
+			worldy = localy + SCORE_Y;
+			for (localx = 0; localx<LETTER_WIDTH+LETTER_BUFFER; localx++) {
+				if(localx < LETTER_WIDTH){
+					xil_printf("numbers[%d][%d]=%d!\n",display_digit,localy,numbers[display_digit][localy]);
+					if ((numbers[display_digit][localy] & (1<<(LETTER_WIDTH-1-localx)))) {
+						xil_printf("4");
+						worldx = localx + SCORE_X + digit_index * (LETTER_WIDTH + LETTER_BUFFER);
+						framePointer[worldy*SCREEN_WIDTH + worldx] = GREEN;
+					}
+				}
+			}
+		}
 	}
 }
 
@@ -604,6 +721,7 @@ void button_decoder() {
 			erase_alien(aliens_y+i*(ALIEN_HEIGHT+ALIEN_BUFFER), aliens_x+(ALIENS_WIDE-1)*(ALIEN_WIDTH+ALIEN_BUFFER));
 			reevaluate_aliens();
 		}
+		add_score(100);
 	}
 }
 
@@ -823,6 +941,10 @@ int main()
 	 print_aliens(aliens_y, aliens_x, direction);
 	 setvbuf(stdin,NULL,_IONBF,0);
 	 /////////////////////////////
+	 //draw words
+	 draw_score_word();
+	 add_score(0);
+	 //////////////////
 
 	while (1);
 	cleanup_platform();
