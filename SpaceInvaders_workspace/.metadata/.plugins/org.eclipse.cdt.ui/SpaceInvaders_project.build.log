@@ -15,7 +15,7 @@ Finished building target: SpaceInvaders_project.elf
 Invoking: MicroBlaze Print Size
 mb-size SpaceInvaders_project.elf  |tee "SpaceInvaders_project.elf.size"
    text	   data	    bss	    dec	    hex	filename
-  33024	   1684	  16812	  51520	   c940	SpaceInvaders_project.elf
+  34060	   1684	   4520	  40264	   9d48	SpaceInvaders_project.elf
 Finished building: SpaceInvaders_project.elf.size
 ' '
 Invoking: Xilinx ELF Check
