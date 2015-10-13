@@ -85,6 +85,7 @@
 #define BLACK 0x00000000
 #define WHITE 0x00FFFFFF
 #define GREEN 0x0000FF00
+#define RED   0x00FF0000
 #define WORD_WIDTH 32
 #define BUNKER_BOTTOM 348
 #define BUNKER_TOP 300
@@ -95,6 +96,10 @@
 #define LETTER_WIDTH_I 3
 #define LETTER_WIDTH_ONE 6
 #define LETTER_BUFFER 3
+#define EARTH_Y 460
+#define EARTH_DEPTH 2
+#define MOTHER_SHIP_HEIGHT 14
+#define MOTHER_SHIP_WIDTH 36
 
 void print(char *str);
 XGpio gpLED;  // This is a handle for the LED GPIO block.
@@ -120,6 +125,11 @@ int drawAlienTimer;
 int direction;
 int aliens_x;
 int aliens_y;
+int alienCount;
+int shipCounter;
+int motherShipX;
+int motherShipY;
+int shipAlive;
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
 //Draw functions
@@ -322,6 +332,53 @@ void drawTankBullet(x,y,draw){
 	}
 }
 
+void drawEarth(y){
+	unsigned int * framePointer = (unsigned int *) FRAME_BUFFER_ADDR;
+	int row, column;
+	for (row=y; row<y+EARTH_DEPTH; row++) {
+		for (column = 0; column<SCREEN_WIDTH; column++) {
+			framePointer[(row)*SCREEN_WIDTH + (column)] = GREEN;
+		}
+	}
+}
+
+void drawMotherShip(left_corner, top_corner, draw){
+	int color;
+	if(draw == 1){
+		color = RED;
+	}else{
+		color = BLACK;
+	}
+	unsigned int * framePointer = (unsigned int *) FRAME_BUFFER_ADDR;
+	int row, column;
+	int motherX = 0;
+	int motherY = 0;
+	int dupBitX = 0;
+	int dupBitY = 0;
+	for (row=top_corner; row<top_corner+MOTHER_SHIP_HEIGHT; row++) {
+	    for (column = left_corner; column<left_corner+MOTHER_SHIP_WIDTH; column++) {
+			if ((motherShip_18x7[motherY] & (1<<motherX))) {
+				framePointer[(row)*SCREEN_WIDTH + (column)] = color;
+			}else{
+				framePointer[(row)*SCREEN_WIDTH + (column)] = BLACK;
+			}
+			if(dupBitX == 1)
+			{
+				motherX++;
+				dupBitX = 0;
+			}else{
+				dupBitX = 1;
+			}
+		}
+	    motherX = 0;
+	    if(dupBitY == 1){
+	    	motherY++;
+	    	dupBitY = 0;
+	    }else{
+	    	dupBitY = 1;
+	    }
+	 }
+}
 void drawAlienMissile(x,y,draw){
 	int color;
 	if(draw == 1){
@@ -465,6 +522,7 @@ void destroy_alien(int corner_top, int corner_left){	//erases alien of given coo
 				}
 			}
 	}
+	alienCount--;
 }
 
 void reevaluate_aliens(){
@@ -597,7 +655,7 @@ void button_decoder() {
 			exists_tank_missile = 1;
 		}
 	}else if(currentButtonState & DOWNBTN){//kill left and right aliens	//for testing	//delete
-		int i;
+		int i;//,j;
 		for(i=0;i<ALIENS_TALL;i++){
 			aliens_alive[i][0] = 0;
 			destroy_alien(aliens_y+i*(ALIEN_HEIGHT+ALIEN_BUFFER), aliens_x+0*(ALIEN_WIDTH+ALIEN_BUFFER));
@@ -608,42 +666,70 @@ void button_decoder() {
 			destroy_alien(aliens_y+i*(ALIEN_HEIGHT+ALIEN_BUFFER), aliens_x+(ALIENS_WIDE-1)*(ALIEN_WIDTH+ALIEN_BUFFER));
 			reevaluate_aliens();
 		}
+//		for(j=0;j<ALIENS_WIDE;j++){ KILLS all aliens and goes to infinite game over loop
+//			for(i=0;i<ALIENS_TALL;i++){
+//				aliens_alive[i][j] = 0;
+//				destroy_alien(aliens_y+i*(ALIEN_HEIGHT+ALIEN_BUFFER), aliens_x+(j)*(ALIEN_WIDTH+ALIEN_BUFFER));
+//				reevaluate_aliens();
+//			}
+//		}
 	}
 }
-
 void timer_interrupt_handler() {
-	button_decoder();
-	if(bulletMoveCounter >= 3){
-		moveBullets();
-		bulletMoveCounter = 0;
+	 /////////////////////////////
+	 //draw the mothership that goes across the top of the screen
+	 /////////////////////////////
+	if(shipCounter >= 4 && shipAlive == 1){
+		int motherDraw = 1;
+		if(motherShipX+MOTHER_SHIP_WIDTH <= SCREEN_WIDTH){
+			shipCounter = 0;
+			drawMotherShip(motherShipX, motherShipY, motherDraw);
+			motherShipX += 2;
+		}else{
+			motherDraw = 0;
+			drawMotherShip(motherShipX, motherShipY, motherDraw);
+			shipAlive = 0;
+		}
 	}else{
-		bulletMoveCounter++;
+		shipCounter++;
 	}
-	if(drawAlienTimer >= 70){
-		if(direction == DOWN){	//if aliens have already gone down
-			if(aliens_x + first_row*(ALIEN_WIDTH+ALIEN_BUFFER) == 0){	//if aliens have hit the left edge of the screen
-			 direction = RIGHT;
+	 /////////////////////////////
+	if(alienCount > 0 || aliens_y+5*(ALIEN_HEIGHT+ALIEN_BUFFER) < BUNKER_BOTTOM){
+		button_decoder();
+		if(bulletMoveCounter >= 3){
+			moveBullets();
+			bulletMoveCounter = 0;
+		}else{
+			bulletMoveCounter++;
+		}
+		if(drawAlienTimer >= 70){
+			if(direction == DOWN){	//if aliens have already gone down
+				if(aliens_x + first_row*(ALIEN_WIDTH+ALIEN_BUFFER) == 0){	//if aliens have hit the left edge of the screen
+				 direction = RIGHT;
+				}
+				else{		//if aliens have hit the right edge of the screen
+				 direction = LEFT;
+				}
 			}
-			else{		//if aliens have hit the right edge of the screen
-			 direction = LEFT;
+			else if(aliens_x + first_row*(ALIEN_WIDTH+ALIEN_BUFFER) == 0 || aliens_x == SCREEN_WIDTH - (last_row+1)*(ALIEN_BUFFER+ALIEN_WIDTH)+ALIEN_BUFFER){	//if aliens hit the left or right edges
+			 direction = DOWN;
 			}
+			if(direction == DOWN){
+			 aliens_y = aliens_y + ALIEN_VERTICAL_MOVE + ALIEN_BUFFER;
+			}
+			else if(direction == LEFT){
+			 aliens_x = aliens_x - ALIEN_HORIZ_MOVE;
+			}
+			else{			//if direction == RIGHT
+			 aliens_x = aliens_x + ALIEN_HORIZ_MOVE;
+			}
+			print_aliens(aliens_y, aliens_x, direction);
+			drawAlienTimer = 0;
+		}else{
+			drawAlienTimer++;
 		}
-		else if(aliens_x + first_row*(ALIEN_WIDTH+ALIEN_BUFFER) == 0 || aliens_x == SCREEN_WIDTH - (last_row+1)*(ALIEN_BUFFER+ALIEN_WIDTH)+ALIEN_BUFFER){	//if aliens hit the left or right edges
-		 direction = DOWN;
-		}
-		if(direction == DOWN){
-		 aliens_y = aliens_y + ALIEN_VERTICAL_MOVE + ALIEN_BUFFER;
-		}
-		else if(direction == LEFT){
-		 aliens_x = aliens_x - ALIEN_HORIZ_MOVE;
-		}
-		else{			//if direction == RIGHT
-		 aliens_x = aliens_x + ALIEN_HORIZ_MOVE;
-		}
-		print_aliens(aliens_y, aliens_x, direction);
-		drawAlienTimer = 0;
 	}else{
-		drawAlienTimer++;
+		xil_printf("GAME OVER\n\r");
 	}
 }
 
@@ -682,7 +768,11 @@ int main()
 {
 	init_platform();                   // Necessary for all programs.
 	int Status;                        // Keep track of success/failure of system function calls.
-
+	alienCount = 55;
+	motherShipX = 0;
+	motherShipY = 20;
+	shipCounter = 0;
+	shipAlive = 1;
 	////////////////////////////////////////////////////////////
 	//Initialize interrupts and FIT
 	////////////////////////////////////////////////////////////
@@ -816,6 +906,12 @@ int main()
 		 }
 	 }
 	 direction = RIGHT;
+	 /////////////////////////////
+
+	 /////////////////////////////
+	 //draw earth on bottom of screen
+	 /////////////////////////////
+	 drawEarth(EARTH_Y);
 	 /////////////////////////////
 
 	 /////////////////////////////
