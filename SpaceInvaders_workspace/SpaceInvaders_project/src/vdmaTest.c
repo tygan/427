@@ -86,7 +86,7 @@
 #define WHITE 0x00FFFFFF
 #define GREEN 0x0000FF00
 #define WORD_WIDTH 32
-#define BUNKER_BOTTOM 336
+#define BUNKER_BOTTOM 348
 #define BUNKER_TOP 300
 #define SCORE_WORD_Y 5
 #define SCORE_WORD_X 5
@@ -344,7 +344,8 @@ void drawAlienMissile(x,y,draw){
 
 void drawBunkerDamage(x_pos, y_pos, damageType){
 	unsigned int * framePointer = (unsigned int *) FRAME_BUFFER_ADDR;
-	int row, column;
+	int row = 0;
+	int column = 0;
 	for (row=y_pos; row<y_pos+BUNKER_DAMAGE_HEIGHT; row++) {
 	    for (column = x_pos; column<x_pos+BUNKER_DAMAGE_WIDTH; column++) {
 	    	if(damageType == 3){
@@ -368,10 +369,13 @@ void drawBunkerDamage(x_pos, y_pos, damageType){
 }
 int erodeBunker(xPos, yPos){
 	//This will tell you what row of the bunker array that is going to erode.
-	int row, bunkerColumn = 0;
+	int row = 0;
+	int bunkerColumn = 0;
 	int column = 16;//this is for if the xPos is not somewhere where the bunkers exist(black space)
-	int bunkDamage;
-	int bunkPosX,bunkPosY = 0;
+	int bunkDamage = 0;
+	int bunkPosX = 0;
+	int bunkPosY = 0;
+
 	if(yPos < BUNKER_BOTTOM && yPos > BUNKER_BOTTOM-BUNKER_DAMAGE_HEIGHT)//This is bottom row of bunkers
 		row = 2;
 	else if(yPos < BUNKER_BOTTOM-BUNKER_DAMAGE_HEIGHT && yPos > BUNKER_TOP+BUNKER_DAMAGE_HEIGHT)//Middle row
@@ -441,6 +445,8 @@ int erodeBunker(xPos, yPos){
 	}else if(row == 2){
 		bunkPosY = BUNKER_TOP + (BUNKER_DAMAGE_HEIGHT * 2);
 	}
+//	xil_printf("bunkPosX is %d\n\r", bunkPosX);
+//	xil_printf("bunkPosY %d\n\r", bunkPosY);
 	drawBunkerDamage(bunkPosX, bunkPosY, bunkDamage);
 	bunkDamage = -1;
 	return 1;
@@ -448,7 +454,8 @@ int erodeBunker(xPos, yPos){
 
 void destroy_alien(int corner_top, int corner_left){	//erases alien of given coordinates
 	unsigned int * framePointer = (unsigned int *) FRAME_BUFFER_ADDR;
-	int row,column;
+	int row = 0;
+	int column = 0;
 	for (row=corner_top; row<corner_top+ALIEN_HEIGHT; row++) {
 			for (column = corner_left; column<corner_left+ALIEN_WIDTH; column++) {
 				if ((alien_explosion_24x20[row-corner_top] & (1<<(ALIEN_EXPLOSION_HEIGHT-1-(column-corner_left))))) {
@@ -460,21 +467,50 @@ void destroy_alien(int corner_top, int corner_left){	//erases alien of given coo
 	}
 }
 
+void reevaluate_aliens(){
+	int x, y, row_not_empty;
+	x = -1;
+	row_not_empty = 0;
+	while(!row_not_empty){
+		x++;
+		for(y=0;y<ALIENS_TALL;y++){
+			row_not_empty|=aliens_alive[y][x];
+		}
+	}
+	first_row = x;
+
+	x = ALIENS_WIDE;
+	row_not_empty=0;
+	while(!row_not_empty){
+		x--;
+		for(y=0;y<ALIENS_TALL;y++){
+			row_not_empty|=aliens_alive[y][x];
+		}
+	}
+	last_row = x;
+}
+
 int killAlien(pointx, pointy){
-	int alien_x_index, alien_y_index;
+	int alien_x_index = 0;
+	int alien_y_index = 0;
 	alien_x_index = (pointx-aliens_x)/(ALIEN_WIDTH+ALIEN_BUFFER);
 	alien_y_index = (pointy-aliens_y)/(ALIEN_HEIGHT+ALIEN_BUFFER);
+	if(alien_x_index < 0 || alien_y_index < 0 || alien_x_index > 10 || alien_y_index > 5){
+		return 0;
+	}
+	if(pointx < aliens_x){//this is because for some reason the left most column and the black buffer next to it both return 0 for alien_x_index
+		return 0;
+	}
 	if(aliens_alive[alien_y_index][alien_x_index] == 0){
 		return 0;
 	}
-
 	if((pointx-aliens_x)%(ALIEN_WIDTH+ALIEN_BUFFER) > ALIEN_WIDTH)
 	{
 		return 0;
 	}
-
 	aliens_alive[alien_y_index][alien_x_index] = 0;
 	destroy_alien(aliens_y+alien_y_index*(ALIEN_HEIGHT+ALIEN_BUFFER), aliens_x+alien_x_index*(ALIEN_WIDTH+ALIEN_BUFFER));
+	reevaluate_aliens();
 	return 1;
 }
 
@@ -533,29 +569,6 @@ void moveBullets(){
 //			exists_missile = 0;
 //		}
 //	}
-}
-
-void reevaluate_aliens(){
-	int x, y, row_not_empty;
-	x = -1;
-	row_not_empty = 0;
-	while(!row_not_empty){
-		x++;
-		for(y=0;y<ALIENS_TALL;y++){
-			row_not_empty|=aliens_alive[y][x];
-		}
-	}
-	first_row = x;
-
-	x = ALIENS_WIDE;
-	row_not_empty=0;
-	while(!row_not_empty){
-		x--;
-		for(y=0;y<ALIENS_TALL;y++){
-			row_not_empty|=aliens_alive[y][x];
-		}
-	}
-	last_row = x;
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////

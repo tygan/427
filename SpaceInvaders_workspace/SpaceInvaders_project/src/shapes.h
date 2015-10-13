@@ -333,16 +333,16 @@ packword12(1,1,1,1,1,1,1,1,1,1,1,1)
 };
 
 static const int tankBullet_3x10[] = {
-packword4(0,1,0),
-packword4(0,1,0),
 packword4(1,1,1),
 packword4(1,1,1),
 packword4(1,1,1),
 packword4(1,1,1),
 packword4(1,1,1),
 packword4(1,1,1),
-packword4(0,1,0),
-packword4(0,1,0)
+packword4(1,1,1),
+packword4(1,1,1),
+packword4(1,1,1),
+packword4(1,1,1)
 };
 
 static const int alienMissileBackSlash_3x10[] = {
