@@ -1,9 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <section name="Workbench">
 	<item value="C:\CT427\427\SpaceInvaders_workspace\SpaceInvaderTestHW2_hw_platform\system.bit" key="SpaceInvaderTestHW2_hw_platform-bitFile"/>
-	<item value="C:\CT427ChasesBitBucket\427\SpaceInvaderTestHW2\implementation\system_bd.bmm" key="SpaceInvaders_HW_hw_platform-bmmFile"/>
 	<item value="C:\CT427\427\SpaceInvaders_workspace\SpaceInvaderTestHW2_hw_platform\system_bd.bmm" key="SpaceInvaderTestHW2_hw_platform-bmmFile"/>
 	<item value="bootloop" key="SpaceInvaderTestHW2_hw_platform-microblaze_0-initElf"/>
-	<item value="C:\CT427ChasesBitBucket\427\SpaceInvaderTestHW2\implementation\system.bit" key="SpaceInvaders_HW_hw_platform-bitFile"/>
-	<item value="bootloop" key="SpaceInvaders_HW_hw_platform-microblaze_0-initElf"/>
 </section>

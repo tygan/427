@@ -111,7 +111,7 @@ int exists_tank_missile = 0;
 int aliens_alive[ALIENS_TALL][ALIENS_WIDE];
 int bunkerHealth[Y_DAMAGE][X_DAMAGE] = {{3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3},
 										{3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3},
-										{3,0,0,3,3,0,0,3,3,0,0,3,3,0,0,3}};
+										{3,-1,-1,3,3,-1,-1,3,3,-1,-1,3,3,-1,-1,3}};
 int tankBulletCoordinates[2];
 int alienMissileCoordinates[2];
 int tankPosX;
@@ -493,127 +493,126 @@ void drawBunkerDamage(x_pos, y_pos, damageType){
 		}
 	 }
 }
-//switch(expression){
-//    case constant-expression  :
-//       statement(s);
-//       break; /* optional */
-//    case constant-expression  :
-//       statement(s);
-//       break; /* optional */
-//
-//    /* you can have any number of case statements */
-//    default : /* Optional */
-//       statement(s);
-//}
-void erodeBunker(bunkerNumber, xPos, yPos){
-	//This will tell you what row of the bunker is going to erode.
-	// check if y pos is between bunker bottom(336) and 324(bottom row of bunker) or 324 and 312(second row) or
-	// 312 and top(300)(first row)
-	int row, column;
-	//BUNKER_BOTTOM
-	//BUNKER_TOP
+int erodeBunker(xPos, yPos){
+	//This will tell you what row of the bunker array that is going to erode.
+	int row, bunkerColumn = 0;
+	int column = 16;//this is for if the xPos is not somewhere where the bunkers exist(black space)
+	int bunkDamage;
+	int bunkPosX,bunkPosY = 0;
 	if(yPos < BUNKER_BOTTOM && yPos > BUNKER_BOTTOM-BUNKER_DAMAGE_HEIGHT)//This is bottom row of bunkers
 		row = 2;
 	else if(yPos < BUNKER_BOTTOM-BUNKER_DAMAGE_HEIGHT && yPos > BUNKER_TOP+BUNKER_DAMAGE_HEIGHT)//Middle row
 		row = 1;
 	else if(yPos < BUNKER_TOP+BUNKER_DAMAGE_HEIGHT && yPos > BUNKER_TOP)//Top row
 		row = 0;
-	//This will tell you which column of the bunker array is going to erode.
+
+	//This will tell you which column of the bunker array that is going to erode.
 	if(xPos > BUNKER_NUM_0_X && xPos < BUNKER_NUM_0_X+BUNKER_DAMAGE_WIDTH)
 		column = 0;
 	if(xPos > BUNKER_NUM_0_X+BUNKER_DAMAGE_WIDTH && xPos < BUNKER_NUM_0_X+2*BUNKER_DAMAGE_WIDTH)
 		column = 1;
-	if(xPos > BUNKER_NUM_0_X+2*BUNKER_DAMAGE_WIDTH && xPos < BUNKER_NUM_1_X-BUNKER_DAMAGE_WIDTH)
+	if(xPos > BUNKER_NUM_0_X+2*BUNKER_DAMAGE_WIDTH && xPos < BUNKER_NUM_0_X+3*BUNKER_DAMAGE_WIDTH)
 		column = 2;
-	if(xPos > BUNKER_NUM_1_X-BUNKER_DAMAGE_WIDTH && xPos < BUNKER_NUM_1_X)
+	if(xPos > BUNKER_NUM_0_X+3*BUNKER_DAMAGE_WIDTH && xPos < BUNKER_NUM_0_X+4*BUNKER_DAMAGE_WIDTH)
 		column = 3;
-	///////////////////DO THIS 4 MORE TIMES
-	//This will get the current damage of the place you are going to erode.
-//	int bunkPosY;
-//	int bunkDamage;
-//	int bunkYOffset = 0;
-//	int skipDraw = 0;
-//	//int randNum = 0;// = rand() % 4;
-//	int bunkPosX = (bunkerNumber * 4);// + randNum;
-//	if(bunkerHealth[0][bunkPosX] <= -1){//the first row
-//		if(bunkerHealth[1][bunkPosX] <= -1){//second row
-//			if(bunkerHealth[2][bunkPosX] <= -1) {//third row
-//				skipDraw = 1;//do nothing
-//			}else{
-//				bunkDamage = bunkerHealth[2][bunkPosX];
-//				bunkerHealth[2][bunkPosX]--;
-//				bunkYOffset = 2;
-//			}
-//		}else{
-//			bunkDamage = bunkerHealth[1][bunkPosX];
-//			bunkerHealth[1][bunkPosX]--;
-//			bunkYOffset = 1;
-//		}
-//	}else{
-//		bunkDamage = bunkerHealth[0][bunkPosX];
-//		bunkerHealth[0][bunkPosX]--;
-//		bunkYOffset = 0;
-//	}
-//	//This will get the x position of the bunker to erode.
-//	if(bunkerNumber == 0){
-//		bunkPosX = BUNKER_NUM_0_X + randNum*BUNKER_DAMAGE_WIDTH;
-//	}else if(bunkerNumber == 1){
-//		bunkPosX = BUNKER_NUM_1_X + randNum*BUNKER_DAMAGE_WIDTH;
-//	}else if(bunkerNumber == 2){
-//		bunkPosX = BUNKER_NUM_2_X + randNum*BUNKER_DAMAGE_WIDTH;
-//	}else if(bunkerNumber == 3){
-//		bunkPosX = BUNKER_NUM_3_X + randNum*BUNKER_DAMAGE_WIDTH;
-//	}
-//	//This will get the y position of the bunker to erode.
-//	if(bunkYOffset == 0){
-//		bunkPosY = BUNKER_Y;
-//	}else if(bunkYOffset == 1){
-//		bunkPosY = BUNKER_Y + BUNKER_DAMAGE_HEIGHT;
-//	}else if(bunkYOffset == 2){
-//		bunkPosY = BUNKER_Y + (BUNKER_DAMAGE_HEIGHT * 2);
-//	}
-//	if(skipDraw == 0){
-//		drawBunkerDamage(bunkPosX, bunkPosY, bunkDamage);
-//	}
+	if(xPos > BUNKER_NUM_1_X && xPos < BUNKER_NUM_1_X+BUNKER_DAMAGE_WIDTH)
+		column = 4;
+	if(xPos > BUNKER_NUM_1_X+BUNKER_DAMAGE_WIDTH && xPos < BUNKER_NUM_1_X+2*BUNKER_DAMAGE_WIDTH)
+		column = 5;
+	if(xPos > BUNKER_NUM_1_X+2*BUNKER_DAMAGE_WIDTH && xPos < BUNKER_NUM_1_X+3*BUNKER_DAMAGE_WIDTH)
+		column = 6;
+	if(xPos > BUNKER_NUM_1_X+3*BUNKER_DAMAGE_WIDTH && xPos < BUNKER_NUM_1_X+4*BUNKER_DAMAGE_WIDTH)
+		column = 7;
+	if(xPos > BUNKER_NUM_2_X && xPos < BUNKER_NUM_2_X+BUNKER_DAMAGE_WIDTH)
+		column = 8;
+	if(xPos > BUNKER_NUM_2_X+BUNKER_DAMAGE_WIDTH && xPos < BUNKER_NUM_2_X+2*BUNKER_DAMAGE_WIDTH)
+		column = 9;
+	if(xPos > BUNKER_NUM_2_X+2*BUNKER_DAMAGE_WIDTH && xPos < BUNKER_NUM_2_X+3*BUNKER_DAMAGE_WIDTH)
+		column = 10;
+	if(xPos > BUNKER_NUM_2_X+3*BUNKER_DAMAGE_WIDTH && xPos < BUNKER_NUM_2_X+4*BUNKER_DAMAGE_WIDTH)
+		column = 11;
+	if(xPos > BUNKER_NUM_3_X && xPos < BUNKER_NUM_3_X+BUNKER_DAMAGE_WIDTH)
+		column = 12;
+	if(xPos > BUNKER_NUM_3_X+BUNKER_DAMAGE_WIDTH && xPos < BUNKER_NUM_3_X+2*BUNKER_DAMAGE_WIDTH)
+		column = 13;
+	if(xPos > BUNKER_NUM_3_X+2*BUNKER_DAMAGE_WIDTH && xPos < BUNKER_NUM_3_X+3*BUNKER_DAMAGE_WIDTH)
+		column = 14;
+	if(xPos > BUNKER_NUM_3_X+3*BUNKER_DAMAGE_WIDTH && xPos < BUNKER_NUM_3_X+4*BUNKER_DAMAGE_WIDTH)
+		column = 15;
+	if(column == 16){
+		return 0;
+	}
+	bunkDamage = bunkerHealth[row][column];
+	if(bunkDamage <= -1){
+		return 0;
+	}
+	bunkerHealth[row][column]--;
+	bunkerColumn = column % 4;
+
+	//This will get the x position of the bunker to erode.
+	if(column >= 0 && column < 4){
+		bunkPosX = BUNKER_NUM_0_X + bunkerColumn*BUNKER_DAMAGE_WIDTH;
+	}else if(column >= 4 && column < 8){
+		bunkPosX = BUNKER_NUM_1_X + bunkerColumn*BUNKER_DAMAGE_WIDTH;
+	}else if(column >= 8 && column < 12){
+		bunkPosX = BUNKER_NUM_2_X + bunkerColumn*BUNKER_DAMAGE_WIDTH;
+	}else if(column >= 12 && column < 15){
+		bunkPosX = BUNKER_NUM_3_X + bunkerColumn*BUNKER_DAMAGE_WIDTH;
+	}
+
+	//This will get the y position of the bunker to erode.
+	if(row == 0){
+		bunkPosY = BUNKER_TOP;
+	}else if(row == 1){
+		bunkPosY = BUNKER_TOP + BUNKER_DAMAGE_HEIGHT;
+	}else if(row == 2){
+		bunkPosY = BUNKER_TOP + (BUNKER_DAMAGE_HEIGHT * 2);
+	}
+	drawBunkerDamage(bunkPosX, bunkPosY, bunkDamage);
+	bunkDamage = -1;
+	return 1;
 }
 
-void drawAlienExplosion(xExplosion, yExplosion){
-	//alien_explosion_24x20
+void destroy_alien(int corner_top, int corner_left){	//erases alien of given coordinates
 	unsigned int * framePointer = (unsigned int *) FRAME_BUFFER_ADDR;
-	int row, column;
-	for (row=yExplosion; row<yExplosion+ALIEN_EXPLOSION_HEIGHT; row++) {
-		for (column = xExplosion; column<xExplosion+ALIEN_EXPLOSION_WIDTH; column++) {
-			if ((alien_explosion_24x20[row-yExplosion] & (1<<(ALIEN_EXPLOSION_HEIGHT-1-(column-xExplosion))))) {
-				framePointer[(row)*SCREEN_WIDTH + (column)] = WHITE;
-			}else{
-				framePointer[(row)*SCREEN_WIDTH + (column)] = BLACK;
+	int row,column;
+	for (row=corner_top; row<corner_top+ALIEN_HEIGHT; row++) {
+			for (column = corner_left; column<corner_left+ALIEN_WIDTH; column++) {
+				if ((alien_explosion_24x20[row-corner_top] & (1<<(ALIEN_EXPLOSION_HEIGHT-1-(column-corner_left))))) {
+					framePointer[(row)*SCREEN_WIDTH + (column)] = WHITE;
+				}else{
+					framePointer[(row)*SCREEN_WIDTH + (column)] = BLACK;
+				}
 			}
-		}
 	}
 }
-int evalTankBulletCollision(bulletx, bullety){//also needs to kill alien or erode bunker if there was a collision
-	unsigned int * framePointer = (unsigned int *) FRAME_BUFFER_ADDR;
-	int collision = 0;
-	int nextPixColor = framePointer[(bullety-1)*SCREEN_WIDTH + (bulletx)];
-	//int y_collision = aliens_y+ALIENS_TALL*(ALIEN_HEIGHT+ALIEN_BUFFER);//bottom row of aliens
-	if(nextPixColor == WHITE){//Kill alien
-		xil_printf("color of next pixel is white\n\r");
-	}else if(nextPixColor == GREEN){//Erode bunker
-		xil_printf("color of next pixel is green\n\r");
 
+int killAlien(pointx, pointy){
+	int alien_x_index, alien_y_index;
+	alien_x_index = (pointx-aliens_x)/(ALIEN_WIDTH+ALIEN_BUFFER);
+	alien_y_index = (pointy-aliens_y)/(ALIEN_HEIGHT+ALIEN_BUFFER);
+	if(aliens_alive[alien_y_index][alien_x_index] == 0){
+		return 0;
 	}
-	//xil_printf("color of next pixel is %04x\n\r", framePointer[(bulletx)*SCREEN_WIDTH + (bullety-1)]);
-	//xil_printf("color of next pixel is %04x\n\r", framePointer[(bullety-1)*SCREEN_WIDTH + (bulletx)]);
 
-	//if((tankBullety-1) <= y_collision){
+	if((pointx-aliens_x)%(ALIEN_WIDTH+ALIEN_BUFFER) > ALIEN_WIDTH)
+	{
+		return 0;
+	}
 
-	//}
-	//(tankBullety-1) <= aliens_y+ALIENS_TALL*(ALIEN_HEIGHT+ALIEN_BUFFER)	<- this means it is at the bottom of the aliens block
-	//    		 int alien_y_index = index/ALIENS_WIDE;
-	//    		 int alien_x_index = index%ALIENS_WIDE;
-	//    		 aliens_alive[alien_y_index][alien_x_index] = 0;
-	//    		 erase_alien(aliens_y+alien_y_index*(ALIEN_HEIGHT+ALIEN_BUFFER), aliens_x+alien_x_index*(ALIEN_WIDTH+ALIEN_BUFFER));
-	//    		 reevaluate_aliens();
+	aliens_alive[alien_y_index][alien_x_index] = 0;
+	destroy_alien(aliens_y+alien_y_index*(ALIEN_HEIGHT+ALIEN_BUFFER), aliens_x+alien_x_index*(ALIEN_WIDTH+ALIEN_BUFFER));
+	return 1;
+}
+
+int evalTankBulletCollision(bulletx, bullety){//also needs to kill alien or erode bunker if there was a collision
+	int collision = 0;
+	if(bullety-1 <= aliens_y+5*(ALIEN_HEIGHT+ALIEN_BUFFER) && bullety-1 > aliens_y){//Kill alien
+		collision = killAlien(bulletx, bullety);
+	}else if(bullety-1 <= BUNKER_BOTTOM && bullety-1 > BUNKER_TOP){//if its in the bunker region
+		collision = erodeBunker(bulletx, bullety);
+	}
+
 	return collision;
 }
 void moveBullets(){
@@ -639,6 +638,8 @@ void moveBullets(){
 			}else{//If bullet is at the top of the screen don't draw a new one and tell code that there is no tank missile
 				exists_tank_missile = 0;
 			}
+		}else{
+			exists_tank_missile = 0;
 		}
 	}
 
@@ -713,12 +714,12 @@ void button_decoder() {
 		int i;
 		for(i=0;i<ALIENS_TALL;i++){
 			aliens_alive[i][0] = 0;
-			erase_alien(aliens_y+i*(ALIEN_HEIGHT+ALIEN_BUFFER), aliens_x+0*(ALIEN_WIDTH+ALIEN_BUFFER));
+			destroy_alien(aliens_y+i*(ALIEN_HEIGHT+ALIEN_BUFFER), aliens_x+0*(ALIEN_WIDTH+ALIEN_BUFFER));
 			reevaluate_aliens();
 		}
 		for(i=0;i<ALIENS_TALL;i++){
 			aliens_alive[i][ALIENS_WIDE-1] = 0;
-			erase_alien(aliens_y+i*(ALIEN_HEIGHT+ALIEN_BUFFER), aliens_x+(ALIENS_WIDE-1)*(ALIEN_WIDTH+ALIEN_BUFFER));
+			destroy_alien(aliens_y+i*(ALIEN_HEIGHT+ALIEN_BUFFER), aliens_x+(ALIENS_WIDE-1)*(ALIEN_WIDTH+ALIEN_BUFFER));
 			reevaluate_aliens();
 		}
 		add_score(100);
