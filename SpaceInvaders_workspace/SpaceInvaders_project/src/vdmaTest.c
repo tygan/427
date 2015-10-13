@@ -117,7 +117,8 @@ int bunkerHealth[Y_DAMAGE][X_DAMAGE] = {{3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3},
 										{3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3},
 										{3,-1,-1,3,3,-1,-1,3,3,-1,-1,3,3,-1,-1,3}};
 int tankBulletCoordinates[2];
-int alienMissileCoordinates[2];
+int alienMissileCoordinatesX[4];
+int alienMissileCoordinatesY[4];
 int tankPosX;
 int tankPosY;
 int draw;
@@ -131,6 +132,8 @@ int shipCounter;
 int motherShipX;
 int motherShipY;
 int shipAlive;
+int alienFireCounter;
+int alienBulletCount;
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
 //Draw functions
@@ -622,24 +625,13 @@ void moveBullets(){
 			exists_tank_missile = 0;
 		}
 	}
-
-
-//	if(exists_missile){
-//		draw = 0;
-//		int alienMissileX = alienMissileCoordinates[0];
-//		int alienMissileY = alienMissileCoordinates[1];
-//		drawAlienMissile(alienMissileX, alienMissileY, draw);//erase previous alien missile
-//		if(alienMissileY < SCREEN_HEIGHT - ALIEN_MISSILE_HEIGHT){
-//			alienMissileY += 2;
-//			draw = 1;
-//			drawAlienMissile(alienMissileX, alienMissileY, draw);//draw new tank bullet
-//			alienMissileCoordinates[0] = alienMissileX;
-//			alienMissileCoordinates[1] = alienMissileY;
-//		}
-//		else{
-//			exists_missile = 0;
-//		}
-//	}
+	if(alienBulletCount > 0){
+		draw = 0;
+		drawAlienMissile(alienMissileCoordinatesX[0], alienMissileCoordinatesY[0], draw);
+		draw = 1;
+		alienMissileCoordinatesY[0]++;
+		drawAlienMissile(alienMissileCoordinatesX[0], alienMissileCoordinatesY[0], draw);
+	}
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
@@ -688,17 +680,57 @@ void button_decoder() {
 //		}
 	}
 }
+//	if(exists_missile){
+//		draw = 0;
+//		int alienMissileX = alienMissileCoordinates[0];
+//		int alienMissileY = alienMissileCoordinates[1];
+//		drawAlienMissile(alienMissileX, alienMissileY, draw);//erase previous alien missile
+//		if(alienMissileY < SCREEN_HEIGHT - ALIEN_MISSILE_HEIGHT){
+//			alienMissileY += 2;
+//			draw = 1;
+//			drawAlienMissile(alienMissileX, alienMissileY, draw);//draw new tank bullet
+//			alienMissileCoordinates[0] = alienMissileX;
+//			alienMissileCoordinates[1] = alienMissileY;
+//		}
+//		else{
+//			exists_missile = 0;
+//		}
+//	}
+//exists_missile = 1;
+//				 draw = 1;
+//				 int randNum = rand() % ALIENS_WIDE;
+//				 int shoot_pos_x = aliens_x+randNum*(ALIEN_WIDTH+ALIEN_BUFFER)+(ALIEN_WIDTH/2)-2;
+//				 int shoot_pos_y = aliens_y+ALIENS_TALL*(ALIEN_HEIGHT+ALIEN_BUFFER)-ALIEN_BUFFER;
+//				 drawAlienMissile(shoot_pos_x, shoot_pos_y, draw);
+//				 alienMissileCoordinates[0] = shoot_pos_x;
+//				 alienMissileCoordinates[1] = shoot_pos_y;
 void timer_interrupt_handler() {
-	 /////////////////////////////
-	 //draw the mothership that goes across the top of the screen
-	 /////////////////////////////
-	if(shipCounter >= 4 && shipAlive == 1){
+	/////////////////////////////
+	//makes alien missiles somewhere random every couple seconds
+	/////////////////////////////
+	int randNum = rand() % ALIENS_WIDE;
+	if(alienFireCounter == 300 && alienBulletCount < 5){
+		int draw = 1;
+		int shoot_pos_x = aliens_x+randNum*(ALIEN_WIDTH+ALIEN_BUFFER)+(ALIEN_WIDTH/2)-2;
+		int shoot_pos_y = aliens_y+ALIENS_TALL*(ALIEN_HEIGHT+ALIEN_BUFFER)-ALIEN_BUFFER;
+		drawAlienMissile(shoot_pos_x, shoot_pos_y, draw);
+		alienMissileCoordinatesX[0] = shoot_pos_x;
+		alienMissileCoordinatesY[0] = shoot_pos_y;
+		alienBulletCount++;
+		alienFireCounter = 0;
+	}else{
+		alienFireCounter++;
+	}
+	/////////////////////////////
+	//draw the mothership that goes across the top of the screen
+	/////////////////////////////
+	if(shipCounter >= 4 && shipAlive == 1){//moves spaceship IF its alive
 		int motherDraw = 1;
-		if(motherShipX+MOTHER_SHIP_WIDTH <= SCREEN_WIDTH){
+		if(motherShipX+MOTHER_SHIP_WIDTH <= SCREEN_WIDTH){// if its still left of the right side of the screen
 			shipCounter = 0;
 			drawMotherShip(motherShipX, motherShipY, motherDraw);
 			motherShipX += 2;
-		}else{
+		}else{// if it reached the right edge of the screen then erase it!
 			motherDraw = 0;
 			drawMotherShip(motherShipX, motherShipY, motherDraw);
 			shipAlive = 0;
@@ -707,7 +739,8 @@ void timer_interrupt_handler() {
 		shipCounter++;
 	}
 	 /////////////////////////////
-	if(alienCount > 0 || aliens_y+5*(ALIEN_HEIGHT+ALIEN_BUFFER) < BUNKER_BOTTOM){
+
+	if(alienCount > 0 || aliens_y+5*(ALIEN_HEIGHT+ALIEN_BUFFER) < BUNKER_BOTTOM){//if there are no aliens left or aliens reach bottom of bunker
 		button_decoder();
 		if(bulletMoveCounter >= 3){
 			moveBullets();
@@ -786,6 +819,8 @@ int main()
 	motherShipY = MOTHER_SHIP_Y;
 	shipCounter = 0;
 	shipAlive = 1;
+	alienFireCounter = 0;
+	alienBulletCount = 0;
 	////////////////////////////////////////////////////////////
 	//Initialize interrupts and FIT
 	////////////////////////////////////////////////////////////
@@ -929,7 +964,7 @@ int main()
 
 	 /////////////////////////////
 	 //initialize aliens on screen//
-	 //srand((unsigned)time(NULL));
+	 srand((unsigned)time(NULL));
 
 	 aliens_x = ALIENS_START_X;
 	 aliens_y = ALIENS_START_Y;
