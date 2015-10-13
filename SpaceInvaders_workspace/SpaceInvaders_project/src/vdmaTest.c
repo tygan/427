@@ -98,6 +98,7 @@
 #define LETTER_BUFFER 3
 #define EARTH_Y 460
 #define EARTH_DEPTH 2
+#define MOTHER_SHIP_Y 20
 #define MOTHER_SHIP_HEIGHT 14
 #define MOTHER_SHIP_WIDTH 36
 
@@ -572,16 +573,28 @@ int killAlien(pointx, pointy){
 	return 1;
 }
 
+int blowUpMotherShip(missilex, missiley){
+	int drawShip = 0;
+	drawMotherShip(motherShipX, motherShipY, drawShip);
+	shipAlive = 0;
+	//YOU NEED TO SHOW SCORE OF MOTHERSHIP HERE!
+	return 1;
+}
+
 int evalTankBulletCollision(bulletx, bullety){//also needs to kill alien or erode bunker if there was a collision
 	int collision = 0;
 	if(bullety-1 <= aliens_y+5*(ALIEN_HEIGHT+ALIEN_BUFFER) && bullety-1 > aliens_y){//Kill alien
 		collision = killAlien(bulletx, bullety);
 	}else if(bullety-1 <= BUNKER_BOTTOM && bullety-1 > BUNKER_TOP){//if its in the bunker region
 		collision = erodeBunker(bulletx, bullety);
+	}else if(bullety-1 <= MOTHER_SHIP_Y + MOTHER_SHIP_HEIGHT && bullety - 1 > MOTHER_SHIP_Y &&
+			bulletx >= motherShipX && bulletx <= motherShipX+MOTHER_SHIP_WIDTH){
+		collision = blowUpMotherShip(bulletx, bullety);
 	}
 
 	return collision;
 }
+
 void moveBullets(){
 	if(exists_tank_missile){
 		//Erase previous tank bullet
@@ -770,7 +783,7 @@ int main()
 	int Status;                        // Keep track of success/failure of system function calls.
 	alienCount = 55;
 	motherShipX = 0;
-	motherShipY = 20;
+	motherShipY = MOTHER_SHIP_Y;
 	shipCounter = 0;
 	shipAlive = 1;
 	////////////////////////////////////////////////////////////
