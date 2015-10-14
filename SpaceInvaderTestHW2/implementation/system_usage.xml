@@ -5,7 +5,11 @@
      behavior or data corruption.  It is strongly advised that
      users do not edit the contents of this file. -->
 <DeviceUsageSummary rev="28">
+<<<<<<< HEAD
 <DesignStatistics TimeStamp="Wed Oct 14 14:11:17 2015"><group name="NetStatistics">
+=======
+<DesignStatistics TimeStamp="Wed Oct 14 14:18:07 2015"><group name="NetStatistics">
+>>>>>>> 8f7ccc2e681c32e46af6861ac4d1e60053b19ccc
 <item name="NumNets_Active" rev="28">
 <attrib name="value" value="11281"/></item>
 <item name="NumNets_Gnd" rev="28">
@@ -294,7 +298,11 @@
 <attrib name="value" value="1"/></item>
 </group>
 </DesignStatistics>
+<<<<<<< HEAD
 <DeviceUsage TimeStamp="Wed Oct 14 14:11:17 2015"><group name="SiteSummary">
+=======
+<DeviceUsage TimeStamp="Wed Oct 14 14:18:07 2015"><group name="SiteSummary">
+>>>>>>> 8f7ccc2e681c32e46af6861ac4d1e60053b19ccc
 <item name="BSCAN" rev="28">
 <attrib name="total" value="1000000"/><attrib name="used" value="1"/></item>
 <item name="BSCAN_BSCAN" rev="28">
@@ -407,7 +415,11 @@
 <attrib name="total" value="1000000"/><attrib name="used" value="2223"/></item>
 </group>
 </DeviceUsage>
+<<<<<<< HEAD
 <ReportConfigData TimeStamp="Wed Oct 14 14:11:17 2015"><group name="DSP48A1">
+=======
+<ReportConfigData TimeStamp="Wed Oct 14 14:18:07 2015"><group name="DSP48A1">
+>>>>>>> 8f7ccc2e681c32e46af6861ac4d1e60053b19ccc
 <item name="CEA" rev="28">
 <attrib name="CEA_INV" value="0"/><attrib name="CEA" value="3"/></item>
 <item name="CEB" rev="28">
@@ -1252,7 +1264,11 @@
 <attrib name="WRITE_FIRST" value="3"/></item>
 </group>
 </ReportConfigData>
+<<<<<<< HEAD
 <ReportPinData TimeStamp="Wed Oct 14 14:11:17 2015"><group name="BUFIO2">
+=======
+<ReportPinData TimeStamp="Wed Oct 14 14:18:07 2015"><group name="BUFIO2">
+>>>>>>> 8f7ccc2e681c32e46af6861ac4d1e60053b19ccc
 <item name="DIVCLK" rev="28">
 <attrib name="value" value="1"/></item>
 <item name="I" rev="28">

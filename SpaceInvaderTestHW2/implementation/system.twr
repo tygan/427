@@ -311,7 +311,11 @@ Design statistics:
    Maximum path delay from/to any node:   5.422ns
 
 
+<<<<<<< HEAD
 Analysis completed Wed Oct 14 14:10:49 2015 
+=======
+Analysis completed Wed Oct 14 14:17:39 2015 
+>>>>>>> 8f7ccc2e681c32e46af6861ac4d1e60053b19ccc
 --------------------------------------------------------------------------------
 
 Trace Settings:

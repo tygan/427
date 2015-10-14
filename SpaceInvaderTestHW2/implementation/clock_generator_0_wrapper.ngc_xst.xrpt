@@ -5,7 +5,11 @@
     The structure and the elements are likely to change over the next few releases.
     This means code written to parse this file will need to be revisited each subsequent release.-->
 
+<<<<<<< HEAD
   <application stringID="Xst" timeStamp="Wed Oct 14 14:00:00 2015">
+=======
+  <application stringID="Xst" timeStamp="Wed Oct 14 14:00:46 2015">
+>>>>>>> 8f7ccc2e681c32e46af6861ac4d1e60053b19ccc
     <section stringID="User_Env">
       <table stringID="User_EnvVar">
         <column stringID="variable"/>
@@ -39,7 +43,11 @@
         <item stringID="User_EnvOsname" value="Microsoft Windows 7 , 64-bit"/>
         <item stringID="User_EnvOsrelease" value="Service Pack 1  (build 7601)"/>
       </item>
+<<<<<<< HEAD
       <item stringID="User_EnvHost" value="CB400-06"/>
+=======
+      <item stringID="User_EnvHost" value="CB400-05"/>
+>>>>>>> 8f7ccc2e681c32e46af6861ac4d1e60053b19ccc
       <table stringID="User_EnvCpu">
         <column stringID="arch"/>
         <column stringID="speed"/>
