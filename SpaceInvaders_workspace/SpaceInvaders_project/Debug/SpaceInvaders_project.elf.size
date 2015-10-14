@@ -1,2 +1,6 @@
    text	   data	    bss	    dec	    hex	filename
+<<<<<<< HEAD
   35404	   1692	   4520	  41616	   a290	SpaceInvaders_project.elf
+=======
+  35256	   1684	   4568	  41508	   a224	SpaceInvaders_project.elf
+>>>>>>> 06a0afab25de31633d06cb92888f82a168e5d2d6
