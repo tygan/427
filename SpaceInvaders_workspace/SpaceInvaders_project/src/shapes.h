@@ -864,6 +864,24 @@ packword15(1,1,1,1,1,1,1,1,1,1,1,1,0,0,0),
 packword15(1,1,1,1,1,1,1,1,1,1,1,1,0,0,0)
 };
 
+static const int space_15x15[] = {
+packword15(0,0,0,0,0,0,0,0,0,0,0,0,0,0,0),
+packword15(0,0,0,0,0,0,0,0,0,0,0,0,0,0,0),
+packword15(0,0,0,0,0,0,0,0,0,0,0,0,0,0,0),
+packword15(0,0,0,0,0,0,0,0,0,0,0,0,0,0,0),
+packword15(0,0,0,0,0,0,0,0,0,0,0,0,0,0,0),
+packword15(0,0,0,0,0,0,0,0,0,0,0,0,0,0,0),
+packword15(0,0,0,0,0,0,0,0,0,0,0,0,0,0,0),
+packword15(0,0,0,0,0,0,0,0,0,0,0,0,0,0,0),
+packword15(0,0,0,0,0,0,0,0,0,0,0,0,0,0,0),
+packword15(0,0,0,0,0,0,0,0,0,0,0,0,0,0,0),
+packword15(0,0,0,0,0,0,0,0,0,0,0,0,0,0,0),
+packword15(0,0,0,0,0,0,0,0,0,0,0,0,0,0,0),
+packword15(0,0,0,0,0,0,0,0,0,0,0,0,0,0,0),
+packword15(0,0,0,0,0,0,0,0,0,0,0,0,0,0,0),
+packword15(0,0,0,0,0,0,0,0,0,0,0,0,0,0,0)
+};
+
 static const int* numbers[10] = {
 		letterO_15x15,
 		number1_15x15,
@@ -875,6 +893,18 @@ static const int* numbers[10] = {
 		number7_15x15,
 		number8_15x15,
 		number9_15x15
+};
+
+static const int* game_over_word[9] = {
+		letterG_15x15,
+		letterA_15x15,
+		letterM_15x15,
+		letterE_15x15,
+		space_15x15,
+		letterO_15x15,
+		letterV_15x15,
+		letterE_15x15,
+		letterR_15x15
 };
 
 #endif /* SHAPES_H_ */

@@ -101,15 +101,14 @@
 #define SCORE_Y 5
 #define SCORE_X 105
 #define GAME_OVER_X 200
-#define GAME_OVER_Y 300
+#define GAME_OVER_Y 200
 #define EARTH_Y 460
 #define EARTH_DEPTH 2
 #define MOTHER_SHIP_Y 20
 #define MOTHER_SHIP_HEIGHT 14
 #define MOTHER_SHIP_WIDTH 36
 #define MAX_LIVES 3
-
-
+#define GAME_OVER_DIGITS 9
 
 void print(char *str);
 XGpio gpLED;  // This is a handle for the LED GPIO block.
@@ -456,117 +455,86 @@ void eraseLife(){
 }
 
 void gameOver(){
+	xil_printf("\ngame--over\n\r");
 	int i,j;
 	for(i=0;i<ALIENS_WIDE;i++){
 		for(j=0;j<ALIENS_TALL;j++){
 			if(aliens_alive[j][i]){
-//				killAlien(aliens_y+j*(ALIEN_HEIGHT+ALIEN_BUFFER), aliens_x+i*(ALIEN_WIDTH+ALIEN_BUFFER),0);
+				aliens_alive[j][i] = 0;
+				destroy_alien(aliens_y+j*(ALIEN_HEIGHT+ALIEN_BUFFER), aliens_x+i*(ALIEN_WIDTH+ALIEN_BUFFER),0);
 			}
 		}
 	}
-	int bunkerX = 0;
-	int bunkerY = 0;
-	int dupBitX = 0;
-	int dupBitY = 0;
 	unsigned int * framePointer = (unsigned int *) FRAME_BUFFER_ADDR;
-	int row, column;
-	int top_corner = GAME_OVER_Y;
-	int left_corner = GAME_OVER_X;
-	for (row=top_corner; row<top_corner+LETTER_HEIGHT; row++) {
-		for (column = left_corner; column<left_corner+LETTER_WIDTH; column++) {
-			if ((letterG_15x15[bunkerY] & (1<<bunkerX))) {
-				framePointer[(row)*SCREEN_WIDTH + (column)] = WHITE;
-			}else{
-				framePointer[(row)*SCREEN_WIDTH + (column)] = BLACK;
-			}
-			if(dupBitX == 1)
-			{
-				bunkerX++;
-				dupBitX = 0;
-			}else{
-				dupBitX = 1;
-			}
-		}
-		bunkerX = 0;
-		if(dupBitY == 1){
-			bunkerY++;
-			dupBitY = 0;
-		}else{
-			dupBitY = 1;
-		}
-	 }
-	left_corner+=LETTER_WIDTH+LETTER_BUFFER;
-	for (row=top_corner; row<top_corner+LETTER_HEIGHT; row++) {
-		for (column = left_corner; column<left_corner+LETTER_WIDTH; column++) {
-			if ((letterA_15x15[bunkerY] & (1<<bunkerX))) {
-				framePointer[(row)*SCREEN_WIDTH + (column)] = WHITE;
-			}else{
-				framePointer[(row)*SCREEN_WIDTH + (column)] = BLACK;
-			}
-			if(dupBitX == 1)
-			{
-				bunkerX++;
-				dupBitX = 0;
-			}else{
-				dupBitX = 1;
-			}
-		}
-		bunkerX = 0;
-		if(dupBitY == 1){
-			bunkerY++;
-			dupBitY = 0;
-		}else{
-			dupBitY = 1;
-		}
-	 }
-	left_corner+=LETTER_WIDTH+LETTER_BUFFER;
-	for (row=top_corner; row<top_corner+LETTER_HEIGHT; row++) {
-		for (column = left_corner; column<left_corner+LETTER_WIDTH; column++) {
-			if ((letterM_15x15[bunkerY] & (1<<bunkerX))) {
-				framePointer[(row)*SCREEN_WIDTH + (column)] = WHITE;
-			}else{
-				framePointer[(row)*SCREEN_WIDTH + (column)] = BLACK;
-			}
-			if(dupBitX == 1)
-			{
-				bunkerX++;
-				dupBitX = 0;
-			}else{
-				dupBitX = 1;
+	int digit_index,localx,localy,worldx,worldy;
+	for(digit_index=0; digit_index<GAME_OVER_DIGITS; digit_index++){
+//		int bunkerX = 0;
+//		int bunkerY = 0;
+//		int dupBitX = 0;
+//		int dupBitY = 0;
+//		int row, column;
+//		for (row=top_corner; row<top_corner+TANK_HEIGHT; row++) {
+//			    for (column = left_corner; column<left_corner+TANK_WIDTH; column++) {
+//					if ((tank_22x8[bunkerY] & (1<<bunkerX))) {
+//						framePointer[(row)*SCREEN_WIDTH + (column)] = color;
+//					}else{
+//						framePointer[(row)*SCREEN_WIDTH + (column)] = BLACK;
+//					}
+//					if(dupBitX == 1)
+//					{
+//						bunkerX++;
+//						dupBitX = 0;
+//					}else{
+//						dupBitX = 1;
+//					}
+//				}
+//			    bunkerX = 0;
+//				if(dupBitY == 1){
+//					bunkerY++;
+//					dupBitY = 0;
+//				}else{
+//					dupBitY = 1;
+//				}
+//			 }
+//
+//
+//
+		for (localy=0; localy<LETTER_HEIGHT; localy++) {
+			worldy = localy + GAME_OVER_Y;
+			for (localx = 0; localx<LETTER_WIDTH+LETTER_BUFFER; localx++) {
+				if(localx < LETTER_WIDTH){
+					if ((game_over_word[digit_index][localy] & (1<<(LETTER_WIDTH-1-localx)))) {
+						worldx = localx + GAME_OVER_X + digit_index * (LETTER_WIDTH + LETTER_BUFFER);
+						framePointer[worldy*SCREEN_WIDTH + worldx] = WHITE;
+					}
+				}
 			}
 		}
-		bunkerX = 0;
-		if(dupBitY == 1){
-			bunkerY++;
-			dupBitY = 0;
-		}else{
-			dupBitY = 1;
-		}
-	 }
-	left_corner+=LETTER_WIDTH+LETTER_BUFFER;
-	for (row=top_corner; row<top_corner+LETTER_HEIGHT; row++) {
-		for (column = left_corner; column<left_corner+LETTER_WIDTH; column++) {
-			if ((letterE_15x15[bunkerY] & (1<<bunkerX))) {
-				framePointer[(row)*SCREEN_WIDTH + (column)] = WHITE;
-			}else{
-				framePointer[(row)*SCREEN_WIDTH + (column)] = BLACK;
-			}
-			if(dupBitX == 1)
-			{
-				bunkerX++;
-				dupBitX = 0;
-			}else{
-				dupBitX = 1;
-			}
-		}
-		bunkerX = 0;
-		if(dupBitY == 1){
-			bunkerY++;
-			dupBitY = 0;
-		}else{
-			dupBitY = 1;
-		}
-	 }
+	}
+
+//	int bunkerX = 0;
+//	int bunkerY = 0;
+//	int dupBitX = 0;
+//	int dupBitY = 0;
+//	unsigned int * framePointer = (unsigned int *) FRAME_BUFFER_ADDR;
+//	int row, column;
+//	int top_corner = GAME_OVER_Y;
+//	int left_corner = GAME_OVER_X;
+//	for (row=top_corner; row<top_corner+LETTER_HEIGHT; row++) {
+//		for (column = left_corner; column<left_corner+LETTER_WIDTH; column++) {
+//			if ((letterG_15x15[bunkerY] & (1<<bunkerX))) {
+//				framePointer[(row)*SCREEN_WIDTH + (column)] = WHITE;
+//			}else{
+//				framePointer[(row)*SCREEN_WIDTH + (column)] = BLACK;
+//			}
+//			if(dupBitX == 1)
+//			{
+//				bunkerX++;
+//				dupBitX = 0;
+//			}else{
+//				dupBitX = 1;
+//			}
+//		}
 }
 
 void killTank(){
@@ -574,7 +542,7 @@ void killTank(){
 		lives--;
 		eraseLife();
 		if(lives==0){
-//			gameOver();
+			gameOver();
 		}
 	}
 }

@@ -1,11 +1,7 @@
 Release 13.4 - par O.87xd (nt64)
 Copyright (c) 1995-2011 Xilinx, Inc.  All rights reserved.
 
-<<<<<<< HEAD
-Tue Oct 13 18:19:35 2015
-=======
-Mon Oct 12 14:02:45 2015
->>>>>>> ccf4253f6b1436cb971e309e1ab5b301a2fd8845
+Wed Oct 14 14:17:20 2015
 
 All signals are completely routed.
 
