@@ -2,4 +2,44 @@
 **** Build of configuration Debug for project SpaceInvaders_project ****
 
 make all 
-make: Nothing to be done for `all'.
+Building file: ../src/vdmaTest.c
+Invoking: MicroBlaze gcc compiler
+mb-gcc -Wall -O3 -g3 -c -fmessage-length=0 -I../../hello_world_bsp_0/microblaze_0/include -mlittle-endian -mxl-barrel-shift -mxl-pattern-compare -mcpu=v8.20.b -mno-xl-soft-mul -MMD -MP -MF"src/vdmaTest.d" -MT"src/vdmaTest.d" -o"src/vdmaTest.o" "../src/vdmaTest.c"
+In file included from ../src/vdmaTest.c:39:
+../src/shapes.h:851: warning: missing braces around initializer
+../src/shapes.h:851: warning: (near initialization for 'numbers[0]')
+../src/shapes.h:851: warning: initialization makes integer from pointer without a cast
+../src/shapes.h:852: warning: initialization makes integer from pointer without a cast
+../src/shapes.h:853: warning: initialization makes integer from pointer without a cast
+../src/shapes.h:854: warning: initialization makes integer from pointer without a cast
+../src/shapes.h:855: warning: initialization makes integer from pointer without a cast
+../src/shapes.h:856: warning: initialization makes integer from pointer without a cast
+../src/shapes.h:857: warning: initialization makes integer from pointer without a cast
+../src/shapes.h:858: warning: initialization makes integer from pointer without a cast
+../src/shapes.h:859: warning: initialization makes integer from pointer without a cast
+../src/shapes.h:861: warning: initialization makes integer from pointer without a cast
+../src/vdmaTest.c:99: error: expected identifier or '(' before '<<' token
+../src/vdmaTest.c:108:9: error: invalid suffix "a0afab25de31633d06cb92888f82a168e5d2d6" on integer constant
+../src/vdmaTest.c:135: error: expected identifier or '(' before '<<' token
+../src/vdmaTest.c:138: error: expected identifier or '(' before '==' token
+../src/vdmaTest.c:146: error: expected identifier or '(' before '>>' token
+../src/vdmaTest.c:146:9: error: invalid suffix "a0afab25de31633d06cb92888f82a168e5d2d6" on integer constant
+../src/vdmaTest.c: In function 'add_score':
+../src/vdmaTest.c:318: error: 'score' undeclared (first use in this function)
+../src/vdmaTest.c:318: error: (Each undeclared identifier is reported only once
+../src/vdmaTest.c:318: error: for each function it appears in.)
+../src/vdmaTest.c:374: warning: no return statement in function returning non-void
+../src/vdmaTest.c: In function 'destroy_alien':
+../src/vdmaTest.c:662: error: 'alienCount' undeclared (first use in this function)
+../src/vdmaTest.c: In function 'button_decoder':
+../src/vdmaTest.c:807: error: expected expression before '<<' token
+../src/vdmaTest.c:809: error: expected expression before '==' token
+../src/vdmaTest.c:817:9: error: invalid suffix "a0afab25de31633d06cb92888f82a168e5d2d6" on integer constant
+../src/vdmaTest.c: In function 'timer_interrupt_handler':
+../src/vdmaTest.c:848: warning: implicit declaration of function 'rand'
+../src/vdmaTest.c:880: error: 'alienCount' undeclared (first use in this function)
+../src/vdmaTest.c:909: warning: implicit declaration of function 'print_aliens'
+../src/vdmaTest.c: In function 'main':
+../src/vdmaTest.c:954: error: 'alienCount' undeclared (first use in this function)
+../src/vdmaTest.c:1104: warning: implicit declaration of function 'srand'
+make: *** [src/vdmaTest.o] Error 1
