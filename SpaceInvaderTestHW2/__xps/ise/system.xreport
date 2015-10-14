@@ -1,9 +1,15 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <report-views version="2.0" >
  <header>
+<<<<<<< HEAD
   <DateModified>2015-10-13T18:14:26</DateModified>
   <ModuleName>system</ModuleName>
   <SummaryTimeStamp>2015-10-13T18:14:26</SummaryTimeStamp>
+=======
+  <DateModified>2015-10-12T13:57:39</DateModified>
+  <ModuleName>system</ModuleName>
+  <SummaryTimeStamp>2015-10-12T13:57:39</SummaryTimeStamp>
+>>>>>>> ccf4253f6b1436cb971e309e1ab5b301a2fd8845
   <SavedFilePath>C:/CT427/427/SpaceInvaderTestHW2/__xps/ise/system.xreport</SavedFilePath>
   <FilterFile>filter.filter</FilterFile>
   <SavedFilterFilePath>C:/CT427/427/SpaceInvaderTestHW2/__xps/ise</SavedFilterFilePath>

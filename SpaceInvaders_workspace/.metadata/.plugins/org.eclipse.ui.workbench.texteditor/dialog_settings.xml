@@ -2,7 +2,16 @@
 <section name="Workbench">
 	<section name="org.eclipse.ui.texteditor.FindReplaceDialog_dialogBounds">
 		<item value="257" key="DIALOG_WIDTH"/>
+<<<<<<< HEAD
+		<item value="266" key="DIALOG_Y_ORIGIN"/>
+		<item value="1465" key="DIALOG_X_ORIGIN"/>
+=======
 		<item value="525" key="DIALOG_Y_ORIGIN"/>
+<<<<<<< HEAD
+=======
+		<item value="741" key="DIALOG_X_ORIGIN"/>
+>>>>>>> 88594b069009f1748bbb6cbd6e2faa263a1b7581
+>>>>>>> ccf4253f6b1436cb971e309e1ab5b301a2fd8845
 		<item value="380" key="DIALOG_HEIGHT"/>
 		<item value="741" key="DIALOG_X_ORIGIN"/>
 		<item value="1|Segoe UI|9.0|0|WINDOWS|1|-12|0|0|0|400|0|0|0|1|0|0|0|0|Segoe UI" key="DIALOG_FONT_NAME"/>
@@ -13,12 +22,27 @@
 		<item value="false" key="casesensitive"/>
 		<item value="false" key="incremental"/>
 		<item value="false" key="wholeword"/>
+<<<<<<< HEAD
 		<item value="drawScore" key="selection"/>
+=======
+<<<<<<< HEAD
+		<item value="DOWNB" key="selection"/>
+		<list key="findhistory">
+			<item value="downb"/>
+			<item value="letter"/>
+			<item value="alive"/>
+			<item value="update_score"/>
+			<item value="draw_sc"/>
+			<item value="O"/>
+=======
+		<item value="print" key="selection"/>
+>>>>>>> ccf4253f6b1436cb971e309e1ab5b301a2fd8845
 		<list key="findhistory">
 			<item value="drawscore"/>
 			<item value="print"/>
 			<item value="printstring"/>
 			<item value="downb"/>
+>>>>>>> 88594b069009f1748bbb6cbd6e2faa263a1b7581
 			<item value="drawAlienMissile"/>
 			<item value="printtime"/>
 		</list>

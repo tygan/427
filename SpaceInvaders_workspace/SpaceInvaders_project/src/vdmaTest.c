@@ -91,27 +91,32 @@
 #define BUNKER_TOP 300
 #define SCORE_WORD_Y 5
 #define SCORE_WORD_X 5
+#define LIVES_WORD_X 320
+#define LIVES_X 420
 #define LETTER_WIDTH 15
 #define LETTER_HEIGHT 15
 #define LETTER_WIDTH_I 3
 #define LETTER_WIDTH_ONE 6
 #define LETTER_BUFFER 3
-<<<<<<< HEAD
 #define SCORE_Y 5
 #define SCORE_X 105
-=======
+#define GAME_OVER_X 200
+#define GAME_OVER_Y 300
 #define EARTH_Y 460
 #define EARTH_DEPTH 2
 #define MOTHER_SHIP_Y 20
 #define MOTHER_SHIP_HEIGHT 14
 #define MOTHER_SHIP_WIDTH 36
->>>>>>> 06a0afab25de31633d06cb92888f82a168e5d2d6
+#define MAX_LIVES 3
+
+
 
 void print(char *str);
 XGpio gpLED;  // This is a handle for the LED GPIO block.
 XGpio gpPB;   // This is a handle for the push-button GPIO block.
 
 int currentButtonState;
+int lives = MAX_LIVES;
 int aliens_in = 1;
 int first_row = 0;
 int last_row = ALIENS_WIDE - 1;
@@ -132,10 +137,8 @@ int drawAlienTimer;
 int direction;
 int aliens_x;
 int aliens_y;
-<<<<<<< HEAD
-int score = 324;
+int score = 123;
 int score_digits = 1;
-=======
 int alienCount;
 int shipCounter;
 int motherShipX;
@@ -143,7 +146,6 @@ int motherShipY;
 int shipAlive;
 int alienFireCounter;
 int alienBulletCount;
->>>>>>> 06a0afab25de31633d06cb92888f82a168e5d2d6
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
 //Draw functions
@@ -249,7 +251,7 @@ void erase_alien(int corner_top, int corner_left){	//erases alien of given coord
 	}
 }
 
-void draw_score_word(){ //draws "score 0" at beginning
+void draw_score_word(){ //draws "score" at beginning
 	unsigned int * framePointer = (unsigned int *) FRAME_BUFFER_ADDR;
 	int localx,localy,letter_index,worldx,worldy;
 	letter_index = 0;
@@ -314,7 +316,50 @@ void draw_score_word(){ //draws "score 0" at beginning
 	}
 }
 
-int add_score(int points){
+void printNumbers(int fullNumber, int numDigits, int startx, int starty){
+	unsigned int * framePointer = (unsigned int *) FRAME_BUFFER_ADDR;
+	int localx,localy,worldx,worldy;
+	int digit_index;
+	for(digit_index=0; digit_index<numDigits; digit_index++){
+		for (localy=0; localy<LETTER_HEIGHT; localy++) {
+			worldy = localy + starty;
+			for (localx = 0; localx<LETTER_WIDTH+LETTER_BUFFER; localx++) {
+				if(localx < LETTER_WIDTH){
+					worldx = localx + startx + digit_index * (LETTER_WIDTH + LETTER_BUFFER);
+					framePointer[worldy*SCREEN_WIDTH + worldx] = BLACK;
+				}
+			}
+		}
+	}
+	int tempNumber = fullNumber;
+	int display_digit;
+	for(digit_index=0; digit_index<numDigits; digit_index++){
+		int n = 1;
+		int i;
+		int digit = numDigits - digit_index;
+		for(i=0;i<digit-1;i++){
+			n*=10;
+		}
+		display_digit = tempNumber/n;
+//		xil_printf("\n\rdigit_index:%d score_digits:%d display_digit:%d temp_score:%d",digit_index,score_digits,display_digit,temp_score);
+		tempNumber = tempNumber - display_digit*n;
+		for (localy=0; localy<LETTER_HEIGHT; localy++) {
+			worldy = localy + starty;
+			for (localx = 0; localx<LETTER_WIDTH+LETTER_BUFFER; localx++) {
+				if(localx < LETTER_WIDTH){
+//					xil_printf("numbers[%d][%d]=%d!\n",display_digit,localy,numbers[display_digit][localy]);
+					if ((numbers[display_digit][localy] & (1<<(LETTER_WIDTH-1-localx)))) {
+//						xil_printf("4");
+						worldx = localx + startx + digit_index * (LETTER_WIDTH + LETTER_BUFFER);
+						framePointer[worldy*SCREEN_WIDTH + worldx] = GREEN;
+					}
+				}
+			}
+		}
+	}
+}
+
+void add_score(int points){
 	score += points;
 	int n = score;
 	int digits = 0;
@@ -329,46 +374,207 @@ int add_score(int points){
 		}
 	}
 	score_digits = digits;
-	xil_printf("\n\rscore: %d\n\rdigits: %d",score,score_digits);
-	//erase current score
+	printNumbers(score, score_digits, SCORE_X, SCORE_Y);
+}
+//									score_digits	SCORE_X		SCORE_Y
+
+
+void draw_lives_word(){ //draws "lives" at beginning
 	unsigned int * framePointer = (unsigned int *) FRAME_BUFFER_ADDR;
-	int localx,localy,worldx,worldy;
-	int digit_index;
-	for(digit_index=0; digit_index<score_digits; digit_index++){
-		for (localy=0; localy<LETTER_HEIGHT; localy++) {
-			worldy = localy + SCORE_Y;
-			for (localx = 0; localx<LETTER_WIDTH+LETTER_BUFFER; localx++) {
-				if(localx < LETTER_WIDTH){
-					worldx = localx + SCORE_X + digit_index * (LETTER_WIDTH + LETTER_BUFFER);
-					framePointer[worldy*SCREEN_WIDTH + worldx] = BLACK;
+	int localx,localy,letter_index,worldx,worldy;
+	letter_index = 0;
+	for (localy=0; localy<LETTER_HEIGHT; localy++) {
+		worldy = localy + SCORE_WORD_Y;
+		for (localx = 0; localx<LETTER_WIDTH+LETTER_BUFFER; localx++) {
+			if(localx < LETTER_WIDTH){
+				if ((letterL_15x15[localy] & (1<<(LETTER_WIDTH-1-localx)))) {
+					worldx = localx + LIVES_WORD_X + letter_index * (LETTER_WIDTH + LETTER_BUFFER);
+					framePointer[worldy*SCREEN_WIDTH + worldx] = WHITE;
 				}
 			}
 		}
 	}
-	int temp_score = score;
-	int display_digit;
-	for(digit_index=0; digit_index<score_digits; digit_index++){
-		int n = 1;
-		int i;
-		int digit = score_digits - digit_index;
-		for(i=0;i<digit-1;i++){
-			n*=10;
-		}
-		display_digit = temp_score/n;
-		xil_printf("\n\rdigit_index:%d score_digits:%d display_digit:%d temp_score:%d",digit_index,score_digits,display_digit,temp_score);
-		temp_score = temp_score - display_digit*n;
-		for (localy=0; localy<LETTER_HEIGHT; localy++) {
-			worldy = localy + SCORE_Y;
-			for (localx = 0; localx<LETTER_WIDTH+LETTER_BUFFER; localx++) {
-				if(localx < LETTER_WIDTH){
-					xil_printf("numbers[%d][%d]=%d!\n",display_digit,localy,numbers[display_digit][localy]);
-					if ((numbers[display_digit][localy] & (1<<(LETTER_WIDTH-1-localx)))) {
-						xil_printf("4");
-						worldx = localx + SCORE_X + digit_index * (LETTER_WIDTH + LETTER_BUFFER);
-						framePointer[worldy*SCREEN_WIDTH + worldx] = GREEN;
-					}
+	letter_index++;
+	for (localy=0; localy<LETTER_HEIGHT; localy++) {
+		worldy = localy + SCORE_WORD_Y;
+		for (localx = 0; localx<LETTER_WIDTH+LETTER_BUFFER; localx++) {
+			if(localx < LETTER_WIDTH){
+				if ((letterI_15x15[localy] & (1<<(LETTER_WIDTH-1-localx)))) {
+					worldx = localx + LIVES_WORD_X + letter_index * (LETTER_WIDTH + LETTER_BUFFER);
+					framePointer[worldy*SCREEN_WIDTH + worldx] = WHITE;
 				}
 			}
+		}
+	}
+	letter_index++;
+	for (localy=0; localy<LETTER_HEIGHT; localy++) {
+		worldy = localy + SCORE_WORD_Y;
+		for (localx = 0; localx<LETTER_WIDTH+LETTER_BUFFER; localx++) {
+			if(localx < LETTER_WIDTH){
+				if ((letterV_15x15[localy] & (1<<(LETTER_WIDTH-1-localx)))) {
+					worldx = localx + LIVES_WORD_X + letter_index * (LETTER_WIDTH + LETTER_BUFFER);
+					framePointer[worldy*SCREEN_WIDTH + worldx] = WHITE;
+				}
+			}
+		}
+	}
+	letter_index++;
+	for (localy=0; localy<LETTER_HEIGHT; localy++) {
+		worldy = localy + SCORE_WORD_Y;
+		for (localx = 0; localx<LETTER_WIDTH+LETTER_BUFFER; localx++) {
+			if(localx < LETTER_WIDTH){
+				if ((letterE_15x15[localy] & (1<<(LETTER_WIDTH-1-localx)))) {
+					worldx = localx + LIVES_WORD_X + letter_index * (LETTER_WIDTH + LETTER_BUFFER);
+					framePointer[worldy*SCREEN_WIDTH + worldx] = WHITE;
+				}
+			}
+		}
+	}
+	letter_index++;
+	for (localy=0; localy<LETTER_HEIGHT; localy++) {
+		worldy = localy + SCORE_WORD_Y;
+		for (localx = 0; localx<LETTER_WIDTH+LETTER_BUFFER; localx++) {
+			if(localx < LETTER_WIDTH){
+				if ((letterS_15x15[localy] & (1<<(LETTER_WIDTH-1-localx)))) {
+					worldx = localx + LIVES_WORD_X + letter_index * (LETTER_WIDTH + LETTER_BUFFER);
+					framePointer[worldy*SCREEN_WIDTH + worldx] = WHITE;
+				}
+			}
+		}
+	}
+}
+
+void drawLives(){
+	int index;
+	for(index=0;index<3;index++){
+		drawTank(LIVES_X + index*TANK_WIDTH, SCORE_WORD_Y, 1);
+	}
+}
+
+void eraseLife(){
+	drawTank(LIVES_X + lives*TANK_WIDTH, SCORE_WORD_Y, 0);
+}
+
+void gameOver(){
+	int i,j;
+	for(i=0;i<ALIENS_WIDE;i++){
+		for(j=0;j<ALIENS_TALL;j++){
+			if(aliens_alive[j][i]){
+//				killAlien(aliens_y+j*(ALIEN_HEIGHT+ALIEN_BUFFER), aliens_x+i*(ALIEN_WIDTH+ALIEN_BUFFER),0);
+			}
+		}
+	}
+	int bunkerX = 0;
+	int bunkerY = 0;
+	int dupBitX = 0;
+	int dupBitY = 0;
+	unsigned int * framePointer = (unsigned int *) FRAME_BUFFER_ADDR;
+	int row, column;
+	int top_corner = GAME_OVER_Y;
+	int left_corner = GAME_OVER_X;
+	for (row=top_corner; row<top_corner+LETTER_HEIGHT; row++) {
+		for (column = left_corner; column<left_corner+LETTER_WIDTH; column++) {
+			if ((letterG_15x15[bunkerY] & (1<<bunkerX))) {
+				framePointer[(row)*SCREEN_WIDTH + (column)] = WHITE;
+			}else{
+				framePointer[(row)*SCREEN_WIDTH + (column)] = BLACK;
+			}
+			if(dupBitX == 1)
+			{
+				bunkerX++;
+				dupBitX = 0;
+			}else{
+				dupBitX = 1;
+			}
+		}
+		bunkerX = 0;
+		if(dupBitY == 1){
+			bunkerY++;
+			dupBitY = 0;
+		}else{
+			dupBitY = 1;
+		}
+	 }
+	left_corner+=LETTER_WIDTH+LETTER_BUFFER;
+	for (row=top_corner; row<top_corner+LETTER_HEIGHT; row++) {
+		for (column = left_corner; column<left_corner+LETTER_WIDTH; column++) {
+			if ((letterA_15x15[bunkerY] & (1<<bunkerX))) {
+				framePointer[(row)*SCREEN_WIDTH + (column)] = WHITE;
+			}else{
+				framePointer[(row)*SCREEN_WIDTH + (column)] = BLACK;
+			}
+			if(dupBitX == 1)
+			{
+				bunkerX++;
+				dupBitX = 0;
+			}else{
+				dupBitX = 1;
+			}
+		}
+		bunkerX = 0;
+		if(dupBitY == 1){
+			bunkerY++;
+			dupBitY = 0;
+		}else{
+			dupBitY = 1;
+		}
+	 }
+	left_corner+=LETTER_WIDTH+LETTER_BUFFER;
+	for (row=top_corner; row<top_corner+LETTER_HEIGHT; row++) {
+		for (column = left_corner; column<left_corner+LETTER_WIDTH; column++) {
+			if ((letterM_15x15[bunkerY] & (1<<bunkerX))) {
+				framePointer[(row)*SCREEN_WIDTH + (column)] = WHITE;
+			}else{
+				framePointer[(row)*SCREEN_WIDTH + (column)] = BLACK;
+			}
+			if(dupBitX == 1)
+			{
+				bunkerX++;
+				dupBitX = 0;
+			}else{
+				dupBitX = 1;
+			}
+		}
+		bunkerX = 0;
+		if(dupBitY == 1){
+			bunkerY++;
+			dupBitY = 0;
+		}else{
+			dupBitY = 1;
+		}
+	 }
+	left_corner+=LETTER_WIDTH+LETTER_BUFFER;
+	for (row=top_corner; row<top_corner+LETTER_HEIGHT; row++) {
+		for (column = left_corner; column<left_corner+LETTER_WIDTH; column++) {
+			if ((letterE_15x15[bunkerY] & (1<<bunkerX))) {
+				framePointer[(row)*SCREEN_WIDTH + (column)] = WHITE;
+			}else{
+				framePointer[(row)*SCREEN_WIDTH + (column)] = BLACK;
+			}
+			if(dupBitX == 1)
+			{
+				bunkerX++;
+				dupBitX = 0;
+			}else{
+				dupBitX = 1;
+			}
+		}
+		bunkerX = 0;
+		if(dupBitY == 1){
+			bunkerY++;
+			dupBitY = 0;
+		}else{
+			dupBitY = 1;
+		}
+	 }
+}
+
+void killTank(){
+	if(lives>0){
+		lives--;
+		eraseLife();
+		if(lives==0){
+//			gameOver();
 		}
 	}
 }
@@ -646,14 +852,19 @@ int erodeBunker(xPos, yPos){
 	return 1;
 }
 
-void destroy_alien(int corner_top, int corner_left){	//erases alien of given coordinates
+void destroy_alien(int corner_top, int corner_left, int blowUp){	//erases alien of given coordinates
 	unsigned int * framePointer = (unsigned int *) FRAME_BUFFER_ADDR;
 	int row = 0;
 	int column = 0;
 	for (row=corner_top; row<corner_top+ALIEN_HEIGHT; row++) {
 			for (column = corner_left; column<corner_left+ALIEN_WIDTH; column++) {
 				if ((alien_explosion_24x20[row-corner_top] & (1<<(ALIEN_EXPLOSION_HEIGHT-1-(column-corner_left))))) {
-					framePointer[(row)*SCREEN_WIDTH + (column)] = WHITE;
+					if(blowUp){
+						framePointer[(row)*SCREEN_WIDTH + (column)] = WHITE;
+					}
+					else{
+						framePointer[(row)*SCREEN_WIDTH + (column)] = BLACK;
+					}
 				}else{
 					framePointer[(row)*SCREEN_WIDTH + (column)] = BLACK;
 				}
@@ -685,7 +896,7 @@ void reevaluate_aliens(){
 	last_row = x;
 }
 
-int killAlien(pointx, pointy){
+int killAlien(int pointx, int pointy, int blowup){
 	int alien_x_index = 0;
 	int alien_y_index = 0;
 	alien_x_index = (pointx-aliens_x)/(ALIEN_WIDTH+ALIEN_BUFFER);
@@ -704,7 +915,16 @@ int killAlien(pointx, pointy){
 		return 0;
 	}
 	aliens_alive[alien_y_index][alien_x_index] = 0;
-	destroy_alien(aliens_y+alien_y_index*(ALIEN_HEIGHT+ALIEN_BUFFER), aliens_x+alien_x_index*(ALIEN_WIDTH+ALIEN_BUFFER));
+	if(alien_y_index==0){
+		add_score(30);
+	}
+	else if(alien_y_index>0 && alien_y_index<3){
+		add_score(20);
+	}
+	else{
+		add_score(10);
+	}
+	destroy_alien(aliens_y+alien_y_index*(ALIEN_HEIGHT+ALIEN_BUFFER), aliens_x+alien_x_index*(ALIEN_WIDTH+ALIEN_BUFFER),blowup);
 	reevaluate_aliens();
 	return 1;
 }
@@ -713,14 +933,29 @@ int blowUpMotherShip(missilex, missiley){
 	int drawShip = 0;
 	drawMotherShip(motherShipX, motherShipY, drawShip);
 	shipAlive = 0;
-	//YOU NEED TO SHOW SCORE OF MOTHERSHIP HERE!
+	int points = (rand()%5)*50+50;
+	int n = points;
+	int digits = 0;
+	if(n==0){
+		digits = 1;
+	}
+	else{
+		while(n!=0)	//find number of digits
+		{
+			n/=10;
+			++digits;
+		}
+	}
+	printNumbers(points, digits, motherShipX, motherShipY);
+
+	//xxxYOU NEED TO SHOW SCORE OF MOTHERSHIP HERE!
 	return 1;
 }
 
 int evalTankBulletCollision(bulletx, bullety){//also needs to kill alien or erode bunker if there was a collision
 	int collision = 0;
 	if(bullety-1 <= aliens_y+5*(ALIEN_HEIGHT+ALIEN_BUFFER) && bullety-1 > aliens_y){//Kill alien
-		collision = killAlien(bulletx, bullety);
+		collision = killAlien(bulletx, bullety, 1);
 	}else if(bullety-1 <= BUNKER_BOTTOM && bullety-1 > BUNKER_TOP){//if its in the bunker region
 		collision = erodeBunker(bulletx, bullety);
 	}else if(bullety-1 <= MOTHER_SHIP_Y + MOTHER_SHIP_HEIGHT && bullety - 1 > MOTHER_SHIP_Y &&
@@ -794,19 +1029,18 @@ void button_decoder() {
 		}
 	}else if(currentButtonState & DOWNBTN){//kill left and right aliens	//for testing	//delete
 		int i;//,j;
-		for(i=0;i<ALIENS_TALL;i++){
-			aliens_alive[i][0] = 0;
-			destroy_alien(aliens_y+i*(ALIEN_HEIGHT+ALIEN_BUFFER), aliens_x+0*(ALIEN_WIDTH+ALIEN_BUFFER));
-			reevaluate_aliens();
-		}
-		for(i=0;i<ALIENS_TALL;i++){
-			aliens_alive[i][ALIENS_WIDE-1] = 0;
-			destroy_alien(aliens_y+i*(ALIEN_HEIGHT+ALIEN_BUFFER), aliens_x+(ALIENS_WIDE-1)*(ALIEN_WIDTH+ALIEN_BUFFER));
-			reevaluate_aliens();
-		}
-<<<<<<< HEAD
+//		for(i=0;i<ALIENS_TALL;i++){
+//			aliens_alive[i][0] = 0;
+//			destroy_alien(aliens_y+i*(ALIEN_HEIGHT+ALIEN_BUFFER), aliens_x+0*(ALIEN_WIDTH+ALIEN_BUFFER),1);
+//			reevaluate_aliens();
+//		}
+//		for(i=0;i<ALIENS_TALL;i++){
+//			aliens_alive[i][ALIENS_WIDE-1] = 0;
+//			destroy_alien(aliens_y+i*(ALIEN_HEIGHT+ALIEN_BUFFER), aliens_x+(ALIENS_WIDE-1)*(ALIEN_WIDTH+ALIEN_BUFFER),1);
+//			reevaluate_aliens();
+//		}
 		add_score(100);
-=======
+		killTank();
 //		for(j=0;j<ALIENS_WIDE;j++){ KILLS all aliens and goes to infinite game over loop
 //			for(i=0;i<ALIENS_TALL;i++){
 //				aliens_alive[i][j] = 0;
@@ -814,7 +1048,6 @@ void button_decoder() {
 //				reevaluate_aliens();
 //			}
 //		}
->>>>>>> 06a0afab25de31633d06cb92888f82a168e5d2d6
 	}
 }
 //	if(exists_missile){
@@ -1090,7 +1323,7 @@ int main()
 			 aliens_alive[i][j] = 1;
 		 }
 	 }
-	 direction = RIGHT;
+	 direction = LEFT;
 	 /////////////////////////////
 
 	 /////////////////////////////
@@ -1111,6 +1344,8 @@ int main()
 	 //draw words
 	 draw_score_word();
 	 add_score(0);
+	 draw_lives_word();
+	 drawLives();
 	 //////////////////
 
 	while (1);

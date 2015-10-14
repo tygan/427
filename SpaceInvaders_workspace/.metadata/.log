@@ -1500,14 +1500,22 @@ org.eclipse.core.runtime.AssertionFailedException: unknown saveable: org.eclipse
 
 !ENTRY org.eclipse.cdt.core 1 0 2015-10-10 17:41:54.421
 !MESSAGE Indexed 'hello_world_bsp_0' (61 sources, 50 headers) in 0.81 sec: 1,921 declarations; 9,148 references; 18 unresolved inclusions; 0 syntax errors; 81 unresolved names (0.73%)
+<<<<<<< HEAD
+!SESSION 2015-10-12 14:03:34.686 -----------------------------------------------
+=======
 !SESSION 2015-10-12 12:24:53.664 -----------------------------------------------
+>>>>>>> 88594b069009f1748bbb6cbd6e2faa263a1b7581
 eclipse.buildId=Release 13.4 Build SDK_O.87xd
 java.version=1.6.0_21
 java.vendor=Sun Microsystems Inc.
 BootLoader constants: OS=win32, ARCH=x86_64, WS=win32, NL=en_US
 Command-line arguments:  -os win32 -ws win32 -arch x86_64
 
+<<<<<<< HEAD
+!ENTRY org.eclipse.ui 4 0 2015-10-12 14:04:26.748
+=======
 !ENTRY org.eclipse.ui 4 0 2015-10-12 12:25:58.716
+>>>>>>> 88594b069009f1748bbb6cbd6e2faa263a1b7581
 !MESSAGE Unable to create editor ID org.eclipse.cdt.ui.editor.CEditor: The file does not exist.
 !STACK 1
 org.eclipse.core.runtime.CoreException: The file does not exist.
@@ -1582,6 +1590,15 @@ org.eclipse.core.runtime.CoreException: The file does not exist.
 	at org.eclipse.equinox.launcher.Main.basicRun(Main.java:575)
 	at org.eclipse.equinox.launcher.Main.run(Main.java:1408)
 	at org.eclipse.equinox.launcher.Main.main(Main.java:1384)
+<<<<<<< HEAD
+!SUBENTRY 1 org.eclipse.core.filebuffers 4 0 2015-10-12 14:04:26.748
+!MESSAGE The file does not exist.
+
+!ENTRY org.eclipse.ui 2 2 2015-10-12 14:04:26.748
+!MESSAGE Ignored attempt to add saveable that was already registered
+!STACK 0
+org.eclipse.core.runtime.AssertionFailedException: unknown saveable: org.eclipse.ui.internal.DefaultSaveable@3ba5016 from part: org.eclipse.ui.internal.ErrorEditorPart@3ba5016
+=======
 !SUBENTRY 1 org.eclipse.core.filebuffers 4 0 2015-10-12 12:25:58.716
 !MESSAGE The file does not exist.
 
@@ -1589,6 +1606,7 @@ org.eclipse.core.runtime.CoreException: The file does not exist.
 !MESSAGE Ignored attempt to add saveable that was already registered
 !STACK 0
 org.eclipse.core.runtime.AssertionFailedException: unknown saveable: org.eclipse.ui.internal.DefaultSaveable@75787005 from part: org.eclipse.ui.internal.ErrorEditorPart@75787005
+>>>>>>> 88594b069009f1748bbb6cbd6e2faa263a1b7581
 	at org.eclipse.ui.internal.SaveablesList.logWarning(SaveablesList.java:187)
 	at org.eclipse.ui.internal.SaveablesList.addModel(SaveablesList.java:117)
 	at org.eclipse.ui.internal.SaveablesList.addModels(SaveablesList.java:289)
@@ -1645,18 +1663,31 @@ org.eclipse.core.runtime.AssertionFailedException: unknown saveable: org.eclipse
 	at org.eclipse.equinox.launcher.Main.run(Main.java:1408)
 	at org.eclipse.equinox.launcher.Main.main(Main.java:1384)
 
+<<<<<<< HEAD
+!ENTRY org.eclipse.cdt.core 1 0 2015-10-12 14:04:43.580
+!MESSAGE Indexed 'SpaceInvaders_project' (4 sources, 49 headers) in 0.75 sec: 1,858 declarations; 3,052 references; 3 unresolved inclusions; 0 syntax errors; 1 unresolved names (0.02%)
+
+!ENTRY org.eclipse.cdt.core 1 0 2015-10-12 14:04:44.485
+!MESSAGE Indexed 'hello_world_bsp_0' (61 sources, 50 headers) in 0.90 sec: 1,921 declarations; 9,148 references; 18 unresolved inclusions; 0 syntax errors; 81 unresolved names (0.73%)
+=======
 !ENTRY org.eclipse.cdt.core 1 0 2015-10-12 12:26:13.243
 !MESSAGE Indexed 'SpaceInvaders_project' (4 sources, 49 headers) in 0.73 sec: 1,858 declarations; 3,052 references; 3 unresolved inclusions; 0 syntax errors; 1 unresolved names (0.02%)
 
 !ENTRY org.eclipse.cdt.core 1 0 2015-10-12 12:26:14.070
 !MESSAGE Indexed 'hello_world_bsp_0' (61 sources, 50 headers) in 0.83 sec: 1,921 declarations; 9,148 references; 18 unresolved inclusions; 0 syntax errors; 81 unresolved names (0.73%)
+<<<<<<< HEAD
 !SESSION 2015-10-13 18:20:24.256 -----------------------------------------------
+=======
+>>>>>>> 88594b069009f1748bbb6cbd6e2faa263a1b7581
+!SESSION 2015-10-12 18:01:29.010 -----------------------------------------------
+>>>>>>> ccf4253f6b1436cb971e309e1ab5b301a2fd8845
 eclipse.buildId=Release 13.4 Build SDK_O.87xd
 java.version=1.6.0_21
 java.vendor=Sun Microsystems Inc.
 BootLoader constants: OS=win32, ARCH=x86_64, WS=win32, NL=en_US
 Command-line arguments:  -os win32 -ws win32 -arch x86_64
 
+<<<<<<< HEAD
 !ENTRY org.eclipse.ui 4 0 2015-10-13 18:20:36.455
 !MESSAGE Unable to create editor ID org.eclipse.cdt.ui.editor.CEditor: The file does not exist.
 !STACK 1
@@ -1861,3 +1892,162 @@ HandlerActivation(commandId=org.eclipse.ui.file.refresh,
 HandlerActivation(commandId=org.eclipse.ui.file.refresh,
 	handler=ActionHandler(org.eclipse.ui.internal.editors.text.RefreshEditorAction@7e8d93ea),
 	expression=AndExpression(LegacyEditorActionBarExpression(org.eclipse.cdt.ui.editor.CEditor),WorkbenchWindowExpression(org.eclipse.ui.internal.WorkbenchWindow@439ce47a)),sourcePriority=4210689)
+=======
+!ENTRY org.eclipse.ui.workbench 4 2 2015-10-12 18:01:32.348
+!MESSAGE Problems occurred when invoking code from plug-in: "org.eclipse.ui.workbench".
+!STACK 1
+org.eclipse.ui.WorkbenchException: The content of elements must consist of well-formed character data or markup.
+	at org.eclipse.ui.XMLMemento.createReadRoot(XMLMemento.java:142)
+	at org.eclipse.ui.XMLMemento.createReadRoot(XMLMemento.java:64)
+	at org.eclipse.ui.internal.Workbench$51.run(Workbench.java:2049)
+	at org.eclipse.core.runtime.SafeRunner.run(SafeRunner.java:42)
+	at org.eclipse.ui.internal.Workbench.restoreState(Workbench.java:2044)
+	at org.eclipse.ui.internal.WorkbenchConfigurer.restoreState(WorkbenchConfigurer.java:183)
+	at org.eclipse.ui.application.WorkbenchAdvisor$1.run(WorkbenchAdvisor.java:781)
+Caused by: org.xml.sax.SAXParseException: The content of elements must consist of well-formed character data or markup.
+	at com.sun.org.apache.xerces.internal.util.ErrorHandlerWrapper.createSAXParseException(Unknown Source)
+	at com.sun.org.apache.xerces.internal.util.ErrorHandlerWrapper.fatalError(Unknown Source)
+	at com.sun.org.apache.xerces.internal.impl.XMLErrorReporter.reportError(Unknown Source)
+	at com.sun.org.apache.xerces.internal.impl.XMLScanner.reportFatalError(Unknown Source)
+	at com.sun.org.apache.xerces.internal.impl.XMLDocumentFragmentScannerImpl$FragmentContentDriver.startOfMarkup(Unknown Source)
+	at com.sun.org.apache.xerces.internal.impl.XMLDocumentFragmentScannerImpl$FragmentContentDriver.next(Unknown Source)
+	at com.sun.org.apache.xerces.internal.impl.XMLDocumentScannerImpl.next(Unknown Source)
+	at com.sun.org.apache.xerces.internal.impl.XMLDocumentFragmentScannerImpl.scanDocument(Unknown Source)
+	at com.sun.org.apache.xerces.internal.parsers.XML11Configuration.parse(Unknown Source)
+	at com.sun.org.apache.xerces.internal.parsers.XML11Configuration.parse(Unknown Source)
+	at com.sun.org.apache.xerces.internal.parsers.XMLParser.parse(Unknown Source)
+	at com.sun.org.apache.xerces.internal.parsers.DOMParser.parse(Unknown Source)
+	at com.sun.org.apache.xerces.internal.jaxp.DocumentBuilderImpl.parse(Unknown Source)
+	at org.eclipse.ui.XMLMemento.createReadRoot(XMLMemento.java:115)
+	... 6 more
+!SUBENTRY 1 org.eclipse.ui 4 0 2015-10-12 18:01:32.348
+!MESSAGE The content of elements must consist of well-formed character data or markup.
+!STACK 0
+org.xml.sax.SAXParseException: The content of elements must consist of well-formed character data or markup.
+	at com.sun.org.apache.xerces.internal.util.ErrorHandlerWrapper.createSAXParseException(Unknown Source)
+	at com.sun.org.apache.xerces.internal.util.ErrorHandlerWrapper.fatalError(Unknown Source)
+	at com.sun.org.apache.xerces.internal.impl.XMLErrorReporter.reportError(Unknown Source)
+	at com.sun.org.apache.xerces.internal.impl.XMLScanner.reportFatalError(Unknown Source)
+	at com.sun.org.apache.xerces.internal.impl.XMLDocumentFragmentScannerImpl$FragmentContentDriver.startOfMarkup(Unknown Source)
+	at com.sun.org.apache.xerces.internal.impl.XMLDocumentFragmentScannerImpl$FragmentContentDriver.next(Unknown Source)
+	at com.sun.org.apache.xerces.internal.impl.XMLDocumentScannerImpl.next(Unknown Source)
+	at com.sun.org.apache.xerces.internal.impl.XMLDocumentFragmentScannerImpl.scanDocument(Unknown Source)
+	at com.sun.org.apache.xerces.internal.parsers.XML11Configuration.parse(Unknown Source)
+	at com.sun.org.apache.xerces.internal.parsers.XML11Configuration.parse(Unknown Source)
+	at com.sun.org.apache.xerces.internal.parsers.XMLParser.parse(Unknown Source)
+	at com.sun.org.apache.xerces.internal.parsers.DOMParser.parse(Unknown Source)
+	at com.sun.org.apache.xerces.internal.jaxp.DocumentBuilderImpl.parse(Unknown Source)
+	at org.eclipse.ui.XMLMemento.createReadRoot(XMLMemento.java:115)
+	at org.eclipse.ui.XMLMemento.createReadRoot(XMLMemento.java:64)
+	at org.eclipse.ui.internal.Workbench$51.run(Workbench.java:2049)
+	at org.eclipse.core.runtime.SafeRunner.run(SafeRunner.java:42)
+	at org.eclipse.ui.internal.Workbench.restoreState(Workbench.java:2044)
+	at org.eclipse.ui.internal.WorkbenchConfigurer.restoreState(WorkbenchConfigurer.java:183)
+	at org.eclipse.ui.application.WorkbenchAdvisor$1.run(WorkbenchAdvisor.java:781)
+!SUBENTRY 1 org.eclipse.ui 4 0 2015-10-12 18:01:32.348
+!MESSAGE The content of elements must consist of well-formed character data or markup.
+!STACK 0
+org.xml.sax.SAXParseException: The content of elements must consist of well-formed character data or markup.
+	at com.sun.org.apache.xerces.internal.util.ErrorHandlerWrapper.createSAXParseException(Unknown Source)
+	at com.sun.org.apache.xerces.internal.util.ErrorHandlerWrapper.fatalError(Unknown Source)
+	at com.sun.org.apache.xerces.internal.impl.XMLErrorReporter.reportError(Unknown Source)
+	at com.sun.org.apache.xerces.internal.impl.XMLScanner.reportFatalError(Unknown Source)
+	at com.sun.org.apache.xerces.internal.impl.XMLDocumentFragmentScannerImpl$FragmentContentDriver.startOfMarkup(Unknown Source)
+	at com.sun.org.apache.xerces.internal.impl.XMLDocumentFragmentScannerImpl$FragmentContentDriver.next(Unknown Source)
+	at com.sun.org.apache.xerces.internal.impl.XMLDocumentScannerImpl.next(Unknown Source)
+	at com.sun.org.apache.xerces.internal.impl.XMLDocumentFragmentScannerImpl.scanDocument(Unknown Source)
+	at com.sun.org.apache.xerces.internal.parsers.XML11Configuration.parse(Unknown Source)
+	at com.sun.org.apache.xerces.internal.parsers.XML11Configuration.parse(Unknown Source)
+	at com.sun.org.apache.xerces.internal.parsers.XMLParser.parse(Unknown Source)
+	at com.sun.org.apache.xerces.internal.parsers.DOMParser.parse(Unknown Source)
+	at com.sun.org.apache.xerces.internal.jaxp.DocumentBuilderImpl.parse(Unknown Source)
+	at org.eclipse.ui.XMLMemento.createReadRoot(XMLMemento.java:115)
+	at org.eclipse.ui.XMLMemento.createReadRoot(XMLMemento.java:64)
+	at org.eclipse.ui.internal.Workbench$51.run(Workbench.java:2049)
+	at org.eclipse.core.runtime.SafeRunner.run(SafeRunner.java:42)
+	at org.eclipse.ui.internal.Workbench.restoreState(Workbench.java:2044)
+	at org.eclipse.ui.internal.WorkbenchConfigurer.restoreState(WorkbenchConfigurer.java:183)
+	at org.eclipse.ui.application.WorkbenchAdvisor$1.run(WorkbenchAdvisor.java:781)
+>>>>>>> ccf4253f6b1436cb971e309e1ab5b301a2fd8845
+!SESSION 2015-10-13 18:36:18.379 -----------------------------------------------
+eclipse.buildId=Release 13.4 Build SDK_O.87xd
+java.version=1.6.0_21
+java.vendor=Sun Microsystems Inc.
+BootLoader constants: OS=win32, ARCH=x86_64, WS=win32, NL=en_US
+Command-line arguments:  -os win32 -ws win32 -arch x86_64
+
+!ENTRY org.eclipse.ui.workbench 4 2 2015-10-13 18:36:21.561
+!MESSAGE Problems occurred when invoking code from plug-in: "org.eclipse.ui.workbench".
+!STACK 1
+org.eclipse.ui.WorkbenchException: The content of elements must consist of well-formed character data or markup.
+	at org.eclipse.ui.XMLMemento.createReadRoot(XMLMemento.java:142)
+	at org.eclipse.ui.XMLMemento.createReadRoot(XMLMemento.java:64)
+	at org.eclipse.ui.internal.Workbench$51.run(Workbench.java:2049)
+	at org.eclipse.core.runtime.SafeRunner.run(SafeRunner.java:42)
+	at org.eclipse.ui.internal.Workbench.restoreState(Workbench.java:2044)
+	at org.eclipse.ui.internal.WorkbenchConfigurer.restoreState(WorkbenchConfigurer.java:183)
+	at org.eclipse.ui.application.WorkbenchAdvisor$1.run(WorkbenchAdvisor.java:781)
+Caused by: org.xml.sax.SAXParseException: The content of elements must consist of well-formed character data or markup.
+	at com.sun.org.apache.xerces.internal.util.ErrorHandlerWrapper.createSAXParseException(Unknown Source)
+	at com.sun.org.apache.xerces.internal.util.ErrorHandlerWrapper.fatalError(Unknown Source)
+	at com.sun.org.apache.xerces.internal.impl.XMLErrorReporter.reportError(Unknown Source)
+	at com.sun.org.apache.xerces.internal.impl.XMLScanner.reportFatalError(Unknown Source)
+	at com.sun.org.apache.xerces.internal.impl.XMLDocumentFragmentScannerImpl$FragmentContentDriver.startOfMarkup(Unknown Source)
+	at com.sun.org.apache.xerces.internal.impl.XMLDocumentFragmentScannerImpl$FragmentContentDriver.next(Unknown Source)
+	at com.sun.org.apache.xerces.internal.impl.XMLDocumentScannerImpl.next(Unknown Source)
+	at com.sun.org.apache.xerces.internal.impl.XMLDocumentFragmentScannerImpl.scanDocument(Unknown Source)
+	at com.sun.org.apache.xerces.internal.parsers.XML11Configuration.parse(Unknown Source)
+	at com.sun.org.apache.xerces.internal.parsers.XML11Configuration.parse(Unknown Source)
+	at com.sun.org.apache.xerces.internal.parsers.XMLParser.parse(Unknown Source)
+	at com.sun.org.apache.xerces.internal.parsers.DOMParser.parse(Unknown Source)
+	at com.sun.org.apache.xerces.internal.jaxp.DocumentBuilderImpl.parse(Unknown Source)
+	at org.eclipse.ui.XMLMemento.createReadRoot(XMLMemento.java:115)
+	... 6 more
+!SUBENTRY 1 org.eclipse.ui 4 0 2015-10-13 18:36:21.561
+!MESSAGE The content of elements must consist of well-formed character data or markup.
+!STACK 0
+org.xml.sax.SAXParseException: The content of elements must consist of well-formed character data or markup.
+	at com.sun.org.apache.xerces.internal.util.ErrorHandlerWrapper.createSAXParseException(Unknown Source)
+	at com.sun.org.apache.xerces.internal.util.ErrorHandlerWrapper.fatalError(Unknown Source)
+	at com.sun.org.apache.xerces.internal.impl.XMLErrorReporter.reportError(Unknown Source)
+	at com.sun.org.apache.xerces.internal.impl.XMLScanner.reportFatalError(Unknown Source)
+	at com.sun.org.apache.xerces.internal.impl.XMLDocumentFragmentScannerImpl$FragmentContentDriver.startOfMarkup(Unknown Source)
+	at com.sun.org.apache.xerces.internal.impl.XMLDocumentFragmentScannerImpl$FragmentContentDriver.next(Unknown Source)
+	at com.sun.org.apache.xerces.internal.impl.XMLDocumentScannerImpl.next(Unknown Source)
+	at com.sun.org.apache.xerces.internal.impl.XMLDocumentFragmentScannerImpl.scanDocument(Unknown Source)
+	at com.sun.org.apache.xerces.internal.parsers.XML11Configuration.parse(Unknown Source)
+	at com.sun.org.apache.xerces.internal.parsers.XML11Configuration.parse(Unknown Source)
+	at com.sun.org.apache.xerces.internal.parsers.XMLParser.parse(Unknown Source)
+	at com.sun.org.apache.xerces.internal.parsers.DOMParser.parse(Unknown Source)
+	at com.sun.org.apache.xerces.internal.jaxp.DocumentBuilderImpl.parse(Unknown Source)
+	at org.eclipse.ui.XMLMemento.createReadRoot(XMLMemento.java:115)
+	at org.eclipse.ui.XMLMemento.createReadRoot(XMLMemento.java:64)
+	at org.eclipse.ui.internal.Workbench$51.run(Workbench.java:2049)
+	at org.eclipse.core.runtime.SafeRunner.run(SafeRunner.java:42)
+	at org.eclipse.ui.internal.Workbench.restoreState(Workbench.java:2044)
+	at org.eclipse.ui.internal.WorkbenchConfigurer.restoreState(WorkbenchConfigurer.java:183)
+	at org.eclipse.ui.application.WorkbenchAdvisor$1.run(WorkbenchAdvisor.java:781)
+!SUBENTRY 1 org.eclipse.ui 4 0 2015-10-13 18:36:21.561
+!MESSAGE The content of elements must consist of well-formed character data or markup.
+!STACK 0
+org.xml.sax.SAXParseException: The content of elements must consist of well-formed character data or markup.
+	at com.sun.org.apache.xerces.internal.util.ErrorHandlerWrapper.createSAXParseException(Unknown Source)
+	at com.sun.org.apache.xerces.internal.util.ErrorHandlerWrapper.fatalError(Unknown Source)
+	at com.sun.org.apache.xerces.internal.impl.XMLErrorReporter.reportError(Unknown Source)
+	at com.sun.org.apache.xerces.internal.impl.XMLScanner.reportFatalError(Unknown Source)
+	at com.sun.org.apache.xerces.internal.impl.XMLDocumentFragmentScannerImpl$FragmentContentDriver.startOfMarkup(Unknown Source)
+	at com.sun.org.apache.xerces.internal.impl.XMLDocumentFragmentScannerImpl$FragmentContentDriver.next(Unknown Source)
+	at com.sun.org.apache.xerces.internal.impl.XMLDocumentScannerImpl.next(Unknown Source)
+	at com.sun.org.apache.xerces.internal.impl.XMLDocumentFragmentScannerImpl.scanDocument(Unknown Source)
+	at com.sun.org.apache.xerces.internal.parsers.XML11Configuration.parse(Unknown Source)
+	at com.sun.org.apache.xerces.internal.parsers.XML11Configuration.parse(Unknown Source)
+	at com.sun.org.apache.xerces.internal.parsers.XMLParser.parse(Unknown Source)
+	at com.sun.org.apache.xerces.internal.parsers.DOMParser.parse(Unknown Source)
+	at com.sun.org.apache.xerces.internal.jaxp.DocumentBuilderImpl.parse(Unknown Source)
+	at org.eclipse.ui.XMLMemento.createReadRoot(XMLMemento.java:115)
+	at org.eclipse.ui.XMLMemento.createReadRoot(XMLMemento.java:64)
+	at org.eclipse.ui.internal.Workbench$51.run(Workbench.java:2049)
+	at org.eclipse.core.runtime.SafeRunner.run(SafeRunner.java:42)
+	at org.eclipse.ui.internal.Workbench.restoreState(Workbench.java:2044)
+	at org.eclipse.ui.internal.WorkbenchConfigurer.restoreState(WorkbenchConfigurer.java:183)
+	at org.eclipse.ui.application.WorkbenchAdvisor$1.run(WorkbenchAdvisor.java:781)

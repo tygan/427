@@ -1760,8 +1760,13 @@ GCLK           |    3.073|         |         |         |
 =========================================================================
 
 
+<<<<<<< HEAD
 Total REAL time to Xst completion: 22.00 secs
 Total CPU time to Xst completion: 22.46 secs
+=======
+Total REAL time to Xst completion: 21.00 secs
+Total CPU time to Xst completion: 21.09 secs
+>>>>>>> ccf4253f6b1436cb971e309e1ab5b301a2fd8845
  
 --> 
 
