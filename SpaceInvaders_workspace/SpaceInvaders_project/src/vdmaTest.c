@@ -110,6 +110,7 @@
 #define MAX_LIVES 3
 #define MAX_ALIEN_MISSILES 5
 #define GAME_OVER_DIGITS 9
+#define TANK_DEFAULT_X 70
 
 void print(char *str);
 XGpio gpLED;  // This is a handle for the LED GPIO block.
@@ -148,7 +149,9 @@ int motherShipY;
 int shipAlive;
 int alienFireCounter;
 int alienBulletCount;
-
+int tankAlive;
+int tankExplosionCounter;
+int numExplosion;
 //////////////////////////////////////////////////////////////////////////////////////////////////
 //Draw functions
 //////////////////////////////////////////////////////////////////////////////////////////////////
@@ -491,6 +494,57 @@ void drawLives(){
 	}
 }
 
+
+void drawTankExplosion(explosion){
+	int tX = 0;
+	int tY = 0;
+	int dupBitX = 0;
+	int dupBitY = 0;
+	unsigned int * framePointer = (unsigned int *) FRAME_BUFFER_ADDR;
+	int row, column;
+	for (row=tankPosY; row<tankPosY+TANK_HEIGHT; row++) {
+			for (column = tankPosX; column<tankPosX+TANK_WIDTH; column++) {
+			switch(explosion){
+				case 0  :
+					if ((tank_explosion_0_22x8[tY] & (1<<tX))) {
+						framePointer[(row)*SCREEN_WIDTH + (column)] = GREEN;
+					}else{
+						framePointer[(row)*SCREEN_WIDTH + (column)] = BLACK;
+					}
+				   break;
+				case 1  :
+					if ((tank_explosion_1_22x8[tY] & (1<<tX))) {
+						framePointer[(row)*SCREEN_WIDTH + (column)] = GREEN;
+					}else{
+						framePointer[(row)*SCREEN_WIDTH + (column)] = BLACK;
+					}
+				   break;
+				case 2  :
+					if ((tank_explosion_2_22x8[tY] & (1<<tX))) {
+						framePointer[(row)*SCREEN_WIDTH + (column)] = GREEN;
+					}else{
+						framePointer[(row)*SCREEN_WIDTH + (column)] = BLACK;
+					}
+				   break;
+			}
+			if(dupBitX == 1)
+			{
+				tX++;
+				dupBitX = 0;
+			}else{
+				dupBitX = 1;
+			}
+		}
+		tX = 0;
+		if(dupBitY == 1){
+			tY++;
+			dupBitY = 0;
+		}else{
+			dupBitY = 1;
+		}
+	 }
+}
+
 void eraseLife(){
 	drawTank(LIVES_X + lives*TANK_WIDTH, SCORE_WORD_Y, 0);
 }
@@ -599,16 +653,19 @@ void gameOver(){
 //		}
 }
 
-int killTank(tankX, tankY){
+int killTank(killBulletX, killBulletY){
 	int killed = 0;
-	int draw = 0;
-	drawTank(tankX, tankY, draw);
-	killed = 1;
-	//drawTankExplosion(tankX, tankY);
-	//lose a life!
-	if(lives>0){
-		lives--;
-		eraseLife();
+	if(killBulletX > tankPosX && killBulletX < tankPosX + TANK_WIDTH){
+		int draw = 0;
+		drawTank(tankPosX, tankPosY, draw);
+		killed = 1;
+		tankAlive = 0;
+		//drawTankExplosion(tankX, tankY);
+		//lose a life!
+		if(lives>0){
+			lives--;
+			eraseLife();
+		}
 	}
 	return killed;
 }
@@ -1010,52 +1067,55 @@ void moveAlienBullets(){
 		}
 	}
 }
+
 //////////////////////////////////////////////////////////////////////////////////////////////////
 //Interrupt handling code
 //////////////////////////////////////////////////////////////////////////////////////////////////
 
 void button_decoder() {
-	if(currentButtonState & LEFTBTN){//move tank left
-		if(tankPosX > 0){
-			 draw = 1;
-			 tankPosX -= 2;
-			 drawTank(tankPosX, tankPosY, draw);
-		 }
-	}else if(currentButtonState & RIGHTBTN){//move tank right
-		 if(tankPosX < SCREEN_WIDTH - TANK_WIDTH){
-			 draw = 1;
-			 tankPosX += 2;
-			 drawTank(tankPosX, tankPosY, draw);
-		 }
-	}else if(currentButtonState & MIDDLEBTN){//fire tank bullet
-		if(exists_tank_missile == 0){
-			draw = 1;
-			drawTankBullet(tankPosX + TANK_WIDTH/2 - 1, tankPosY - TANK_BULLET_HEIGHT, draw);
-			tankBulletCoordinates[0] = tankPosX + TANK_WIDTH/2 - 1;
-			tankBulletCoordinates[1] = tankPosY - TANK_BULLET_HEIGHT;
-			exists_tank_missile = 1;
+	if(tankAlive == 1){
+		if(currentButtonState & LEFTBTN){//move tank left
+			if(tankPosX > 0){
+				 draw = 1;
+				 tankPosX -= 2;
+				 drawTank(tankPosX, tankPosY, draw);
+			 }
+		}else if(currentButtonState & RIGHTBTN){//move tank right
+			 if(tankPosX < SCREEN_WIDTH - TANK_WIDTH){
+				 draw = 1;
+				 tankPosX += 2;
+				 drawTank(tankPosX, tankPosY, draw);
+			 }
+		}else if(currentButtonState & MIDDLEBTN){//fire tank bullet
+			if(exists_tank_missile == 0){
+				draw = 1;
+				drawTankBullet(tankPosX + TANK_WIDTH/2 - 1, tankPosY - TANK_BULLET_HEIGHT, draw);
+				tankBulletCoordinates[0] = tankPosX + TANK_WIDTH/2 - 1;
+				tankBulletCoordinates[1] = tankPosY - TANK_BULLET_HEIGHT;
+				exists_tank_missile = 1;
+			}
+		}else if(currentButtonState & DOWNBTN){//kill left and right aliens	//for testing	//delete
+			//int i;//,j;
+	//		for(i=0;i<ALIENS_TALL;i++){
+	//			aliens_alive[i][0] = 0;
+	//			destroy_alien(aliens_y+i*(ALIEN_HEIGHT+ALIEN_BUFFER), aliens_x+0*(ALIEN_WIDTH+ALIEN_BUFFER),1);
+	//			reevaluate_aliens();
+	//		}
+	//		for(i=0;i<ALIENS_TALL;i++){
+	//			aliens_alive[i][ALIENS_WIDE-1] = 0;
+	//			destroy_alien(aliens_y+i*(ALIEN_HEIGHT+ALIEN_BUFFER), aliens_x+(ALIENS_WIDE-1)*(ALIEN_WIDTH+ALIEN_BUFFER),1);
+	//			reevaluate_aliens();
+	//		}
+			add_score(100);
+			killTank(tankPosX, tankPosY);
+	//		for(j=0;j<ALIENS_WIDE;j++){ KILLS all aliens and goes to infinite game over loop
+	//			for(i=0;i<ALIENS_TALL;i++){
+	//				aliens_alive[i][j] = 0;
+	//				destroy_alien(aliens_y+i*(ALIEN_HEIGHT+ALIEN_BUFFER), aliens_x+(j)*(ALIEN_WIDTH+ALIEN_BUFFER));
+	//				reevaluate_aliens();
+	//			}
+	//		}
 		}
-	}else if(currentButtonState & DOWNBTN){//kill left and right aliens	//for testing	//delete
-		//int i;//,j;
-//		for(i=0;i<ALIENS_TALL;i++){
-//			aliens_alive[i][0] = 0;
-//			destroy_alien(aliens_y+i*(ALIEN_HEIGHT+ALIEN_BUFFER), aliens_x+0*(ALIEN_WIDTH+ALIEN_BUFFER),1);
-//			reevaluate_aliens();
-//		}
-//		for(i=0;i<ALIENS_TALL;i++){
-//			aliens_alive[i][ALIENS_WIDE-1] = 0;
-//			destroy_alien(aliens_y+i*(ALIEN_HEIGHT+ALIEN_BUFFER), aliens_x+(ALIENS_WIDE-1)*(ALIEN_WIDTH+ALIEN_BUFFER),1);
-//			reevaluate_aliens();
-//		}
-		add_score(100);
-		killTank(tankPosX, tankPosY);
-//		for(j=0;j<ALIENS_WIDE;j++){ KILLS all aliens and goes to infinite game over loop
-//			for(i=0;i<ALIENS_TALL;i++){
-//				aliens_alive[i][j] = 0;
-//				destroy_alien(aliens_y+i*(ALIEN_HEIGHT+ALIEN_BUFFER), aliens_x+(j)*(ALIEN_WIDTH+ALIEN_BUFFER));
-//				reevaluate_aliens();
-//			}
-//		}
 	}
 }
 //	if(exists_missile){
@@ -1084,63 +1144,86 @@ void button_decoder() {
 //				 alienMissileCoordinates[1] = shoot_pos_y;
 void timer_interrupt_handler() {
 	/////////////////////////////
-	//makes alien missiles somewhere random every couple seconds
-	/////////////////////////////
-	int randNum = rand() % ALIENS_WIDE;
-	if(alienFireCounter == 300 && alienBulletCount < MAX_ALIEN_MISSILES){
-		//find empty place in alien missile array
-		int z;
-		for(z = 0; z < MAX_ALIEN_MISSILES; z++){
-			if(alienMissileArray[z] == 0){
-				break;
+						//THIS NEEDS vvvvvvvvvvvvvvvvv  to change so that when bottom row of ALIVE ALIENS reaches bottom of bunker, then you get game over.
+	if(alienCount > 0 && aliens_y+5*(ALIEN_HEIGHT+ALIEN_BUFFER) < BUNKER_BOTTOM && lives > 0){//if there are no aliens left or aliens reach bottom of bunker
+		button_decoder();
+		/////////////////////////////
+		//makes alien missiles somewhere random every couple seconds
+		/////////////////////////////
+		int randNum = rand() % ALIENS_WIDE;
+		if(alienFireCounter == 300 && alienBulletCount < MAX_ALIEN_MISSILES){
+			//find empty place in alien missile array
+			int z;
+			for(z = 0; z < MAX_ALIEN_MISSILES; z++){
+				if(alienMissileArray[z] == 0){
+					break;
+				}
+			}
+			int draw = 1;
+			int shoot_pos_x = aliens_x+randNum*(ALIEN_WIDTH+ALIEN_BUFFER)+(ALIEN_WIDTH/2)-2;
+			int shoot_pos_y = aliens_y+ALIENS_TALL*(ALIEN_HEIGHT+ALIEN_BUFFER)-ALIEN_BUFFER;
+			drawAlienMissile(shoot_pos_x, shoot_pos_y, draw);
+			alienMissileCoordinatesX[z] = shoot_pos_x;
+			alienMissileCoordinatesY[z] = shoot_pos_y;
+			alienBulletCount++;
+			alienMissileArray[z] = 1;
+			alienFireCounter = 0;
+		}else{
+			alienFireCounter++;
+		}
+		if(alienBulletMoveCounter >= 3){
+			moveAlienBullets();
+			alienBulletMoveCounter = 0;
+		}else{
+			alienBulletMoveCounter++;
+		}
+
+		/////////////////////////////
+		//draw the mothership that goes across the top of the screen
+		/////////////////////////////
+		if(shipCounter >= 4 && shipAlive == 1){//moves spaceship IF its alive
+			int motherDraw = 1;
+			if(motherShipX+MOTHER_SHIP_WIDTH <= SCREEN_WIDTH){// if its still left of the right side of the screen
+				shipCounter = 0;
+				drawMotherShip(motherShipX, motherShipY, motherDraw);
+				motherShipX += 2;
+			}else{// if it reached the right edge of the screen then erase it!
+				motherDraw = 0;
+				drawMotherShip(motherShipX, motherShipY, motherDraw);
+				shipAlive = 0;
+			}
+		}else{
+			shipCounter++;
+		}
+
+		//draw tank explosion and then restart the tank in the restart position(TANK_DEFAULT_X).
+		if(tankAlive == 0){
+			if(tankExplosionCounter >= 10){
+				drawTankExplosion(numExplosion);
+				if(numExplosion<3){
+					numExplosion++;
+				}else{
+					numExplosion = 0;
+					tankAlive = 1;
+					int draw = 0;
+					drawTank(tankPosX, tankPosY, draw);
+					draw = 1;
+					tankPosX = TANK_DEFAULT_X;
+					drawTank(tankPosX, tankPosY, draw);
+				}
+				tankExplosionCounter = 0;
+			}else{
+				tankExplosionCounter++;
 			}
 		}
-		int draw = 1;
-		int shoot_pos_x = aliens_x+randNum*(ALIEN_WIDTH+ALIEN_BUFFER)+(ALIEN_WIDTH/2)-2;
-		int shoot_pos_y = aliens_y+ALIENS_TALL*(ALIEN_HEIGHT+ALIEN_BUFFER)-ALIEN_BUFFER;
-		drawAlienMissile(shoot_pos_x, shoot_pos_y, draw);
-		alienMissileCoordinatesX[z] = shoot_pos_x;
-		alienMissileCoordinatesY[z] = shoot_pos_y;
-		alienBulletCount++;
-		alienMissileArray[z] = 1;
-		alienFireCounter = 0;
-	}else{
-		alienFireCounter++;
-	}
-	if(alienBulletMoveCounter >= 3){
-		moveAlienBullets();
-		alienBulletMoveCounter = 0;
-	}else{
-		alienBulletMoveCounter++;
-	}
 
-	/////////////////////////////
-	//draw the mothership that goes across the top of the screen
-	/////////////////////////////
-	if(shipCounter >= 4 && shipAlive == 1){//moves spaceship IF its alive
-		int motherDraw = 1;
-		if(motherShipX+MOTHER_SHIP_WIDTH <= SCREEN_WIDTH){// if its still left of the right side of the screen
-			shipCounter = 0;
-			drawMotherShip(motherShipX, motherShipY, motherDraw);
-			motherShipX += 2;
-		}else{// if it reached the right edge of the screen then erase it!
-			motherDraw = 0;
-			drawMotherShip(motherShipX, motherShipY, motherDraw);
-			shipAlive = 0;
-		}
-	}else{
-		shipCounter++;
-	}
-	 /////////////////////////////
-						//THIS NEEDS vvvvvvvvvvvvvvvvv  to change so that when bottom row of ALIVE ALIENS reaches bottom of bunker, then you get game over.
-	if(alienCount > 0 || aliens_y+5*(ALIEN_HEIGHT+ALIEN_BUFFER) < BUNKER_BOTTOM || lives <= 0){//if there are no aliens left or aliens reach bottom of bunker
-		button_decoder();
 		if(bulletMoveCounter >= 3){
 			moveBullets();
 			bulletMoveCounter = 0;
 		}else{
 			bulletMoveCounter++;
 		}
+
 		if(drawAlienTimer >= 50){													//TO DO: make this a variable that changes as it goes down
 			if(direction == DOWN){	//if aliens have already gone down
 				if(aliens_x + first_row*(ALIEN_WIDTH+ALIEN_BUFFER) == 0){	//if aliens have hit the left edge of the screen
@@ -1216,6 +1299,8 @@ int main()
 	alienBulletCount = 0;
 	alienBulletMoveCounter = 0;
 	bulletMoveCounter = 0;
+	tankAlive = 0;
+	numExplosion = 0;
 	////////////////////////////////////////////////////////////
 	//Initialize interrupts and FIT
 	////////////////////////////////////////////////////////////
@@ -1321,7 +1406,7 @@ int main()
 	 /////////////////////////////
 	 //initialize tank on screen//
 	 int draw = 1;
-	 tankPosX = 0;
+	 tankPosX = TANK_DEFAULT_X;
 	 tankPosY = 414;
 	 drawTank(tankPosX, tankPosY, draw);
 	 /////////////////////////////
