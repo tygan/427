@@ -7,16 +7,16 @@ PMSPEC -- Overriding Xilinx file
 <C:/Xilinx/13.4/ISE_DS/ISE/spartan6/data/spartan6.acd>
 
 Using Flow File:
-C:/CT427ChasesBitBucket/427/SpaceInvaderTestHW2/implementation/fpga.flw 
+C:/CT427/fourteen/427/SpaceInvaderTestHW2/implementation/fpga.flw 
 Using Option File(s): 
- C:/CT427ChasesBitBucket/427/SpaceInvaderTestHW2/implementation/xflow.opt 
+ C:/CT427/fourteen/427/SpaceInvaderTestHW2/implementation/xflow.opt 
 
 Creating Script File ... 
 
 #----------------------------------------------#
 # Starting program ngdbuild
 # ngdbuild -p xc6slx45csg324-3 -nt timestamp -bm system.bmm
-"C:/CT427ChasesBitBucket/427/SpaceInvaderTestHW2/implementation/system.ngc" -uc
+"C:/CT427/fourteen/427/SpaceInvaderTestHW2/implementation/system.ngc" -uc
 system.ucf system.ngd 
 #----------------------------------------------#
 Release 13.4 - ngdbuild O.87xd (nt64)
@@ -27,101 +27,100 @@ PMSPEC -- Overriding Xilinx file
 
 Command Line: C:\Xilinx\13.4\ISE_DS\ISE\bin\nt64\unwrapped\ngdbuild.exe -p
 xc6slx45csg324-3 -nt timestamp -bm system.bmm
-C:/CT427ChasesBitBucket/427/SpaceInvaderTestHW2/implementation/system.ngc -uc
+C:/CT427/fourteen/427/SpaceInvaderTestHW2/implementation/system.ngc -uc
 system.ucf system.ngd
 
 Reading NGO file
-"C:/CT427ChasesBitBucket/427/SpaceInvaderTestHW2/implementation/system.ngc" ...
+"C:/CT427/fourteen/427/SpaceInvaderTestHW2/implementation/system.ngc" ...
 Loading design module
-"C:/CT427ChasesBitBucket/427/SpaceInvaderTestHW2/implementation/push_buttons_5bi
-ts_wrapper.ngc"...
-Loading design module
-"C:/CT427ChasesBitBucket/427/SpaceInvaderTestHW2/implementation/rs232_uart_1_wra
+"C:/CT427/fourteen/427/SpaceInvaderTestHW2/implementation/push_buttons_5bits_wra
 pper.ngc"...
 Loading design module
-"C:/CT427ChasesBitBucket/427/SpaceInvaderTestHW2/implementation/proc_sys_reset_0
-_wrapper.ngc"...
-Loading design module
-"C:/CT427ChasesBitBucket/427/SpaceInvaderTestHW2/implementation/clock_generator_
-0_wrapper.ngc"...
-Loading design module
-"C:/CT427ChasesBitBucket/427/SpaceInvaderTestHW2/implementation/axi_hdmi_0_wrapp
-er.ngc"...
-Loading design module
-"C:/CT427ChasesBitBucket/427/SpaceInvaderTestHW2/implementation/axi_ac97_0_wrapp
-er.ngc"...
-Loading design module
-"C:/CT427ChasesBitBucket/427/SpaceInvaderTestHW2/implementation/microblaze_0_ilm
-b_wrapper.ngc"...
-Loading design module
-"C:/CT427ChasesBitBucket/427/SpaceInvaderTestHW2/implementation/microblaze_0_dlm
-b_wrapper.ngc"...
-Loading design module
-"C:/CT427ChasesBitBucket/427/SpaceInvaderTestHW2/implementation/mcb_ddr2_wrapper
-.ngc"...
-Loading design module
-"C:/CT427ChasesBitBucket/427/SpaceInvaderTestHW2/implementation/axi4lite_0_wrapp
-er.ngc"...
-Loading design module
-"C:/CT427ChasesBitBucket/427/SpaceInvaderTestHW2/implementation/axi4_0_wrapper.n
+"C:/CT427/fourteen/427/SpaceInvaderTestHW2/implementation/rs232_uart_1_wrapper.n
 gc"...
 Loading design module
-"C:/CT427ChasesBitBucket/427/SpaceInvaderTestHW2/implementation/microblaze_0_wra
-pper.ngc"...
-Loading design module
-"C:/CT427ChasesBitBucket/427/SpaceInvaderTestHW2/implementation/axi_vdma_0_wrapp
+"C:/CT427/fourteen/427/SpaceInvaderTestHW2/implementation/proc_sys_reset_0_wrapp
 er.ngc"...
 Loading design module
-"C:/CT427ChasesBitBucket/427/SpaceInvaderTestHW2/implementation/axi_intc_0_wrapp
-er.ngc"...
-Loading design module
-"C:/CT427ChasesBitBucket/427/SpaceInvaderTestHW2/implementation/microblaze_0_i_b
-ram_ctrl_wrapper.ngc"...
-Loading design module
-"C:/CT427ChasesBitBucket/427/SpaceInvaderTestHW2/implementation/microblaze_0_d_b
-ram_ctrl_wrapper.ngc"...
-Loading design module
-"C:/CT427ChasesBitBucket/427/SpaceInvaderTestHW2/implementation/debug_module_wra
-pper.ngc"...
-Loading design module
-"C:/CT427ChasesBitBucket/427/SpaceInvaderTestHW2/implementation/digilent_quadspi
-_cntlr_wrapper.ngc"...
-Loading design module
-"C:/CT427ChasesBitBucket/427/SpaceInvaderTestHW2/implementation/axi_timer_0_wrap
+"C:/CT427/fourteen/427/SpaceInvaderTestHW2/implementation/clock_generator_0_wrap
 per.ngc"...
 Loading design module
-"C:/CT427ChasesBitBucket/427/SpaceInvaderTestHW2/implementation/fit_timer_0_wrap
+"C:/CT427/fourteen/427/SpaceInvaderTestHW2/implementation/axi_hdmi_0_wrapper.ngc
+"...
+Loading design module
+"C:/CT427/fourteen/427/SpaceInvaderTestHW2/implementation/axi_ac97_0_wrapper.ngc
+"...
+Loading design module
+"C:/CT427/fourteen/427/SpaceInvaderTestHW2/implementation/microblaze_0_ilmb_wrap
 per.ngc"...
 Loading design module
-"C:/CT427ChasesBitBucket/427/SpaceInvaderTestHW2/implementation/microblaze_0_bra
-m_block_wrapper.ngc"...
+"C:/CT427/fourteen/427/SpaceInvaderTestHW2/implementation/microblaze_0_dlmb_wrap
+per.ngc"...
+Loading design module
+"C:/CT427/fourteen/427/SpaceInvaderTestHW2/implementation/mcb_ddr2_wrapper.ngc".
+..
+Loading design module
+"C:/CT427/fourteen/427/SpaceInvaderTestHW2/implementation/axi4lite_0_wrapper.ngc
+"...
+Loading design module
+"C:/CT427/fourteen/427/SpaceInvaderTestHW2/implementation/axi4_0_wrapper.ngc"...
+Loading design module
+"C:/CT427/fourteen/427/SpaceInvaderTestHW2/implementation/microblaze_0_wrapper.n
+gc"...
+Loading design module
+"C:/CT427/fourteen/427/SpaceInvaderTestHW2/implementation/axi_vdma_0_wrapper.ngc
+"...
+Loading design module
+"C:/CT427/fourteen/427/SpaceInvaderTestHW2/implementation/axi_intc_0_wrapper.ngc
+"...
+Loading design module
+"C:/CT427/fourteen/427/SpaceInvaderTestHW2/implementation/microblaze_0_i_bram_ct
+rl_wrapper.ngc"...
+Loading design module
+"C:/CT427/fourteen/427/SpaceInvaderTestHW2/implementation/microblaze_0_d_bram_ct
+rl_wrapper.ngc"...
+Loading design module
+"C:/CT427/fourteen/427/SpaceInvaderTestHW2/implementation/debug_module_wrapper.n
+gc"...
+Loading design module
+"C:/CT427/fourteen/427/SpaceInvaderTestHW2/implementation/digilent_quadspi_cntlr
+_wrapper.ngc"...
+Loading design module
+"C:/CT427/fourteen/427/SpaceInvaderTestHW2/implementation/axi_timer_0_wrapper.ng
+c"...
+Loading design module
+"C:/CT427/fourteen/427/SpaceInvaderTestHW2/implementation/fit_timer_0_wrapper.ng
+c"...
+Loading design module
+"C:/CT427/fourteen/427/SpaceInvaderTestHW2/implementation/microblaze_0_bram_bloc
+k_wrapper.ngc"...
 Applying constraints in
-"C:/CT427ChasesBitBucket/427/SpaceInvaderTestHW2/implementation/microblaze_0_ilm
-b_wrapper.ncf" to module "microblaze_0_ilmb"...
+"C:/CT427/fourteen/427/SpaceInvaderTestHW2/implementation/microblaze_0_ilmb_wrap
+per.ncf" to module "microblaze_0_ilmb"...
 Checking Constraint Associations...
 Applying constraints in
-"C:/CT427ChasesBitBucket/427/SpaceInvaderTestHW2/implementation/microblaze_0_dlm
-b_wrapper.ncf" to module "microblaze_0_dlmb"...
+"C:/CT427/fourteen/427/SpaceInvaderTestHW2/implementation/microblaze_0_dlmb_wrap
+per.ncf" to module "microblaze_0_dlmb"...
 Checking Constraint Associations...
 Applying constraints in
-"C:/CT427ChasesBitBucket/427/SpaceInvaderTestHW2/implementation/mcb_ddr2_wrapper
-.ncf" to module "MCB_DDR2"...
+"C:/CT427/fourteen/427/SpaceInvaderTestHW2/implementation/mcb_ddr2_wrapper.ncf"
+to module "MCB_DDR2"...
 Checking Constraint Associations...
 Applying constraints in
-"C:/CT427ChasesBitBucket/427/SpaceInvaderTestHW2/implementation/axi4lite_0_wrapp
-er.ncf" to module "axi4lite_0"...
+"C:/CT427/fourteen/427/SpaceInvaderTestHW2/implementation/axi4lite_0_wrapper.ncf
+" to module "axi4lite_0"...
 Checking Constraint Associations...
 Applying constraints in
-"C:/CT427ChasesBitBucket/427/SpaceInvaderTestHW2/implementation/axi4_0_wrapper.n
-cf" to module "axi4_0"...
+"C:/CT427/fourteen/427/SpaceInvaderTestHW2/implementation/axi4_0_wrapper.ncf" to
+module "axi4_0"...
 Checking Constraint Associations...
 Applying constraints in
-"C:/CT427ChasesBitBucket/427/SpaceInvaderTestHW2/implementation/microblaze_0_wra
-pper.ncf" to module "microblaze_0"...
+"C:/CT427/fourteen/427/SpaceInvaderTestHW2/implementation/microblaze_0_wrapper.n
+cf" to module "microblaze_0"...
 Checking Constraint Associations...
 Applying constraints in
-"C:/CT427ChasesBitBucket/427/SpaceInvaderTestHW2/implementation/axi_vdma_0_wrapp
-er.ncf" to module "axi_vdma_0"...
+"C:/CT427/fourteen/427/SpaceInvaderTestHW2/implementation/axi_vdma_0_wrapper.ncf
+" to module "axi_vdma_0"...
 Checking Constraint Associations...
 Gathering constraint information from source properties...
 Done.
@@ -427,7 +426,7 @@ Phase 12.5  Local Placement Optimization
 Phase 12.5  Local Placement Optimization (Checksum:413457da) REAL time: 1 mins 37 secs 
 
 Phase 13.34  Placement Validation
-Phase 13.34  Placement Validation (Checksum:295b3d77) REAL time: 1 mins 38 secs 
+Phase 13.34  Placement Validation (Checksum:295b3d77) REAL time: 1 mins 37 secs 
 
 Total REAL time to Placer completion: 1 mins 46 secs 
 Total CPU  time to Placer completion: 1 mins 44 secs 
@@ -747,7 +746,7 @@ Phase  1  : 45664 unrouted;      REAL time: 16 secs
 
 Phase  2  : 38134 unrouted;      REAL time: 18 secs 
 
-Phase  3  : 16099 unrouted;      REAL time: 31 secs 
+Phase  3  : 16099 unrouted;      REAL time: 30 secs 
 
 Phase  4  : 16099 unrouted; (Setup:0, Hold:0, Component Switching Limit:0)     REAL time: 32 secs 
 
@@ -763,9 +762,9 @@ Phase  8  : 0 unrouted; (Setup:0, Hold:0, Component Switching Limit:0)     REAL 
 
 Phase  9  : 0 unrouted; (Setup:0, Hold:0, Component Switching Limit:0)     REAL time: 49 secs 
 
-Phase 10  : 0 unrouted; (Setup:0, Hold:0, Component Switching Limit:0)     REAL time: 51 secs 
-Total REAL time to Router completion: 51 secs 
-Total CPU time to Router completion: 50 secs 
+Phase 10  : 0 unrouted; (Setup:0, Hold:0, Component Switching Limit:0)     REAL time: 50 secs 
+Total REAL time to Router completion: 50 secs 
+Total CPU time to Router completion: 49 secs 
 
 Partition Implementation Status
 -------------------------------
@@ -1024,8 +1023,8 @@ All signals are completely routed.
 
 WARNING:Par:283 - There are 23 loadless signals in this design. This design will cause Bitgen to issue DRC warnings.
 
-Total REAL time to PAR completion: 1 mins 2 secs 
-Total CPU time to PAR completion: 52 secs 
+Total REAL time to PAR completion: 1 mins 
+Total CPU time to PAR completion: 51 secs 
 
 Peak Memory Usage:  649 MB
 
@@ -1103,7 +1102,7 @@ Design statistics:
    Maximum path delay from/to any node:   5.422ns
 
 
-Analysis completed Wed Oct 14 14:10:49 2015
+Analysis completed Wed Oct 14 17:37:17 2015
 --------------------------------------------------------------------------------
 
 Generating Report ...

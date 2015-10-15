@@ -9,11 +9,7 @@ Target Device  : xc6slx45
 Target Package : csg324
 Target Speed   : -3
 Mapper Version : spartan6 -- $Revision: 1.55 $
-<<<<<<< HEAD
-Mapped Date    : Wed Oct 14 14:07:34 2015
-=======
-Mapped Date    : Wed Oct 14 14:14:23 2015
->>>>>>> 8f7ccc2e681c32e46af6861ac4d1e60053b19ccc
+Mapped Date    : Wed Oct 14 17:34:04 2015
 
 vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
 INFO:Security:51 - The XILINXD_LICENSE_FILE environment variable is not set.
@@ -93,39 +89,22 @@ Phase 9.8  Global Placement
 .......................................................................
 .......................................................................
 ........
-<<<<<<< HEAD
 Phase 9.8  Global Placement (Checksum:2298eb05) REAL time: 1 mins 29 secs 
 
 Phase 10.5  Local Placement Optimization
 Phase 10.5  Local Placement Optimization (Checksum:2298eb05) REAL time: 1 mins 29 secs 
-=======
-Phase 9.8  Global Placement (Checksum:2298eb05) REAL time: 1 mins 31 secs 
-
-Phase 10.5  Local Placement Optimization
-Phase 10.5  Local Placement Optimization (Checksum:2298eb05) REAL time: 1 mins 31 secs 
->>>>>>> 8f7ccc2e681c32e46af6861ac4d1e60053b19ccc
 
 Phase 11.18  Placement Optimization
 Phase 11.18  Placement Optimization (Checksum:413457da) REAL time: 1 mins 37 secs 
 
 Phase 12.5  Local Placement Optimization
-<<<<<<< HEAD
 Phase 12.5  Local Placement Optimization (Checksum:413457da) REAL time: 1 mins 37 secs 
 
 Phase 13.34  Placement Validation
-Phase 13.34  Placement Validation (Checksum:295b3d77) REAL time: 1 mins 38 secs 
+Phase 13.34  Placement Validation (Checksum:295b3d77) REAL time: 1 mins 37 secs 
 
 Total REAL time to Placer completion: 1 mins 46 secs 
 Total CPU  time to Placer completion: 1 mins 44 secs 
-=======
-Phase 12.5  Local Placement Optimization (Checksum:413457da) REAL time: 1 mins 39 secs 
-
-Phase 13.34  Placement Validation
-Phase 13.34  Placement Validation (Checksum:295b3d77) REAL time: 1 mins 39 secs 
-
-Total REAL time to Placer completion: 1 mins 48 secs 
-Total CPU  time to Placer completion: 1 mins 46 secs 
->>>>>>> 8f7ccc2e681c32e46af6861ac4d1e60053b19ccc
 Running post-placement packing...
 Writing output files...
 WARNING:PhysDesignRules:372 - Gated clock. Clock net
@@ -329,13 +308,8 @@ Specific Feature Utilization:
 Average Fanout of Non-Clock Nets:                3.88
 
 Peak Memory Usage:  719 MB
-<<<<<<< HEAD
 Total REAL time to MAP completion:  1 mins 52 secs 
 Total CPU time to MAP completion:   1 mins 50 secs 
-=======
-Total REAL time to MAP completion:  1 mins 53 secs 
-Total CPU time to MAP completion:   1 mins 51 secs 
->>>>>>> 8f7ccc2e681c32e46af6861ac4d1e60053b19ccc
 
 Mapping completed.
 See MAP report file "system_map.mrp" for details.

@@ -2,21 +2,12 @@
 <report-views version="2.0" >
  <header>
   <FilterFile>filter.filter</FilterFile>
-<<<<<<< HEAD
-  <SavedFilterFilePath>C:/CT427ChasesBitBucket/427/SpaceInvaderTestHW2/__xps/ise</SavedFilterFilePath>
-  <DateInitialized>2015-10-14T13:59:23</DateInitialized>
+  <SavedFilterFilePath>C:/CT427/fourteen/427/SpaceInvaderTestHW2/__xps/ise</SavedFilterFilePath>
+  <DateInitialized>2015-10-14T17:26:30</DateInitialized>
   <ModuleName>system</ModuleName>
-  <DateModified>2015-10-14T13:59:23</DateModified>
-  <SavedFilePath>C:/CT427ChasesBitBucket/427/SpaceInvaderTestHW2/__xps/ise/system.xreport</SavedFilePath>
-  <SummaryTimeStamp>2015-10-14T13:59:23</SummaryTimeStamp>
-=======
-  <SavedFilterFilePath>C:/CT427/427/SpaceInvaderTestHW2/__xps/ise</SavedFilterFilePath>
-  <DateInitialized>2015-10-14T14:00:06</DateInitialized>
-  <ModuleName>system</ModuleName>
-  <DateModified>2015-10-14T14:00:06</DateModified>
-  <SavedFilePath>C:/CT427/427/SpaceInvaderTestHW2/__xps/ise/system.xreport</SavedFilePath>
-  <SummaryTimeStamp>2015-10-14T14:00:06</SummaryTimeStamp>
->>>>>>> 8f7ccc2e681c32e46af6861ac4d1e60053b19ccc
+  <DateModified>2015-10-14T17:26:30</DateModified>
+  <SavedFilePath>C:/CT427/fourteen/427/SpaceInvaderTestHW2/__xps/ise/system.xreport</SavedFilePath>
+  <SummaryTimeStamp>2015-10-14T17:26:30</SummaryTimeStamp>
   <EnableMessageFiltering>false</EnableMessageFiltering>
  </header>
 </report-views>

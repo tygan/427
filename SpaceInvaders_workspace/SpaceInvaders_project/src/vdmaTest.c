@@ -100,7 +100,7 @@
 #define LETTER_BUFFER 3
 #define SCORE_Y 5
 #define SCORE_X 105
-#define GAME_OVER_X 200
+#define GAME_OVER_X 230
 #define GAME_OVER_Y 200
 #define EARTH_Y 460
 #define EARTH_DEPTH 2
@@ -530,37 +530,7 @@ void gameOver(){
 	unsigned int * framePointer = (unsigned int *) FRAME_BUFFER_ADDR;
 	int digit_index,localx,localy,worldx,worldy;
 	for(digit_index=0; digit_index<GAME_OVER_DIGITS; digit_index++){
-//		int bunkerX = 0;
-//		int bunkerY = 0;
-//		int dupBitX = 0;
-//		int dupBitY = 0;
-//		int row, column;
-//		for (row=top_corner; row<top_corner+TANK_HEIGHT; row++) {
-//			    for (column = left_corner; column<left_corner+TANK_WIDTH; column++) {
-//					if ((tank_22x8[bunkerY] & (1<<bunkerX))) {
-//						framePointer[(row)*SCREEN_WIDTH + (column)] = color;
-//					}else{
-//						framePointer[(row)*SCREEN_WIDTH + (column)] = BLACK;
-//					}
-//					if(dupBitX == 1)
-//					{
-//						bunkerX++;
-//						dupBitX = 0;
-//					}else{
-//						dupBitX = 1;
-//					}
-//				}
-//			    bunkerX = 0;
-//				if(dupBitY == 1){
-//					bunkerY++;
-//					dupBitY = 0;
-//				}else{
-//					dupBitY = 1;
-//				}
-//			 }
-//
-//
-//
+
 		for (localy=0; localy<LETTER_HEIGHT; localy++) {
 			worldy = localy + GAME_OVER_Y;
 			for (localx = 0; localx<LETTER_WIDTH+LETTER_BUFFER; localx++) {
@@ -572,31 +542,37 @@ void gameOver(){
 				}
 			}
 		}
-	}
-
-//	int bunkerX = 0;
-//	int bunkerY = 0;
-//	int dupBitX = 0;
-//	int dupBitY = 0;
-//	unsigned int * framePointer = (unsigned int *) FRAME_BUFFER_ADDR;
-//	int row, column;
-//	int top_corner = GAME_OVER_Y;
-//	int left_corner = GAME_OVER_X;
-//	for (row=top_corner; row<top_corner+LETTER_HEIGHT; row++) {
-//		for (column = left_corner; column<left_corner+LETTER_WIDTH; column++) {
-//			if ((letterG_15x15[bunkerY] & (1<<bunkerX))) {
-//				framePointer[(row)*SCREEN_WIDTH + (column)] = WHITE;
-//			}else{
-//				framePointer[(row)*SCREEN_WIDTH + (column)] = BLACK;
+//		int bunkerX = 0;
+//		int bunkerY = 0;
+//		int dupBitX = 0;
+//		int dupBitY = 0;
+//		int row, column;
+//		int top_corner = GAME_OVER_Y;
+//		int left_corner = GAME_OVER_X + digit_index*2*(LETTER_WIDTH+LETTER_BUFFER);
+//		for (row=top_corner; row<top_corner+(2*LETTER_HEIGHT); row++) {
+//			for (column = left_corner; column<left_corner+(2*LETTER_WIDTH); column++) {
+//				if ((game_over_word[i][bunkerY] & (1<<bunkerX))) {
+//					framePointer[(row)*SCREEN_WIDTH + (column)] = WHITE;
+//				}else{
+//					framePointer[(row)*SCREEN_WIDTH + (column)] = BLACK;
+//				}
+//				if(dupBitX == 1)
+//				{
+//					bunkerX++;
+//					dupBitX = 0;
+//				}else{
+//					dupBitX = 1;
+//				}
 //			}
-//			if(dupBitX == 1)
-//			{
-//				bunkerX++;
-//				dupBitX = 0;
+//			bunkerX = 0;
+//			if(dupBitY == 1){
+//				bunkerY++;
+//				dupBitY = 0;
 //			}else{
-//				dupBitX = 1;
+//				dupBitY = 1;
 //			}
 //		}
+	}
 }
 
 int killTank(tankX, tankY){
@@ -609,6 +585,9 @@ int killTank(tankX, tankY){
 	if(lives>0){
 		lives--;
 		eraseLife();
+		if(lives==0){
+			gameOver();
+		}
 	}
 	return killed;
 }
