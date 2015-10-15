@@ -2,4 +2,17 @@
 **** Build of configuration Debug for project SpaceInvaders_project ****
 
 make all 
-make: Nothing to be done for `all'.
+Building file: ../src/vdmaTest.c
+Invoking: MicroBlaze gcc compiler
+mb-gcc -Wall -O3 -g3 -c -fmessage-length=0 -I../../hello_world_bsp_0/microblaze_0/include -mlittle-endian -mxl-barrel-shift -mxl-pattern-compare -mcpu=v8.20.b -mno-xl-soft-mul -MMD -MP -MF"src/vdmaTest.d" -MT"src/vdmaTest.d" -o"src/vdmaTest.o" "../src/vdmaTest.c"
+../src/vdmaTest.c: In function 'blowUpMotherShip':
+../src/vdmaTest.c:1043: warning: implicit declaration of function 'rand'
+../src/vdmaTest.c: In function 'timer_interrupt_handler':
+../src/vdmaTest.c:1260: error: 'shoot_pos_x' undeclared (first use in this function)
+../src/vdmaTest.c:1260: error: (Each undeclared identifier is reported only once
+../src/vdmaTest.c:1260: error: for each function it appears in.)
+../src/vdmaTest.c:1260: error: 'shoot_pos_y' undeclared (first use in this function)
+../src/vdmaTest.c:1244: warning: unused variable 'randNum'
+../src/vdmaTest.c: In function 'main':
+../src/vdmaTest.c:1557: warning: implicit declaration of function 'srand'
+make: *** [src/vdmaTest.o] Error 1
