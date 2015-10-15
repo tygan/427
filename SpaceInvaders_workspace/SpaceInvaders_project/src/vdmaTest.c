@@ -106,7 +106,7 @@
 #define EARTH_DEPTH 2
 #define MOTHER_SHIP_Y 25
 #define MOTHER_SHIP_HEIGHT 14
-#define MOTHER_SHIP_WIDTH 36
+#define MOTHER_SHIP_WIDTH 40
 #define MAX_LIVES 3
 #define MAX_ALIEN_MISSILES 5
 #define GAME_OVER_DIGITS 9
@@ -117,6 +117,7 @@ XGpio gpLED;  // This is a handle for the LED GPIO block.
 XGpio gpPB;   // This is a handle for the push-button GPIO block.
 
 int currentButtonState;
+int mothershipRight = 1;
 int lives = MAX_LIVES;
 int aliens_in = 1;
 int first_row = 0;
@@ -750,7 +751,7 @@ void drawMotherShip(left_corner, top_corner, draw){
 	int dupBitY = 0;
 	for (row=top_corner; row<top_corner+MOTHER_SHIP_HEIGHT; row++) {
 	    for (column = left_corner; column<left_corner+MOTHER_SHIP_WIDTH; column++) {
-			if ((motherShip_18x7[motherY] & (1<<motherX))) {
+			if ((motherShip_20x7[motherY] & (1<<motherX))) {
 				framePointer[(row)*SCREEN_WIDTH + (column)] = color;
 			}else{
 				framePointer[(row)*SCREEN_WIDTH + (column)] = BLACK;
@@ -1291,14 +1292,27 @@ void timer_interrupt_handler() {
 		/////////////////////////////
 		if(shipCounter >= 4 && shipAlive == 1){//moves spaceship IF its alive
 			int motherDraw = 1;
-			if(motherShipX+MOTHER_SHIP_WIDTH <= SCREEN_WIDTH){// if its still left of the right side of the screen
-				shipCounter = 0;
-				drawMotherShip(motherShipX, motherShipY, motherDraw);
-				motherShipX += 2;
-			}else{// if it reached the right edge of the screen then erase it!
-				motherDraw = 0;
-				drawMotherShip(motherShipX, motherShipY, motherDraw);
-				shipAlive = 0;
+			if(mothershipRight){
+				if(motherShipX+MOTHER_SHIP_WIDTH <= SCREEN_WIDTH){// if its still left of the right side of the screen
+					shipCounter = 0;
+					drawMotherShip(motherShipX, motherShipY, motherDraw);
+					motherShipX += 2;
+				}else{// if it reached the right edge of the screen then erase it!
+					motherDraw = 0;
+					drawMotherShip(motherShipX, motherShipY, motherDraw);
+					shipAlive = 0;
+				}
+			}
+			else{
+				if(motherShipX >= 0){// if its still left of the right side of the screen
+					shipCounter = 0;
+					drawMotherShip(motherShipX, motherShipY, motherDraw);
+					motherShipX -= 2;
+				}else{// if it reached the right edge of the screen then erase it!
+					motherDraw = 0;
+					drawMotherShip(motherShipX, motherShipY, motherDraw);
+					shipAlive = 0;
+				}
 			}
 		}else{
 			shipCounter++;
@@ -1306,10 +1320,15 @@ void timer_interrupt_handler() {
 		//regulates how often you get a new spaceship
 		if(shipSpawnCounter >= 5000){
 			shipAlive = 1;
-			if(randBin == 1){
-				motherShipX = (randBin*SCREEN_WIDTH)-MOTHER_SHIP_WIDTH;
+			mothershipRight = !mothershipRight;
+//			if(randBin == 1){
+			if(!mothershipRight){
+//				motherShipX = (randBin*SCREEN_WIDTH)-MOTHER_SHIP_WIDTH;
+				motherShipX = SCREEN_WIDTH-MOTHER_SHIP_WIDTH;
+//				mothershipRight = 0;
 			}else{
 				motherShipX = 0;
+//				mothershipRight = 1;
 			}
 			shipSpawnCounter = 0;
 		}else{
