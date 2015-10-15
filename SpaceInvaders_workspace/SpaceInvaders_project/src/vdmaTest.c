@@ -100,11 +100,11 @@
 #define LETTER_BUFFER 3
 #define SCORE_Y 5
 #define SCORE_X 105
-#define GAME_OVER_X 200
+#define GAME_OVER_X 230
 #define GAME_OVER_Y 200
 #define EARTH_Y 460
 #define EARTH_DEPTH 2
-#define MOTHER_SHIP_Y 20
+#define MOTHER_SHIP_Y 25
 #define MOTHER_SHIP_HEIGHT 14
 #define MOTHER_SHIP_WIDTH 36
 #define MAX_LIVES 3
@@ -153,10 +153,12 @@ int alienBulletCount;
 int tankAlive;
 int tankExplosionCounter;
 int numExplosion;
+int alienTimerMax = 50;
 int switchAlienBullet;
 int switchAlienBulletCounter;
 int alienShooterX;
 int alienShooterY;
+int shipSpawnCounter;
 //////////////////////////////////////////////////////////////////////////////////////////////////
 //Draw functions
 //////////////////////////////////////////////////////////////////////////////////////////////////
@@ -169,7 +171,10 @@ void print_aliens(int corner_top, int corner_left, int direction){
 		int i,j;
 		for(i=corner_top - (ALIEN_HEIGHT + ALIEN_BUFFER); i<corner_top; i++){
 			for(j=corner_left; j<corner_left + ALIENS_WIDE*(ALIEN_BUFFER+ALIEN_WIDTH); j++){
-				framePointer[i*SCREEN_WIDTH + j] = BLACK;
+				int pixColor = framePointer[i*SCREEN_WIDTH + j];
+				if(pixColor!=GREEN){
+					framePointer[i*SCREEN_WIDTH + j] = BLACK;
+				}
 			}
 		}
 	}
@@ -177,7 +182,10 @@ void print_aliens(int corner_top, int corner_left, int direction){
 		int i,j;
 		for(i=corner_top; i<corner_top+ALIENS_TALL*(ALIEN_HEIGHT+ALIEN_BUFFER); i++){
 			for(j=corner_left-ALIEN_BUFFER; j<corner_left; j++){
-				framePointer[i*SCREEN_WIDTH + j] = BLACK;
+				int pixColor = framePointer[i*SCREEN_WIDTH + j];
+				if(pixColor!=GREEN){
+					framePointer[i*SCREEN_WIDTH + j] = BLACK;
+				}
 			}
 		}
 	}
@@ -185,69 +193,105 @@ void print_aliens(int corner_top, int corner_left, int direction){
 		int j;
 		for(j=0; j<ALIENS_WIDE; j++){	//for all columns
 			int inner_row, inner_column;
-			for (inner_row=0; inner_row<ALIEN_HEIGHT+ALIEN_BUFFER; inner_row++) {	//draw entire rectangle with alien and buffer
-				for (inner_column = 0; inner_column<ALIEN_WIDTH+ALIEN_BUFFER; inner_column++) {
-					if(aliens_alive[i][j]){		//if alien is alive, draw
-						if(inner_row<ALIEN_HEIGHT && inner_column<ALIEN_WIDTH){	//if inside alien rectangle, draw alien
-							if(i==0){	//for top row
-								if(aliens_in){
-									if ((alien_top_in_24x16[inner_row] & (1<<(ALIEN_WIDTH-1-inner_column)))) {
-										framePointer[(inner_row + i*(ALIEN_HEIGHT+ALIEN_BUFFER) + corner_top)*SCREEN_WIDTH + (inner_column + j*(ALIEN_WIDTH+ALIEN_BUFFER) + corner_left)] = WHITE;
-									}else{	//draw black around alien
-										framePointer[(inner_row + i*(ALIEN_HEIGHT+ALIEN_BUFFER) + corner_top)*SCREEN_WIDTH + (inner_column + j*(ALIEN_WIDTH+ALIEN_BUFFER) + corner_left)] = BLACK;
+//			if(aliens_alive[i][j]){
+//				if(direction == RIGHT){
+//					//xil_printf("right\n\r");
+//					int eraseRow,eraseCol;
+//					for(eraseRow=corner_top+i*(ALIEN_HEIGHT+ALIEN_BUFFER); eraseRow<corner_top+(i+1)*(ALIEN_HEIGHT+ALIEN_BUFFER); eraseRow++){
+//						for(eraseCol=corner_left+j*(ALIEN_WIDTH+ALIEN_BUFFER)-ALIEN_HORIZ_MOVE; eraseCol<corner_left+j*(ALIEN_WIDTH+ALIEN_BUFFER); eraseCol++){
+//							//xil_printf("(%d,%d) ",eraseRow,eraseCol);
+//							framePointer[eraseRow*SCREEN_WIDTH + eraseCol] = BLACK;
+//						}
+//					}
+//				}
+				for (inner_row=0; inner_row<ALIEN_HEIGHT+ALIEN_BUFFER; inner_row++) {	//draw entire rectangle with alien and buffer
+					for (inner_column = 0; inner_column<ALIEN_WIDTH+ALIEN_BUFFER; inner_column++) {
+						if(aliens_alive[i][j]){		//if alien is alive, draw
+							if(inner_row<ALIEN_HEIGHT && inner_column<ALIEN_WIDTH){	//if inside alien rectangle, draw alien
+								if(i==0){	//for top row
+									if(aliens_in){
+										if ((alien_top_in_24x16[inner_row] & (1<<(ALIEN_WIDTH-1-inner_column)))) {
+											framePointer[(inner_row + i*(ALIEN_HEIGHT+ALIEN_BUFFER) + corner_top)*SCREEN_WIDTH + (inner_column + j*(ALIEN_WIDTH+ALIEN_BUFFER) + corner_left)] = WHITE;
+										}else{	//draw black around alien
+											int pixColor = framePointer[(inner_row + i*(ALIEN_HEIGHT+ALIEN_BUFFER) + corner_top)*SCREEN_WIDTH + (inner_column + j*(ALIEN_WIDTH+ALIEN_BUFFER) + corner_left)];
+											if(pixColor!=GREEN){
+												framePointer[(inner_row + i*(ALIEN_HEIGHT+ALIEN_BUFFER) + corner_top)*SCREEN_WIDTH + (inner_column + j*(ALIEN_WIDTH+ALIEN_BUFFER) + corner_left)] = BLACK;
+											}
+										}
+									}
+									else{
+										if ((alien_top_out_24x16[inner_row] & (1<<(ALIEN_WIDTH-1-inner_column)))) {
+											framePointer[(inner_row + i*(ALIEN_HEIGHT+ALIEN_BUFFER) + corner_top)*SCREEN_WIDTH + (inner_column + j*(ALIEN_WIDTH+ALIEN_BUFFER) + corner_left)] = WHITE;
+										}else{	//draw black around alien
+											int pixColor = framePointer[(inner_row + i*(ALIEN_HEIGHT+ALIEN_BUFFER) + corner_top)*SCREEN_WIDTH + (inner_column + j*(ALIEN_WIDTH+ALIEN_BUFFER) + corner_left)];
+											if(pixColor!=GREEN){
+												framePointer[(inner_row + i*(ALIEN_HEIGHT+ALIEN_BUFFER) + corner_top)*SCREEN_WIDTH + (inner_column + j*(ALIEN_WIDTH+ALIEN_BUFFER) + corner_left)] = BLACK;
+											}
+										}
 									}
 								}
-								else{
-									if ((alien_top_out_24x16[inner_row] & (1<<(ALIEN_WIDTH-1-inner_column)))) {
-										framePointer[(inner_row + i*(ALIEN_HEIGHT+ALIEN_BUFFER) + corner_top)*SCREEN_WIDTH + (inner_column + j*(ALIEN_WIDTH+ALIEN_BUFFER) + corner_left)] = WHITE;
-									}else{	//draw black around alien
-										framePointer[(inner_row + i*(ALIEN_HEIGHT+ALIEN_BUFFER) + corner_top)*SCREEN_WIDTH + (inner_column + j*(ALIEN_WIDTH+ALIEN_BUFFER) + corner_left)] = BLACK;
+								else if(i==1 || i==2){	//for middle 2 rows
+									if(aliens_in){
+										if ((alien_middle_in_24x16[inner_row] & (1<<(ALIEN_WIDTH-1-inner_column)))) {
+											framePointer[(inner_row + i*(ALIEN_HEIGHT+ALIEN_BUFFER) + corner_top)*SCREEN_WIDTH + (inner_column + j*(ALIEN_WIDTH+ALIEN_BUFFER) + corner_left)] = WHITE;
+										}else{	//draw black around alien
+											int pixColor = framePointer[(inner_row + i*(ALIEN_HEIGHT+ALIEN_BUFFER) + corner_top)*SCREEN_WIDTH + (inner_column + j*(ALIEN_WIDTH+ALIEN_BUFFER) + corner_left)];
+											if(pixColor!=GREEN){
+												framePointer[(inner_row + i*(ALIEN_HEIGHT+ALIEN_BUFFER) + corner_top)*SCREEN_WIDTH + (inner_column + j*(ALIEN_WIDTH+ALIEN_BUFFER) + corner_left)] = BLACK;
+											}
+										}
+									}
+									else{
+										if ((alien_middle_out_24x16[inner_row] & (1<<(ALIEN_WIDTH-1-inner_column)))) {
+											framePointer[(inner_row + i*(ALIEN_HEIGHT+ALIEN_BUFFER) + corner_top)*SCREEN_WIDTH + (inner_column + j*(ALIEN_WIDTH+ALIEN_BUFFER) + corner_left)] = WHITE;
+										}else{	//draw black around alien
+											int pixColor = framePointer[(inner_row + i*(ALIEN_HEIGHT+ALIEN_BUFFER) + corner_top)*SCREEN_WIDTH + (inner_column + j*(ALIEN_WIDTH+ALIEN_BUFFER) + corner_left)];
+											if(pixColor!=GREEN){
+												framePointer[(inner_row + i*(ALIEN_HEIGHT+ALIEN_BUFFER) + corner_top)*SCREEN_WIDTH + (inner_column + j*(ALIEN_WIDTH+ALIEN_BUFFER) + corner_left)] = BLACK;
+											}
+										}
+									}
+								}
+								else if(i==3 || i==4){	//for bottom 2 rows
+									if(aliens_in){
+										if ((alien_bottom_in_24x16[inner_row] & (1<<(ALIEN_WIDTH-1-inner_column)))) {
+											framePointer[(inner_row + i*(ALIEN_HEIGHT+ALIEN_BUFFER) + corner_top)*SCREEN_WIDTH + (inner_column + j*(ALIEN_WIDTH+ALIEN_BUFFER) + corner_left)] = WHITE;
+										}else{	//draw black around alien
+											int pixColor = framePointer[(inner_row + i*(ALIEN_HEIGHT+ALIEN_BUFFER) + corner_top)*SCREEN_WIDTH + (inner_column + j*(ALIEN_WIDTH+ALIEN_BUFFER) + corner_left)];
+											if(pixColor!=GREEN){
+												framePointer[(inner_row + i*(ALIEN_HEIGHT+ALIEN_BUFFER) + corner_top)*SCREEN_WIDTH + (inner_column + j*(ALIEN_WIDTH+ALIEN_BUFFER) + corner_left)] = BLACK;
+											}
+										}
+									}
+									else{
+										if ((alien_bottom_out_24x16[inner_row] & (1<<(ALIEN_WIDTH-1-inner_column)))) {
+											framePointer[(inner_row + i*(ALIEN_HEIGHT+ALIEN_BUFFER) + corner_top)*SCREEN_WIDTH + (inner_column + j*(ALIEN_WIDTH+ALIEN_BUFFER) + corner_left)] = WHITE;
+										}else{	//draw black around alien
+											int pixColor = framePointer[(inner_row + i*(ALIEN_HEIGHT+ALIEN_BUFFER) + corner_top)*SCREEN_WIDTH + (inner_column + j*(ALIEN_WIDTH+ALIEN_BUFFER) + corner_left)];
+											if(pixColor!=GREEN){
+												framePointer[(inner_row + i*(ALIEN_HEIGHT+ALIEN_BUFFER) + corner_top)*SCREEN_WIDTH + (inner_column + j*(ALIEN_WIDTH+ALIEN_BUFFER) + corner_left)] = BLACK;
+											}
+										}
 									}
 								}
 							}
-							else if(i==1 || i==2){	//for middle 2 rows
-								if(aliens_in){
-									if ((alien_middle_in_24x16[inner_row] & (1<<(ALIEN_WIDTH-1-inner_column)))) {
-										framePointer[(inner_row + i*(ALIEN_HEIGHT+ALIEN_BUFFER) + corner_top)*SCREEN_WIDTH + (inner_column + j*(ALIEN_WIDTH+ALIEN_BUFFER) + corner_left)] = WHITE;
-									}else{	//draw black around alien
-										framePointer[(inner_row + i*(ALIEN_HEIGHT+ALIEN_BUFFER) + corner_top)*SCREEN_WIDTH + (inner_column + j*(ALIEN_WIDTH+ALIEN_BUFFER) + corner_left)] = BLACK;
-									}
-								}
-								else{
-									if ((alien_middle_out_24x16[inner_row] & (1<<(ALIEN_WIDTH-1-inner_column)))) {
-										framePointer[(inner_row + i*(ALIEN_HEIGHT+ALIEN_BUFFER) + corner_top)*SCREEN_WIDTH + (inner_column + j*(ALIEN_WIDTH+ALIEN_BUFFER) + corner_left)] = WHITE;
-									}else{	//draw black around alien
-										framePointer[(inner_row + i*(ALIEN_HEIGHT+ALIEN_BUFFER) + corner_top)*SCREEN_WIDTH + (inner_column + j*(ALIEN_WIDTH+ALIEN_BUFFER) + corner_left)] = BLACK;
-									}
-								}
-							}
-							else if(i==3 || i==4){	//for bottom 2 rows
-								if(aliens_in){
-									if ((alien_bottom_in_24x16[inner_row] & (1<<(ALIEN_WIDTH-1-inner_column)))) {
-										framePointer[(inner_row + i*(ALIEN_HEIGHT+ALIEN_BUFFER) + corner_top)*SCREEN_WIDTH + (inner_column + j*(ALIEN_WIDTH+ALIEN_BUFFER) + corner_left)] = WHITE;
-									}else{	//draw black around alien
-										framePointer[(inner_row + i*(ALIEN_HEIGHT+ALIEN_BUFFER) + corner_top)*SCREEN_WIDTH + (inner_column + j*(ALIEN_WIDTH+ALIEN_BUFFER) + corner_left)] = BLACK;
-									}
-								}
-								else{
-									if ((alien_bottom_out_24x16[inner_row] & (1<<(ALIEN_WIDTH-1-inner_column)))) {
-										framePointer[(inner_row + i*(ALIEN_HEIGHT+ALIEN_BUFFER) + corner_top)*SCREEN_WIDTH + (inner_column + j*(ALIEN_WIDTH+ALIEN_BUFFER) + corner_left)] = WHITE;
-									}else{	//draw black around alien
-										framePointer[(inner_row + i*(ALIEN_HEIGHT+ALIEN_BUFFER) + corner_top)*SCREEN_WIDTH + (inner_column + j*(ALIEN_WIDTH+ALIEN_BUFFER) + corner_left)] = BLACK;
-									}
+							else{	//if outside alien rectangle, draw black
+								int pixColor = framePointer[(inner_row + i*(ALIEN_HEIGHT+ALIEN_BUFFER) + corner_top)*SCREEN_WIDTH + (inner_column + j*(ALIEN_WIDTH+ALIEN_BUFFER) + corner_left)];
+								if(pixColor!=GREEN){
+									framePointer[(inner_row + i*(ALIEN_HEIGHT+ALIEN_BUFFER) + corner_top)*SCREEN_WIDTH + (inner_column + j*(ALIEN_WIDTH+ALIEN_BUFFER) + corner_left)] = BLACK;
 								}
 							}
 						}
-						else{	//if outside alien rectangle, draw black
-							framePointer[(inner_row + i*(ALIEN_HEIGHT+ALIEN_BUFFER) + corner_top)*SCREEN_WIDTH + (inner_column + j*(ALIEN_WIDTH+ALIEN_BUFFER) + corner_left)] = BLACK;
+						else{	//if alien is not alive, just draw black
+							int pixColor = framePointer[(inner_row + i*(ALIEN_HEIGHT+ALIEN_BUFFER) + corner_top)*SCREEN_WIDTH + (inner_column + j*(ALIEN_WIDTH+ALIEN_BUFFER) + corner_left)];
+							if(pixColor!=GREEN){
+								framePointer[(inner_row + i*(ALIEN_HEIGHT+ALIEN_BUFFER) + corner_top)*SCREEN_WIDTH + (inner_column + j*(ALIEN_WIDTH+ALIEN_BUFFER) + corner_left)] = BLACK;
+							}
 						}
-					}
-					else{	//if alien is not alive, just draw black
-						framePointer[(inner_row + i*(ALIEN_HEIGHT+ALIEN_BUFFER) + corner_top)*SCREEN_WIDTH + (inner_column + j*(ALIEN_WIDTH+ALIEN_BUFFER) + corner_left)] = BLACK;
 					}
 				}
 			}
-		}
+//		}
 	}
 }
 
@@ -576,7 +620,6 @@ void destroy_alien(int corner_top, int corner_left, int blowUp){	//erases alien 
 }
 
 void gameOver(){
-	xil_printf("\ngame--over\n\r");
 	int i,j;
 	for(i=0;i<ALIENS_WIDE;i++){
 		for(j=0;j<ALIENS_TALL;j++){
@@ -589,37 +632,7 @@ void gameOver(){
 	unsigned int * framePointer = (unsigned int *) FRAME_BUFFER_ADDR;
 	int digit_index,localx,localy,worldx,worldy;
 	for(digit_index=0; digit_index<GAME_OVER_DIGITS; digit_index++){
-//		int bunkerX = 0;
-//		int bunkerY = 0;
-//		int dupBitX = 0;
-//		int dupBitY = 0;
-//		int row, column;
-//		for (row=top_corner; row<top_corner+TANK_HEIGHT; row++) {
-//			    for (column = left_corner; column<left_corner+TANK_WIDTH; column++) {
-//					if ((tank_22x8[bunkerY] & (1<<bunkerX))) {
-//						framePointer[(row)*SCREEN_WIDTH + (column)] = color;
-//					}else{
-//						framePointer[(row)*SCREEN_WIDTH + (column)] = BLACK;
-//					}
-//					if(dupBitX == 1)
-//					{
-//						bunkerX++;
-//						dupBitX = 0;
-//					}else{
-//						dupBitX = 1;
-//					}
-//				}
-//			    bunkerX = 0;
-//				if(dupBitY == 1){
-//					bunkerY++;
-//					dupBitY = 0;
-//				}else{
-//					dupBitY = 1;
-//				}
-//			 }
-//
-//
-//
+
 		for (localy=0; localy<LETTER_HEIGHT; localy++) {
 			worldy = localy + GAME_OVER_Y;
 			for (localx = 0; localx<LETTER_WIDTH+LETTER_BUFFER; localx++) {
@@ -632,30 +645,6 @@ void gameOver(){
 			}
 		}
 	}
-
-//	int bunkerX = 0;
-//	int bunkerY = 0;
-//	int dupBitX = 0;
-//	int dupBitY = 0;
-//	unsigned int * framePointer = (unsigned int *) FRAME_BUFFER_ADDR;
-//	int row, column;
-//	int top_corner = GAME_OVER_Y;
-//	int left_corner = GAME_OVER_X;
-//	for (row=top_corner; row<top_corner+LETTER_HEIGHT; row++) {
-//		for (column = left_corner; column<left_corner+LETTER_WIDTH; column++) {
-//			if ((letterG_15x15[bunkerY] & (1<<bunkerX))) {
-//				framePointer[(row)*SCREEN_WIDTH + (column)] = WHITE;
-//			}else{
-//				framePointer[(row)*SCREEN_WIDTH + (column)] = BLACK;
-//			}
-//			if(dupBitX == 1)
-//			{
-//				bunkerX++;
-//				dupBitX = 0;
-//			}else{
-//				dupBitX = 1;
-//			}
-//		}
 }
 
 int killTank(killBulletX, killBulletY){
@@ -670,6 +659,9 @@ int killTank(killBulletX, killBulletY){
 		if(lives>0){
 			lives--;
 			eraseLife();
+//			if(lives==0){
+//				gameOver();
+//			}
 		}
 	}
 	return killed;
@@ -1065,7 +1057,7 @@ int evalTankBulletCollision(bulletx, bullety){//also needs to kill alien or erod
 		collision = killAlien(bulletx, bullety, 1);
 	}else if(bullety-1 <= BUNKER_BOTTOM && bullety-1 > BUNKER_TOP){//if its in the bunker region
 		collision = erodeBunker(bulletx, bullety);
-	}else if(bullety-1 <= MOTHER_SHIP_Y + MOTHER_SHIP_HEIGHT && bullety - 1 > MOTHER_SHIP_Y &&
+	}else if(shipAlive == 1 && bullety-1 <= MOTHER_SHIP_Y + MOTHER_SHIP_HEIGHT && bullety - 1 > MOTHER_SHIP_Y &&
 			bulletx >= motherShipX && bulletx <= motherShipX+MOTHER_SHIP_WIDTH){
 		collision = blowUpMotherShip(bulletx, bullety);
 	}
@@ -1253,6 +1245,7 @@ void timer_interrupt_handler() {
 		//makes alien missiles somewhere random every couple seconds
 		/////////////////////////////
 		int randNum = rand() % 5;
+		int randBin = rand() & 1;
 		if(alienFireCounter >= 200 && alienBulletCount < MAX_ALIEN_MISSILES){
 			//find empty place in alien missile array
 			int z;
@@ -1261,7 +1254,6 @@ void timer_interrupt_handler() {
 					break;
 				}
 			}
-			int randBin = rand() & 1;
 			int draw = 1;
 			findAlienToFireBullet();
 			int shoot_pos_x = aliens_x+alienShooterX*(ALIEN_WIDTH+ALIEN_BUFFER)+(ALIEN_WIDTH/2)-2;
@@ -1311,6 +1303,18 @@ void timer_interrupt_handler() {
 		}else{
 			shipCounter++;
 		}
+		//regulates how often you get a new spaceship
+		if(shipSpawnCounter >= 5000){
+			shipAlive = 1;
+			if(randBin == 1){
+				motherShipX = (randBin*SCREEN_WIDTH)-MOTHER_SHIP_WIDTH;
+			}else{
+				motherShipX = 0;
+			}
+			shipSpawnCounter = 0;
+		}else{
+			shipSpawnCounter+=randNum;
+		}
 
 		//draw tank explosion and then restart the tank in the restart position(TANK_DEFAULT_X).
 		if(tankAlive == 0){
@@ -1340,7 +1344,7 @@ void timer_interrupt_handler() {
 			bulletMoveCounter++;
 		}
 
-		if(drawAlienTimer >= 50){													//TO DO: make this a variable that changes as it goes down
+		if(drawAlienTimer >= alienTimerMax){													//TO DO: make this a variable that changes as it goes down
 			if(direction == DOWN){	//if aliens have already gone down
 				if(aliens_x + first_row*(ALIEN_WIDTH+ALIEN_BUFFER) == 0){	//if aliens have hit the left edge of the screen
 				 direction = RIGHT;
@@ -1348,6 +1352,7 @@ void timer_interrupt_handler() {
 				else{		//if aliens have hit the right edge of the screen
 				 direction = LEFT;
 				}
+				alienTimerMax -= 4;
 			}
 			else if(aliens_x + first_row*(ALIEN_WIDTH+ALIEN_BUFFER) == 0 || aliens_x == SCREEN_WIDTH - (last_row+1)*(ALIEN_BUFFER+ALIEN_WIDTH)+ALIEN_BUFFER){	//if aliens hit the left or right edges
 			 direction = DOWN;
@@ -1367,7 +1372,8 @@ void timer_interrupt_handler() {
 			drawAlienTimer++;
 		}
 	}else{
-		xil_printf("GAME OVER\n\r");//erase aliens and bullets and draw game over...
+		gameOver();
+		//xil_printf("GAME OVER\n\r");//erase aliens and bullets and draw game over...
 	}
 }
 
@@ -1421,6 +1427,7 @@ int main()
 	switchAlienBulletCounter = 0;
 	alienShooterX = 0;
 	alienShooterY = 0;
+	shipSpawnCounter = 0;
 	////////////////////////////////////////////////////////////
 	//Initialize interrupts and FIT
 	////////////////////////////////////////////////////////////

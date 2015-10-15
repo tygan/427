@@ -5,11 +5,7 @@
     The structure and the elements are likely to change over the next few releases.
     This means code written to parse this file will need to be revisited each subsequent release.-->
 
-<<<<<<< HEAD
-  <application stringID="Map" timeStamp="Wed Oct 14 14:09:26 2015">
-=======
-  <application stringID="Map" timeStamp="Wed Oct 14 14:16:16 2015">
->>>>>>> 8f7ccc2e681c32e46af6861ac4d1e60053b19ccc
+  <application stringID="Map" timeStamp="Wed Oct 14 17:35:56 2015">
     <section stringID="User_Env">
       <table stringID="User_EnvVar">
         <column stringID="variable"/>
@@ -43,11 +39,7 @@
         <item stringID="User_EnvOsname" value="Microsoft Windows 7 , 64-bit"/>
         <item stringID="User_EnvOsrelease" value="Service Pack 1  (build 7601)"/>
       </item>
-<<<<<<< HEAD
-      <item stringID="User_EnvHost" value="CB400-06"/>
-=======
-      <item stringID="User_EnvHost" value="CB400-05"/>
->>>>>>> 8f7ccc2e681c32e46af6861ac4d1e60053b19ccc
+      <item stringID="User_EnvHost" value="CB400-03"/>
       <table stringID="User_EnvCpu">
         <column stringID="arch"/>
         <column stringID="speed"/>
@@ -118,15 +110,9 @@
         <item dataType="int" stringID="MAP_NUM_ERRORS" value="0"/>
         <item dataType="int" stringID="MAP_FILTERED_WARNINGS" value="0"/>
         <item dataType="int" stringID="MAP_NUM_WARNINGS" value="37"/>
-<<<<<<< HEAD
-        <item UNITS="KB" dataType="int" stringID="MAP_PEAK_MEMORY" value="735864"/>
+        <item UNITS="KB" dataType="int" stringID="MAP_PEAK_MEMORY" value="736312"/>
         <item stringID="MAP_TOTAL_REAL_TIME" value="1 mins 52 secs "/>
         <item stringID="MAP_TOTAL_CPU_TIME" value="1 mins 50 secs "/>
-=======
-        <item UNITS="KB" dataType="int" stringID="MAP_PEAK_MEMORY" value="735928"/>
-        <item stringID="MAP_TOTAL_REAL_TIME" value="1 mins 53 secs "/>
-        <item stringID="MAP_TOTAL_CPU_TIME" value="1 mins 51 secs "/>
->>>>>>> 8f7ccc2e681c32e46af6861ac4d1e60053b19ccc
       </section>
       <section stringID="MAP_SLICE_REPORTING">
         <item AVAILABLE="54576" dataType="int" label="Number of Slice Registers" stringID="MAP_SLICE_REGISTERS" value="6332">
