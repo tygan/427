@@ -128,6 +128,7 @@ int bunkerHealth[Y_DAMAGE][X_DAMAGE] = {{3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3},
 										{3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3},
 										{3,-1,-1,3,3,-1,-1,3,3,-1,-1,3,3,-1,-1,3}};
 int alienMissileArray[MAX_ALIEN_MISSILES] = {0,0,0,0,0};
+int alienMissileArrayType[MAX_ALIEN_MISSILES] = {0,0,0,0,0};
 int tankBulletCoordinates[2];
 int alienMissileCoordinatesX[MAX_ALIEN_MISSILES] = {0,0,0,0,0};
 int alienMissileCoordinatesY[MAX_ALIEN_MISSILES] = {0,0,0,0,0};
@@ -153,6 +154,10 @@ int tankAlive;
 int tankExplosionCounter;
 int numExplosion;
 int alienTimerMax = 50;
+int switchAlienBullet;
+int switchAlienBulletCounter;
+int alienShooterX;
+int alienShooterY;
 //////////////////////////////////////////////////////////////////////////////////////////////////
 //Draw functions
 //////////////////////////////////////////////////////////////////////////////////////////////////
@@ -766,7 +771,47 @@ void drawMotherShip(left_corner, top_corner, draw){
 	    }
 	 }
 }
-void drawAlienMissile(x,y,draw){
+void drawAlienMissile(x,y,draw, type){
+//	switch(switchAlienBullet){
+//		case 0  :
+//			if ((tank_explosion_0_22x8[tY] & (1<<tX))) {
+//				framePointer[(row)*SCREEN_WIDTH + (column)] = GREEN;
+//			}else{
+//				framePointer[(row)*SCREEN_WIDTH + (column)] = BLACK;
+//			}
+//		   break;
+//		case 1  :
+//			if ((tank_explosion_1_22x8[tY] & (1<<tX))) {
+//				framePointer[(row)*SCREEN_WIDTH + (column)] = GREEN;
+//			}else{
+//				framePointer[(row)*SCREEN_WIDTH + (column)] = BLACK;
+//			}
+//		   break;
+//		case 2  :
+//			if ((tank_explosion_2_22x8[tY] & (1<<tX))) {
+//				framePointer[(row)*SCREEN_WIDTH + (column)] = GREEN;
+//			}else{
+//				framePointer[(row)*SCREEN_WIDTH + (column)] = BLACK;
+//			}
+//		   break;
+//	}alienMissileArrayTypes
+//	int color;
+//	if(draw == 1){
+//		color = GREEN;
+//	}else{
+//		color = BLACK;
+//	}
+//	unsigned int * framePointer = (unsigned int *) FRAME_BUFFER_ADDR;
+//	int row, column;
+//	for (row=y; row<y+TANK_BULLET_HEIGHT; row++) {
+//		for (column = x; column<x+TANK_BULLET_WIDTH; column++) {
+//			if ((tankBullet_3x10[row-y] & (1<<(TANK_BULLET_WIDTH-1-(column-x))))) {
+//				framePointer[(row)*SCREEN_WIDTH + (column)] = color;
+//			}else{
+//				framePointer[(row)*SCREEN_WIDTH + (column)] = BLACK;
+//			}
+//		}
+//	}
 	int color;
 	if(draw == 1){
 		color = WHITE;
@@ -777,10 +822,40 @@ void drawAlienMissile(x,y,draw){
 	int row, column;
 	for (row=y; row<y+ALIEN_MISSILE_HEIGHT; row++) {
 		for (column = x; column<x+ALIEN_MISSILE_WIDTH; column++) {
-			if ((alienMissileForwardSlash_3x10[row-y] & (1<<(ALIEN_MISSILE_HEIGHT-1-(column-x))))) {
-				framePointer[(row)*SCREEN_WIDTH + (column)] = color;
-			}else{
-				framePointer[(row)*SCREEN_WIDTH + (column)] = color;
+			if(type == 0){//slashes
+				switch(switchAlienBullet){
+					case 0  :
+						if ((alienMissileForwardSlash_3x10[row-y] & (1<<(ALIEN_MISSILE_WIDTH-1-(column-x))))) {
+							framePointer[(row)*SCREEN_WIDTH + (column)] = color;
+						}else{
+							framePointer[(row)*SCREEN_WIDTH + (column)] = BLACK;
+						}
+						break;
+					case 1:
+						if ((alienMissileBackSlash_3x10[row-y] & (1<<(ALIEN_MISSILE_WIDTH-1-(column-x))))) {
+							framePointer[(row)*SCREEN_WIDTH + (column)] = color;
+						}else{
+							framePointer[(row)*SCREEN_WIDTH + (column)] = BLACK;
+						}
+						break;
+				}
+			}else if(type == 1){//crosses
+				switch(switchAlienBullet){
+					case 0  :
+						if ((alienMissileSwordUp_3x10[row-y] & (1<<(ALIEN_MISSILE_WIDTH-1-(column-x))))) {
+							framePointer[(row)*SCREEN_WIDTH + (column)] = color;
+						}else{
+							framePointer[(row)*SCREEN_WIDTH + (column)] = BLACK;
+						}
+						break;
+					case 1:
+						if ((alienMissileSwordDown_3x10[row-y] & (1<<(ALIEN_MISSILE_WIDTH-1-(column-x))))) {
+							framePointer[(row)*SCREEN_WIDTH + (column)] = color;
+						}else{
+							framePointer[(row)*SCREEN_WIDTH + (column)] = BLACK;
+						}
+						break;
+				}
 			}
 		}
 	}
@@ -1033,7 +1108,7 @@ void moveAlienBullets(){
 			if(alienMissileArray[i] == 1){//the bullet is alive and movin
 				//erase alien bullets
 				draw = 0;
-				drawAlienMissile(alienMissileCoordinatesX[i], alienMissileCoordinatesY[i], draw);
+				drawAlienMissile(alienMissileCoordinatesX[i], alienMissileCoordinatesY[i], draw, alienMissileArrayType[i]);
 				if(alienMissileCoordinatesY[i] + 2*ALIEN_MISSILE_HEIGHT < EARTH_Y){
 					//check if there is a collision
 					int alienMissileCollision = 0;
@@ -1043,7 +1118,7 @@ void moveAlienBullets(){
 						//if(alienMissileCoordinatesY[i] + ALIEN_MISSILE_HEIGHT < EARTH_Y){
 							draw = 1;
 							alienMissileCoordinatesY[i] += 10;
-							drawAlienMissile(alienMissileCoordinatesX[i], alienMissileCoordinatesY[i], draw);
+							drawAlienMissile(alienMissileCoordinatesX[i], alienMissileCoordinatesY[i], draw, alienMissileArrayType[i]);
 						//}
 					}else{//if it gets here it either ran into the bunker or it hit the tank.
 						alienBulletCount--;
@@ -1059,6 +1134,33 @@ void moveAlienBullets(){
 	}
 }
 
+void findAlienToFireBullet(){
+	int alienFound = 0;
+	int randAlien = rand() % 10;
+	int x = randAlien;
+	int y = 4;
+	while(alienFound == 0){//THIS ASSUMES THAT YOU WILL ALWAYS HAVE AT LEAST 1 ALIEN
+		if(aliens_alive[y][x] == 1){
+			alienShooterX = x;
+			alienShooterY = y;
+			alienFound = 1;
+		}else{
+			if(y>=0){
+				y--;
+			}else{
+				y = 4;
+				if(x >= 11){
+					x = 0;
+				}else{
+					x++;
+				}
+			}
+			if(x >= 11){
+				xil_printf("If you get here it's very very bad! you didn't find an alien to shoot with\n\r");
+			}
+		}
+	}
+}
 //////////////////////////////////////////////////////////////////////////////////////////////////
 //Interrupt handling code
 //////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1141,8 +1243,8 @@ void timer_interrupt_handler() {
 		/////////////////////////////
 		//makes alien missiles somewhere random every couple seconds
 		/////////////////////////////
-		int randNum = rand() % ALIENS_WIDE;
-		if(alienFireCounter == 300 && alienBulletCount < MAX_ALIEN_MISSILES){
+		int randNum = rand() % 5;
+		if(alienFireCounter >= 200 && alienBulletCount < MAX_ALIEN_MISSILES){
 			//find empty place in alien missile array
 			int z;
 			for(z = 0; z < MAX_ALIEN_MISSILES; z++){
@@ -1150,18 +1252,32 @@ void timer_interrupt_handler() {
 					break;
 				}
 			}
+			int randBin = rand() & 1;
 			int draw = 1;
-			int shoot_pos_x = aliens_x+randNum*(ALIEN_WIDTH+ALIEN_BUFFER)+(ALIEN_WIDTH/2)-2;
-			int shoot_pos_y = aliens_y+ALIENS_TALL*(ALIEN_HEIGHT+ALIEN_BUFFER)-ALIEN_BUFFER;
-			drawAlienMissile(shoot_pos_x, shoot_pos_y, draw);
+			findAlienToFireBullet();
+			int shoot_pos_x = aliens_x+alienShooterX*(ALIEN_WIDTH+ALIEN_BUFFER)+(ALIEN_WIDTH/2)-2;
+			int shoot_pos_y = aliens_y+(alienShooterY+1)*(ALIEN_HEIGHT+ALIEN_BUFFER)-ALIEN_BUFFER;
+			alienMissileArrayType[z] = randBin;
+			drawAlienMissile(shoot_pos_x, shoot_pos_y, draw, alienMissileArrayType[z]);
 			alienMissileCoordinatesX[z] = shoot_pos_x;
 			alienMissileCoordinatesY[z] = shoot_pos_y;
 			alienBulletCount++;
 			alienMissileArray[z] = 1;
 			alienFireCounter = 0;
 		}else{
-			alienFireCounter++;
+			alienFireCounter+=randNum;
 		}
+		if(switchAlienBulletCounter >= 6){
+			if(switchAlienBullet == 0){
+				switchAlienBullet = 1;
+			}else{
+				switchAlienBullet = 0;
+			}
+			switchAlienBulletCounter = 0;
+		}else{
+			switchAlienBulletCounter++;
+		}
+		//move alien bullets switchAlienBullet
 		if(alienBulletMoveCounter >= 3){
 			moveAlienBullets();
 			alienBulletMoveCounter = 0;
@@ -1294,6 +1410,10 @@ int main()
 	bulletMoveCounter = 0;
 	tankAlive = 0;
 	numExplosion = 0;
+	switchAlienBullet = 0;
+	switchAlienBulletCounter = 0;
+	alienShooterX = 0;
+	alienShooterY = 0;
 	////////////////////////////////////////////////////////////
 	//Initialize interrupts and FIT
 	////////////////////////////////////////////////////////////

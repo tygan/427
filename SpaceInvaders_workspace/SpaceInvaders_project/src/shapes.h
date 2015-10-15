@@ -405,16 +405,16 @@ packword4(0,0,1)
 };
 
 static const int alienMissileSwordUp_3x10[] = {
-packword4(0,1,0),
-packword4(0,1,0),
-packword4(0,1,0),
 packword4(1,1,1),
-packword4(0,1,0),
-packword4(0,1,0),
-packword4(0,1,0),
-packword4(0,1,0),
-packword4(0,1,0),
-packword4(0,1,0)
+packword4(1,1,1),
+packword4(1,1,1),
+packword4(1,1,1),
+packword4(1,1,1),
+packword4(1,1,1),
+packword4(1,1,1),
+packword4(1,1,1),
+packword4(1,1,1),
+packword4(1,1,1)
 };
 
 static const int alienMissileSwordDown_3x10[] = {
@@ -424,7 +424,7 @@ packword4(0,1,0),
 packword4(0,1,0),
 packword4(0,1,0),
 packword4(0,1,0),
-packword4(1,1,1),
+packword4(0,1,0),
 packword4(0,1,0),
 packword4(0,1,0),
 packword4(0,1,0)
