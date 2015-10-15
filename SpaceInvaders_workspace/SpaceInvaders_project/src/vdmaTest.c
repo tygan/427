@@ -1143,22 +1143,33 @@ void moveAlienBullets(){
 	}
 }
 
-//void findAlienToFireBullet(){
-//	int count;
-//	int x = 0;
-//	int y = 4;
-//	//int aliens_alive[ALIENS_TALL][ALIENS_WIDE];
-//	int currPos[1][1];
-//	while(alienFound == 0){
-//		if(aliens_alive[y][x]){
-//
-//		}
-//		alienFound = 1;
-//	}
-//
-//	alienShooterX = ;
-//	alienShooterY = ;
-//}
+void findAlienToFireBullet(){
+	int alienFound = 0;
+	int randAlien = rand() % 10;
+	int x = randAlien;
+	int y = 4;
+	while(alienFound == 0){//THIS ASSUMES THAT YOU WILL ALWAYS HAVE AT LEAST 1 ALIEN
+		if(aliens_alive[y][x] == 1){
+			alienShooterX = x;
+			alienShooterY = y;
+			alienFound = 1;
+		}else{
+			if(y>=0){
+				y--;
+			}else{
+				y = 4;
+				if(x >= 11){
+					x = 0;
+				}else{
+					x++;
+				}
+			}
+			if(x >= 11){
+				xil_printf("If you get here it's very very bad! you didn't find an alien to shoot with\n\r");
+			}
+		}
+	}
+}
 //////////////////////////////////////////////////////////////////////////////////////////////////
 //Interrupt handling code
 //////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1241,8 +1252,8 @@ void timer_interrupt_handler() {
 		/////////////////////////////
 		//makes alien missiles somewhere random every couple seconds
 		/////////////////////////////
-		int randNum = rand() % ALIENS_WIDE;
-		if(alienFireCounter == 300 && alienBulletCount < MAX_ALIEN_MISSILES){
+		int randNum = rand() % 5;
+		if(alienFireCounter >= 200 && alienBulletCount < MAX_ALIEN_MISSILES){
 			//find empty place in alien missile array
 			int z;
 			for(z = 0; z < MAX_ALIEN_MISSILES; z++){
@@ -1252,10 +1263,9 @@ void timer_interrupt_handler() {
 			}
 			int randBin = rand() & 1;
 			int draw = 1;
-
-
-			int shoot_pos_x = aliens_x+randNum*(ALIEN_WIDTH+ALIEN_BUFFER)+(ALIEN_WIDTH/2)-2;
-			int shoot_pos_y = aliens_y+ALIENS_TALL*(ALIEN_HEIGHT+ALIEN_BUFFER)-ALIEN_BUFFER;
+			findAlienToFireBullet();
+			int shoot_pos_x = aliens_x+alienShooterX*(ALIEN_WIDTH+ALIEN_BUFFER)+(ALIEN_WIDTH/2)-2;
+			int shoot_pos_y = aliens_y+(alienShooterY+1)*(ALIEN_HEIGHT+ALIEN_BUFFER)-ALIEN_BUFFER;
 			alienMissileArrayType[z] = randBin;
 			drawAlienMissile(shoot_pos_x, shoot_pos_y, draw, alienMissileArrayType[z]);
 			alienMissileCoordinatesX[z] = shoot_pos_x;
@@ -1264,7 +1274,7 @@ void timer_interrupt_handler() {
 			alienMissileArray[z] = 1;
 			alienFireCounter = 0;
 		}else{
-			alienFireCounter++;
+			alienFireCounter+=randNum;
 		}
 		if(switchAlienBulletCounter >= 6){
 			if(switchAlienBullet == 0){
