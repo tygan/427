@@ -7,12 +7,31 @@ Invoking: MicroBlaze gcc compiler
 mb-gcc -Wall -O3 -g3 -c -fmessage-length=0 -I../../hello_world_bsp_0/microblaze_0/include -mlittle-endian -mxl-barrel-shift -mxl-pattern-compare -mcpu=v8.20.b -mno-xl-soft-mul -MMD -MP -MF"src/vdmaTest.d" -MT"src/vdmaTest.d" -o"src/vdmaTest.o" "../src/vdmaTest.c"
 ../src/vdmaTest.c: In function 'blowUpMotherShip':
 ../src/vdmaTest.c:1043: warning: implicit declaration of function 'rand'
-../src/vdmaTest.c: In function 'timer_interrupt_handler':
-../src/vdmaTest.c:1260: error: 'shoot_pos_x' undeclared (first use in this function)
-../src/vdmaTest.c:1260: error: (Each undeclared identifier is reported only once
-../src/vdmaTest.c:1260: error: for each function it appears in.)
-../src/vdmaTest.c:1260: error: 'shoot_pos_y' undeclared (first use in this function)
-../src/vdmaTest.c:1244: warning: unused variable 'randNum'
 ../src/vdmaTest.c: In function 'main':
 ../src/vdmaTest.c:1557: warning: implicit declaration of function 'srand'
-make: *** [src/vdmaTest.o] Error 1
+Finished building: ../src/vdmaTest.c
+' '
+Building target: SpaceInvaders_project.elf
+Invoking: MicroBlaze gcc linker
+mb-gcc -Wl,-T -Wl,../src/lscript.ld -L../../hello_world_bsp_0/microblaze_0/lib -mlittle-endian -mxl-barrel-shift -mxl-pattern-compare -mcpu=v8.20.b -mno-xl-soft-mul -o"SpaceInvaders_project.elf"  ./src/platform.o ./src/vdmaTest.o  ./.metadata/.plugins/org.eclipse.cdt.make.core/specs.o   -Wl,--start-group,-lxil,-lgcc,-lc,--end-group
+Finished building target: SpaceInvaders_project.elf
+' '
+Invoking: MicroBlaze Print Size
+mb-size SpaceInvaders_project.elf  |tee "SpaceInvaders_project.elf.size"
+   text	   data	    bss	    dec	    hex	filename
+  46772	   1696	   8748	  57216	   df80	SpaceInvaders_project.elf
+Finished building: SpaceInvaders_project.elf.size
+' '
+Invoking: Xilinx ELF Check
+elfcheck SpaceInvaders_project.elf -hw ../../SpaceInvaders_HW_hw_platform/system.xml -pe microblaze_0  |tee "SpaceInvaders_project.elf.elfcheck"
+elfcheck
+Xilinx EDK 13.4 Build EDK_O.87xd
+Copyright (c) 1995-2011 Xilinx, Inc.  All rights reserved.
+
+Command Line: elfcheck -hw ../../SpaceInvaders_HW_hw_platform/system.xml -pe
+microblaze_0 SpaceInvaders_project.elf 
+
+ELF file	: SpaceInvaders_project.elf
+elfcheck passed.
+Finished building: SpaceInvaders_project.elf.elfcheck
+' '

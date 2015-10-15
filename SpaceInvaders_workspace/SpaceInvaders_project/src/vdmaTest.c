@@ -1254,8 +1254,8 @@ void timer_interrupt_handler() {
 			int draw = 1;
 
 
-			//int shoot_pos_x = aliens_x+randNum*(ALIEN_WIDTH+ALIEN_BUFFER)+(ALIEN_WIDTH/2)-2;
-			//int shoot_pos_y = aliens_y+ALIENS_TALL*(ALIEN_HEIGHT+ALIEN_BUFFER)-ALIEN_BUFFER;
+			int shoot_pos_x = aliens_x+randNum*(ALIEN_WIDTH+ALIEN_BUFFER)+(ALIEN_WIDTH/2)-2;
+			int shoot_pos_y = aliens_y+ALIENS_TALL*(ALIEN_HEIGHT+ALIEN_BUFFER)-ALIEN_BUFFER;
 			alienMissileArrayType[z] = randBin;
 			drawAlienMissile(shoot_pos_x, shoot_pos_y, draw, alienMissileArrayType[z]);
 			alienMissileCoordinatesX[z] = shoot_pos_x;
