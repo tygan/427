@@ -16,7 +16,9 @@ src/vdmaTest.d src/vdmaTest.o: ../src/vdmaTest.c \
   ../../hello_world_bsp_0/microblaze_0/include/xaxivdma_hw.h \
   ../../hello_world_bsp_0/microblaze_0/include/xaxivdma_i.h \
   ../../hello_world_bsp_0/microblaze_0/include/xdebug.h \
-  ../../hello_world_bsp_0/microblaze_0/include/xio.h ../src/shapes.h
+  ../../hello_world_bsp_0/microblaze_0/include/xio.h ../src/shapes.h \
+  ../../hello_world_bsp_0/microblaze_0/include/xtmrctr.h \
+  ../../hello_world_bsp_0/microblaze_0/include/xtmrctr_l.h
 
 ../../hello_world_bsp_0/microblaze_0/include/xgpio.h:
 
@@ -57,3 +59,7 @@ src/vdmaTest.d src/vdmaTest.o: ../src/vdmaTest.c \
 ../../hello_world_bsp_0/microblaze_0/include/xio.h:
 
 ../src/shapes.h:
+
+../../hello_world_bsp_0/microblaze_0/include/xtmrctr.h:
+
+../../hello_world_bsp_0/microblaze_0/include/xtmrctr_l.h:

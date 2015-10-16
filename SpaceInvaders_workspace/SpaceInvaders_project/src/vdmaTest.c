@@ -37,6 +37,7 @@
 #include "time.h"
 #include "unistd.h"
 #include "shapes.h"
+#include "xtmrctr.h"
 
 #define MIDDLEBTN 1
 #define RIGHTBTN 2
@@ -111,6 +112,9 @@
 #define MAX_ALIEN_MISSILES 5
 #define GAME_OVER_DIGITS 9
 #define TANK_DEFAULT_X 70
+#define SCORE_BLINK_MAX 20
+
+XTmrCtr TimerCounter; /* The instance of the Tmrctr Device */
 
 void print(char *str);
 XGpio gpLED;  // This is a handle for the LED GPIO block.
@@ -122,6 +126,7 @@ int lives = MAX_LIVES;
 int aliens_in = 1;
 int first_row = 0;
 int last_row = ALIENS_WIDE - 1;
+int bottom_column = ALIENS_TALL - 1;
 int exists_missile = 0;
 int exists_tank_missile = 0;
 int aliens_alive[ALIENS_TALL][ALIENS_WIDE];
@@ -142,7 +147,7 @@ int drawAlienTimer;
 int direction;
 int aliens_x;
 int aliens_y;
-int score = 123;
+int score = 0;
 int score_digits = 1;
 int alienCount;
 int shipCounter;
@@ -160,6 +165,10 @@ int switchAlienBulletCounter;
 int alienShooterX;
 int alienShooterY;
 int shipSpawnCounter;
+int mothershipScore;
+int mothershipScoreDigits;
+int mothershipHit = 0;
+int scoreBlinkCounter = 0;
 //////////////////////////////////////////////////////////////////////////////////////////////////
 //Draw functions
 //////////////////////////////////////////////////////////////////////////////////////////////////
@@ -194,17 +203,6 @@ void print_aliens(int corner_top, int corner_left, int direction){
 		int j;
 		for(j=0; j<ALIENS_WIDE; j++){	//for all columns
 			int inner_row, inner_column;
-//			if(aliens_alive[i][j]){
-//				if(direction == RIGHT){
-//					//xil_printf("right\n\r");
-//					int eraseRow,eraseCol;
-//					for(eraseRow=corner_top+i*(ALIEN_HEIGHT+ALIEN_BUFFER); eraseRow<corner_top+(i+1)*(ALIEN_HEIGHT+ALIEN_BUFFER); eraseRow++){
-//						for(eraseCol=corner_left+j*(ALIEN_WIDTH+ALIEN_BUFFER)-ALIEN_HORIZ_MOVE; eraseCol<corner_left+j*(ALIEN_WIDTH+ALIEN_BUFFER); eraseCol++){
-//							//xil_printf("(%d,%d) ",eraseRow,eraseCol);
-//							framePointer[eraseRow*SCREEN_WIDTH + eraseCol] = BLACK;
-//						}
-//					}
-//				}
 				for (inner_row=0; inner_row<ALIEN_HEIGHT+ALIEN_BUFFER; inner_row++) {	//draw entire rectangle with alien and buffer
 					for (inner_column = 0; inner_column<ALIEN_WIDTH+ALIEN_BUFFER; inner_column++) {
 						if(aliens_alive[i][j]){		//if alien is alive, draw
@@ -396,15 +394,12 @@ void printNumbers(int fullNumber, int numDigits, int startx, int starty){
 			n*=10;
 		}
 		display_digit = tempNumber/n;
-//		xil_printf("\n\rdigit_index:%d score_digits:%d display_digit:%d temp_score:%d",digit_index,score_digits,display_digit,temp_score);
 		tempNumber = tempNumber - display_digit*n;
 		for (localy=0; localy<LETTER_HEIGHT; localy++) {
 			worldy = localy + starty;
 			for (localx = 0; localx<LETTER_WIDTH+LETTER_BUFFER; localx++) {
 				if(localx < LETTER_WIDTH){
-//					xil_printf("numbers[%d][%d]=%d!\n",display_digit,localy,numbers[display_digit][localy]);
 					if ((numbers[display_digit][localy] & (1<<(LETTER_WIDTH-1-localx)))) {
-//						xil_printf("4");
 						worldx = localx + startx + digit_index * (LETTER_WIDTH + LETTER_BUFFER);
 						framePointer[worldy*SCREEN_WIDTH + worldx] = GREEN;
 					}
@@ -440,6 +435,7 @@ void draw_lives_word(){ //draws "lives" at beginning
 	letter_index = 0;
 	for (localy=0; localy<LETTER_HEIGHT; localy++) {
 		worldy = localy + SCORE_WORD_Y;
+		//Hi Dr. Hutchings!
 		for (localx = 0; localx<LETTER_WIDTH+LETTER_BUFFER; localx++) {
 			if(localx < LETTER_WIDTH){
 				if ((letterL_15x15[localy] & (1<<(LETTER_WIDTH-1-localx)))) {
@@ -621,6 +617,15 @@ void destroy_alien(int corner_top, int corner_left, int blowUp){	//erases alien 
 }
 
 void gameOver(){
+	unsigned int * framePointer = (unsigned int *) FRAME_BUFFER_ADDR;
+	//erase anything in main part of screen
+	int x,y;
+	for(y=SCORE_WORD_Y+TANK_HEIGHT;y<BUNKER_TOP;y++){
+		for(x=0;x<SCREEN_WIDTH;x++){
+			framePointer[y * SCREEN_WIDTH + x] = BLACK;
+		}
+	}
+
 	int i,j;
 	for(i=0;i<ALIENS_WIDE;i++){
 		for(j=0;j<ALIENS_TALL;j++){
@@ -630,7 +635,7 @@ void gameOver(){
 			}
 		}
 	}
-	unsigned int * framePointer = (unsigned int *) FRAME_BUFFER_ADDR;
+
 	int digit_index,localx,localy,worldx,worldy;
 	for(digit_index=0; digit_index<GAME_OVER_DIGITS; digit_index++){
 
@@ -655,14 +660,10 @@ int killTank(killBulletX, killBulletY){
 		drawTank(tankPosX, tankPosY, draw);
 		killed = 1;
 		tankAlive = 0;
-		//drawTankExplosion(tankX, tankY);
 		//lose a life!
 		if(lives>0){
 			lives--;
 			eraseLife();
-//			if(lives==0){
-//				gameOver();
-//			}
 		}
 	}
 	return killed;
@@ -774,46 +775,6 @@ void drawMotherShip(left_corner, top_corner, draw){
 	 }
 }
 void drawAlienMissile(x,y,draw, type){
-//	switch(switchAlienBullet){
-//		case 0  :
-//			if ((tank_explosion_0_22x8[tY] & (1<<tX))) {
-//				framePointer[(row)*SCREEN_WIDTH + (column)] = GREEN;
-//			}else{
-//				framePointer[(row)*SCREEN_WIDTH + (column)] = BLACK;
-//			}
-//		   break;
-//		case 1  :
-//			if ((tank_explosion_1_22x8[tY] & (1<<tX))) {
-//				framePointer[(row)*SCREEN_WIDTH + (column)] = GREEN;
-//			}else{
-//				framePointer[(row)*SCREEN_WIDTH + (column)] = BLACK;
-//			}
-//		   break;
-//		case 2  :
-//			if ((tank_explosion_2_22x8[tY] & (1<<tX))) {
-//				framePointer[(row)*SCREEN_WIDTH + (column)] = GREEN;
-//			}else{
-//				framePointer[(row)*SCREEN_WIDTH + (column)] = BLACK;
-//			}
-//		   break;
-//	}alienMissileArrayTypes
-//	int color;
-//	if(draw == 1){
-//		color = GREEN;
-//	}else{
-//		color = BLACK;
-//	}
-//	unsigned int * framePointer = (unsigned int *) FRAME_BUFFER_ADDR;
-//	int row, column;
-//	for (row=y; row<y+TANK_BULLET_HEIGHT; row++) {
-//		for (column = x; column<x+TANK_BULLET_WIDTH; column++) {
-//			if ((tankBullet_3x10[row-y] & (1<<(TANK_BULLET_WIDTH-1-(column-x))))) {
-//				framePointer[(row)*SCREEN_WIDTH + (column)] = color;
-//			}else{
-//				framePointer[(row)*SCREEN_WIDTH + (column)] = BLACK;
-//			}
-//		}
-//	}
 	int color;
 	if(draw == 1){
 		color = WHITE;
@@ -994,6 +955,17 @@ void reevaluate_aliens(){
 		}
 	}
 	last_row = x;
+
+	//find bottom row with live aliens
+	x = ALIENS_TALL;
+	int col_not_empty = 0;
+	while(!col_not_empty){
+		x--;
+		for(y=0;y<ALIENS_WIDE;y++){
+			col_not_empty|=aliens_alive[x][y];
+		}
+	}
+	bottom_column = x;
 }
 
 int killAlien(int pointx, int pointy, int blowup){
@@ -1007,7 +979,7 @@ int killAlien(int pointx, int pointy, int blowup){
 	if(pointx < aliens_x){//this is because for some reason the left most column and the black buffer next to it both return 0 for alien_x_index
 		return 0;
 	}
-	if(aliens_alive[alien_y_index][alien_x_index] == 0){
+	if(aliens_alive[alien_y_index][alien_x_index] != 1){
 		return 0;
 	}
 	if((pointx-aliens_x)%(ALIEN_WIDTH+ALIEN_BUFFER) > ALIEN_WIDTH)
@@ -1016,7 +988,7 @@ int killAlien(int pointx, int pointy, int blowup){
 	}
 	aliens_alive[alien_y_index][alien_x_index] = 0;
 	if(alien_y_index==0){
-		add_score(30);
+		add_score(40);
 	}
 	else if(alien_y_index>0 && alien_y_index<3){
 		add_score(20);
@@ -1024,6 +996,7 @@ int killAlien(int pointx, int pointy, int blowup){
 	else{
 		add_score(10);
 	}
+	xil_printf("%d, %d\n\r", alien_x_index, alien_y_index);
 	destroy_alien(aliens_y+alien_y_index*(ALIEN_HEIGHT+ALIEN_BUFFER), aliens_x+alien_x_index*(ALIEN_WIDTH+ALIEN_BUFFER),blowup);
 	reevaluate_aliens();
 	return 1;
@@ -1046,8 +1019,10 @@ int blowUpMotherShip(missilex, missiley){
 			++digits;
 		}
 	}
-	printNumbers(points, digits, motherShipX, motherShipY);
-
+	//printNumbers(points, digits, motherShipX, motherShipY);
+	mothershipScore = points;
+	mothershipScoreDigits = digits;
+	add_score(points);
 	//xxxYOU NEED TO SHOW SCORE OF MOTHERSHIP HERE!
 	return 1;
 }
@@ -1061,6 +1036,7 @@ int evalTankBulletCollision(bulletx, bullety){//also needs to kill alien or erod
 	}else if(shipAlive == 1 && bullety-1 <= MOTHER_SHIP_Y + MOTHER_SHIP_HEIGHT && bullety - 1 > MOTHER_SHIP_Y &&
 			bulletx >= motherShipX && bulletx <= motherShipX+MOTHER_SHIP_WIDTH){
 		collision = blowUpMotherShip(bulletx, bullety);
+		mothershipHit = 1;
 	}
 
 	return collision;
@@ -1085,8 +1061,6 @@ void moveBullets(){
 		drawTankBullet(tankBulletX, tankBullety, draw);
 		//There is a bullet so must check if next pos is a collision and act accordingly otherwise just erase it and move it up
 		isCollision = evalTankBulletCollision(tankBulletX, tankBullety);
-		//	xil_printf("aliens y is %d", aliens_y);
-		//	xil_printf("tankBullety y is %d", tankBullety);
 		if(isCollision == 0){//There is a bullet but no collision so draw bullet up one
 			if(tankBullety > SCORE_WORD_Y + 2*TANK_HEIGHT){//If the bullet is still on the screen move it up
 				exists_tank_missile = 1;
@@ -1116,12 +1090,9 @@ void moveAlienBullets(){
 					int alienMissileCollision = 0;
 					alienMissileCollision = evalAlienBulletCollision(alienMissileCoordinatesX[i], alienMissileCoordinatesY[i]);
 					if(alienMissileCollision == 0){
-						//if there is not a collision and alienMissileCoordinatesY < EARTH_Y, draw bullet one down
-						//if(alienMissileCoordinatesY[i] + ALIEN_MISSILE_HEIGHT < EARTH_Y){
 							draw = 1;
 							alienMissileCoordinatesY[i] += 10;
 							drawAlienMissile(alienMissileCoordinatesX[i], alienMissileCoordinatesY[i], draw, alienMissileArrayType[i]);
-						//}
 					}else{//if it gets here it either ran into the bunker or it hit the tank.
 						alienBulletCount--;
 						alienMissileArray[i] = 0;
@@ -1137,31 +1108,25 @@ void moveAlienBullets(){
 }
 
 void findAlienToFireBullet(){
+	int pX,pY,x,y;
 	int alienFound = 0;
-	int randAlien = rand() % 10;
-	int x = randAlien;
-	int y = 4;
-	while(alienFound == 0){//THIS ASSUMES THAT YOU WILL ALWAYS HAVE AT LEAST 1 ALIEN
-		if(aliens_alive[y][x] == 1){
-			alienShooterX = x;
-			alienShooterY = y;
-			alienFound = 1;
-		}else{
-			if(y>=0){
-				y--;
-			}else{
-				y = 4;
-				if(x >= 11){
-					x = 0;
-				}else{
-					x++;
-				}
+
+	while(alienFound == 0){
+		x = rand() % 10;
+		y = ALIENS_TALL-1;
+		while(alienFound==0 && y>-1){
+			if(aliens_alive[y][x]==1){
+				pX = x;
+				pY = y;
+				alienFound = 1;
 			}
-			if(x >= 11){
-				xil_printf("If you get here it's very very bad! you didn't find an alien to shoot with\n\r");
+			else{
+				y--;
 			}
 		}
 	}
+	alienShooterX = pX;
+	alienShooterY = pY;
 }
 //////////////////////////////////////////////////////////////////////////////////////////////////
 //Interrupt handling code
@@ -1175,13 +1140,15 @@ void button_decoder() {
 				 tankPosX -= 2;
 				 drawTank(tankPosX, tankPosY, draw);
 			 }
-		}else if(currentButtonState & RIGHTBTN){//move tank right
+		}
+		if(currentButtonState & RIGHTBTN){//move tank right
 			 if(tankPosX < SCREEN_WIDTH - TANK_WIDTH){
 				 draw = 1;
 				 tankPosX += 2;
 				 drawTank(tankPosX, tankPosY, draw);
 			 }
-		}else if(currentButtonState & MIDDLEBTN){//fire tank bullet
+		}
+		if(currentButtonState & MIDDLEBTN){//fire tank bullet
 			if(exists_tank_missile == 0){
 				draw = 1;
 				drawTankBullet(tankPosX + TANK_WIDTH/2 - 1, tankPosY - TANK_BULLET_HEIGHT, draw);
@@ -1189,58 +1156,19 @@ void button_decoder() {
 				tankBulletCoordinates[1] = tankPosY - TANK_BULLET_HEIGHT;
 				exists_tank_missile = 1;
 			}
-		}else if(currentButtonState & DOWNBTN){//kill left and right aliens	//for testing	//delete
-			//int i;//,j;
-	//		for(i=0;i<ALIENS_TALL;i++){
-	//			aliens_alive[i][0] = 0;
-	//			destroy_alien(aliens_y+i*(ALIEN_HEIGHT+ALIEN_BUFFER), aliens_x+0*(ALIEN_WIDTH+ALIEN_BUFFER),1);
-	//			reevaluate_aliens();
-	//		}
-	//		for(i=0;i<ALIENS_TALL;i++){
-	//			aliens_alive[i][ALIENS_WIDE-1] = 0;
-	//			destroy_alien(aliens_y+i*(ALIEN_HEIGHT+ALIEN_BUFFER), aliens_x+(ALIENS_WIDE-1)*(ALIEN_WIDTH+ALIEN_BUFFER),1);
-	//			reevaluate_aliens();
-	//		}
-			add_score(100);
-			killTank(tankPosX, tankPosY);
-	//		for(j=0;j<ALIENS_WIDE;j++){ KILLS all aliens and goes to infinite game over loop
-	//			for(i=0;i<ALIENS_TALL;i++){
-	//				aliens_alive[i][j] = 0;
-	//				destroy_alien(aliens_y+i*(ALIEN_HEIGHT+ALIEN_BUFFER), aliens_x+(j)*(ALIEN_WIDTH+ALIEN_BUFFER));
-	//				reevaluate_aliens();
-	//			}
-	//		}
 		}
 	}
 }
-//	if(exists_missile){
-//		draw = 0;
-//		int alienMissileX = alienMissileCoordinates[0];
-//		int alienMissileY = alienMissileCoordinates[1];
-//		drawAlienMissile(alienMissileX, alienMissileY, draw);//erase previous alien missile
-//		if(alienMissileY < SCREEN_HEIGHT - ALIEN_MISSILE_HEIGHT){
-//			alienMissileY += 2;
-//			draw = 1;
-//			drawAlienMissile(alienMissileX, alienMissileY, draw);//draw new tank bullet
-//			alienMissileCoordinates[0] = alienMissileX;
-//			alienMissileCoordinates[1] = alienMissileY;
-//		}
-//		else{
-//			exists_missile = 0;
-//		}
-//	}
-//exists_missile = 1;
-//				 draw = 1;
-//				 int randNum = rand() % ALIENS_WIDE;
-//				 int shoot_pos_x = aliens_x+randNum*(ALIEN_WIDTH+ALIEN_BUFFER)+(ALIEN_WIDTH/2)-2;
-//				 int shoot_pos_y = aliens_y+ALIENS_TALL*(ALIEN_HEIGHT+ALIEN_BUFFER)-ALIEN_BUFFER;
-//				 drawAlienMissile(shoot_pos_x, shoot_pos_y, draw);
-//				 alienMissileCoordinates[0] = shoot_pos_x;
-//				 alienMissileCoordinates[1] = shoot_pos_y;
 void timer_interrupt_handler() {
-	/////////////////////////////
-						//THIS NEEDS vvvvvvvvvvvvvvvvv  to change so that when bottom row of ALIVE ALIENS reaches bottom of bunker, then you get game over.
-	if(alienCount > 0 && aliens_y+5*(ALIEN_HEIGHT+ALIEN_BUFFER) < BUNKER_BOTTOM && lives > 0){//if there are no aliens left or aliens reach bottom of bunker
+	unsigned int time1, time2, cum_time;
+	XTmrCtr *TmrCtrInstancePtr = &TimerCounter;
+	int Status = XTmrCtr_Initialize(&TmrCtrInstancePtr, XPAR_AXI_TIMER_0_DEVICE_ID);
+	if (Status != XST_SUCCESS)
+	{
+	return;
+	}
+	XTmrCtr_Start(&TmrCtrInstancePtr, 0);
+	if(alienCount > 0 && aliens_y+(bottom_column+1)*(ALIEN_HEIGHT+ALIEN_BUFFER) < BUNKER_BOTTOM && lives > 0){//if there are no aliens left or aliens reach bottom of bunker
 		button_decoder();
 		/////////////////////////////
 		//makes alien missiles somewhere random every couple seconds
@@ -1321,14 +1249,10 @@ void timer_interrupt_handler() {
 		if(shipSpawnCounter >= 5000){
 			shipAlive = 1;
 			mothershipRight = !mothershipRight;
-//			if(randBin == 1){
 			if(!mothershipRight){
-//				motherShipX = (randBin*SCREEN_WIDTH)-MOTHER_SHIP_WIDTH;
 				motherShipX = SCREEN_WIDTH-MOTHER_SHIP_WIDTH;
-//				mothershipRight = 0;
 			}else{
 				motherShipX = 0;
-//				mothershipRight = 1;
 			}
 			shipSpawnCounter = 0;
 		}else{
@@ -1363,7 +1287,30 @@ void timer_interrupt_handler() {
 			bulletMoveCounter++;
 		}
 
-		if(drawAlienTimer >= alienTimerMax){													//TO DO: make this a variable that changes as it goes down
+		if(mothershipHit){
+
+			if(scoreBlinkCounter < SCORE_BLINK_MAX*4){
+				if((scoreBlinkCounter % (SCORE_BLINK_MAX*2)) <= SCORE_BLINK_MAX){
+					printNumbers(mothershipScore, mothershipScoreDigits, motherShipX, motherShipY);
+				}
+				else{
+					unsigned int * framePointer = (unsigned int *) FRAME_BUFFER_ADDR;
+					int row, column;
+					for(row = motherShipY; row < motherShipY + LETTER_HEIGHT; row++){
+						for(column = motherShipX; column < motherShipX + mothershipScoreDigits*(LETTER_WIDTH+LETTER_BUFFER); column++){
+							framePointer[(row)*SCREEN_WIDTH + (column)] = BLACK;
+						}
+					}
+				}
+				scoreBlinkCounter++;
+			}
+			else{
+				scoreBlinkCounter = 0;
+				mothershipHit = 0;
+			}
+		}
+
+		if(drawAlienTimer >= alienTimerMax){
 			if(direction == DOWN){	//if aliens have already gone down
 				if(aliens_x + first_row*(ALIEN_WIDTH+ALIEN_BUFFER) == 0){	//if aliens have hit the left edge of the screen
 				 direction = RIGHT;
@@ -1392,8 +1339,10 @@ void timer_interrupt_handler() {
 		}
 	}else{
 		gameOver();
-		//xil_printf("GAME OVER\n\r");//erase aliens and bullets and draw game over...
 	}
+	XTmrCtr_Stop(&TmrCtrInstancePtr, 0);
+	time2 = XTmrCtr_GetValue(&TmrCtrInstancePtr, 0);
+	xil_printf("!%d!\n\r", time2);
 }
 
 // This is invoked each time there is a change in the button state (result of a push or a bounce).
@@ -1603,96 +1552,7 @@ int main()
 	 draw_lives_word();
 	 drawLives();
 	 //////////////////
-
 	while (1);
 	cleanup_platform();
 	return 0;
 }
-
-
-
-//    	 char c = getchar();
-//    	 if(c == '6'){//key 6 so move right
-//    		 if(tankPosX < SCREEN_WIDTH - TANK_WIDTH){
-//    			 draw = 1;
-//    			 tankPosX += 4;
-//				 drawTank(tankPosX, tankPosY, draw);
-//    		 }
-//    	 }else if(c == '4'){//key 4 so move left
-//    		 if(tankPosX > 0){
-//    			 draw = 1;
-//    			 tankPosX -= 4;
-//				 drawTank(tankPosX, tankPosY, draw);
-//    		 }
-//		 }else if(c == '7'){//key 7 so erode bunker
-//			 char bunkerNum = getchar(); //0 = 48, 1 = 49, 2 = 50, 3 = 51
-//			 if(bunkerNum == BUNKER_0){
-//				 int bunker0 = 0;
-//				 erodeBunker(bunker0);
-//			 }else if(bunkerNum == BUNKER_1){
-//				 int bunker1 = 1;
-//				 erodeBunker(bunker1);
-//			 }else if(bunkerNum == BUNKER_2){
-//				 int bunker2 = 2;
-//				 erodeBunker(bunker2);
-//			 }else if(bunkerNum == BUNKER_3){
-//				 int bunker3 = 3;
-//				 erodeBunker(bunker3);
-//			 }
-//		 }
-//    	 else if(c=='8'){//update alien position if c='8'
-//    		 if(direction == DOWN){	//if aliens have already gone down
-//    			 if(aliens_x + first_row*(ALIEN_WIDTH+ALIEN_BUFFER) == 0){	//if aliens have hit the left edge of the screen
-//    				 direction = RIGHT;
-//    			 }
-//    			 else{		//if aliens have hit the right edge of the screen
-//    				 direction = LEFT;
-//    			 }
-//    		 }
-//    		 else if(aliens_x + first_row*(ALIEN_WIDTH+ALIEN_BUFFER) == 0 || aliens_x == SCREEN_WIDTH - ALIENS_WIDE*(ALIEN_BUFFER+ALIEN_WIDTH)){	//if aliens hit the left or right edges
-//    			 direction = DOWN;
-//    		 }
-//    		 if(direction == DOWN){
-//    			 aliens_y = aliens_y + ALIEN_VERTICAL_MOVE + ALIEN_BUFFER;
-//    		 }
-//    		 else if(direction == LEFT){
-//    			 aliens_x = aliens_x - ALIEN_HORIZ_MOVE;
-//    		 }
-//    		 else{			//if direction == RIGHT
-//    			 aliens_x = aliens_x + ALIEN_HORIZ_MOVE;
-//    		 }
-//    		 print_aliens(aliens_y, aliens_x, direction);
-//    	 }
-//    	 else if(c=='5'){//key 5 so fire alien bullet
-//    		 if(tankBulletCoordinates[1] <= 0){
-//				 draw = 1;
-//				 drawTankBullet(tankPosX + TANK_WIDTH/2 - 1, tankPosY - TANK_BULLET_HEIGHT, draw);
-//				 tankBulletCoordinates[0] = tankPosX + TANK_WIDTH/2 - 1;
-//				 tankBulletCoordinates[1] = tankPosY - TANK_BULLET_HEIGHT;
-//			 }
-//    	 }
-//    	 else if(c=='3'){//key 3 so fire tank bullet
-//    		 if(!exists_missile){
-//    			 exists_missile = 1;
-//				 draw = 1;
-//				 int randNum = rand() % ALIENS_WIDE;
-//				 int shoot_pos_x = aliens_x+randNum*(ALIEN_WIDTH+ALIEN_BUFFER)+(ALIEN_WIDTH/2)-2;
-//				 int shoot_pos_y = aliens_y+ALIENS_TALL*(ALIEN_HEIGHT+ALIEN_BUFFER)-ALIEN_BUFFER;
-//				 drawAlienMissile(shoot_pos_x, shoot_pos_y, draw);
-//				 alienMissileCoordinates[0] = shoot_pos_x;
-//				 alienMissileCoordinates[1] = shoot_pos_y;
-//    		 }
-//		 }
-//    	 else if(c == '9'){//key 9 so move all bullets
-//    		 moveBullets();
-//    	 }
-//    	 else if(c=='2'){//key 2
-//    		 c = getchar();
-//    		 char c2 = getchar();
-//    		 int index = (((u_int)c)-'0')*10+((uint)c2-'0');	//combine 2 keypresses on keypad into 1 number
-//    		 int alien_y_index = index/ALIENS_WIDE;
-//    		 int alien_x_index = index%ALIENS_WIDE;
-//    		 aliens_alive[alien_y_index][alien_x_index] = 0;
-//    		 erase_alien(aliens_y+alien_y_index*(ALIEN_HEIGHT+ALIEN_BUFFER), aliens_x+alien_x_index*(ALIEN_WIDTH+ALIEN_BUFFER));
-//    		 reevaluate_aliens();
-//    	 }
