@@ -113,6 +113,8 @@
 #define GAME_OVER_DIGITS 9
 #define TANK_DEFAULT_X 70
 #define SCORE_BLINK_MAX 20
+#define SHIP_SPAWN_COUNTER_MAX 5000
+#define TANK_EXPLOSION_COUNTER_MAX 10
 
 XTmrCtr TimerCounter; /* The instance of the Tmrctr Device */
 
@@ -1246,7 +1248,7 @@ void timer_interrupt_handler() {
 			shipCounter++;
 		}
 		//regulates how often you get a new spaceship
-		if(shipSpawnCounter >= 5000){
+		if(shipSpawnCounter >= SHIP_SPAWN_COUNTER_MAX){
 			shipAlive = 1;
 			mothershipRight = !mothershipRight;
 			if(!mothershipRight){
@@ -1261,7 +1263,7 @@ void timer_interrupt_handler() {
 
 		//draw tank explosion and then restart the tank in the restart position(TANK_DEFAULT_X).
 		if(tankAlive == 0){
-			if(tankExplosionCounter >= 10){
+			if(tankExplosionCounter >= TANK_EXPLOSION_COUNTER_MAX){
 				drawTankExplosion(numExplosion);
 				if(numExplosion<3){
 					numExplosion++;
@@ -1342,7 +1344,7 @@ void timer_interrupt_handler() {
 	}
 	XTmrCtr_Stop(&TmrCtrInstancePtr, 0);
 	time2 = XTmrCtr_GetValue(&TmrCtrInstancePtr, 0);
-	xil_printf("!%d!\n\r", time2);
+	//xil_printf("!%d!\n\r", time2);
 }
 
 // This is invoked each time there is a change in the button state (result of a push or a bounce).

@@ -6,16 +6,16 @@ Building file: ../src/vdmaTest.c
 Invoking: MicroBlaze gcc compiler
 mb-gcc -Wall -O3 -g3 -c -fmessage-length=0 -I../../hello_world_bsp_0/microblaze_0/include -mlittle-endian -mxl-barrel-shift -mxl-pattern-compare -mcpu=v8.20.b -mno-xl-soft-mul -MMD -MP -MF"src/vdmaTest.d" -MT"src/vdmaTest.d" -o"src/vdmaTest.o" "../src/vdmaTest.c"
 ../src/vdmaTest.c: In function 'blowUpMotherShip':
-../src/vdmaTest.c:1009: warning: implicit declaration of function 'rand'
+../src/vdmaTest.c:1011: warning: implicit declaration of function 'rand'
 ../src/vdmaTest.c: In function 'timer_interrupt_handler':
-../src/vdmaTest.c:1165: warning: passing argument 1 of 'XTmrCtr_Initialize' from incompatible pointer type
-../src/vdmaTest.c:1170: warning: passing argument 1 of 'XTmrCtr_Start' from incompatible pointer type
-../src/vdmaTest.c:1343: warning: passing argument 1 of 'XTmrCtr_Stop' from incompatible pointer type
-../src/vdmaTest.c:1344: warning: passing argument 1 of 'XTmrCtr_GetValue' from incompatible pointer type
-../src/vdmaTest.c:1163: warning: unused variable 'cum_time'
-../src/vdmaTest.c:1163: warning: unused variable 'time1'
+../src/vdmaTest.c:1167: warning: passing argument 1 of 'XTmrCtr_Initialize' from incompatible pointer type
+../src/vdmaTest.c:1172: warning: passing argument 1 of 'XTmrCtr_Start' from incompatible pointer type
+../src/vdmaTest.c:1345: warning: passing argument 1 of 'XTmrCtr_Stop' from incompatible pointer type
+../src/vdmaTest.c:1346: warning: passing argument 1 of 'XTmrCtr_GetValue' from incompatible pointer type
+../src/vdmaTest.c:1165: warning: unused variable 'cum_time'
+../src/vdmaTest.c:1165: warning: unused variable 'time1'
 ../src/vdmaTest.c: In function 'main':
-../src/vdmaTest.c:1542: warning: implicit declaration of function 'srand'
+../src/vdmaTest.c:1544: warning: implicit declaration of function 'srand'
 Finished building: ../src/vdmaTest.c
 ' '
 Building target: SpaceInvaders_project.elf
@@ -26,7 +26,7 @@ Finished building target: SpaceInvaders_project.elf
 Invoking: MicroBlaze Print Size
 mb-size SpaceInvaders_project.elf  |tee "SpaceInvaders_project.elf.size"
    text	   data	    bss	    dec	    hex	filename
-  50172	   1716	   8796	  60684	   ed0c	SpaceInvaders_project.elf
+  50152	   1716	   8796	  60664	   ecf8	SpaceInvaders_project.elf
 Finished building: SpaceInvaders_project.elf.size
 ' '
 Invoking: Xilinx ELF Check
